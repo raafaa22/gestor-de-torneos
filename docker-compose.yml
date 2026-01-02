@@ -1,0 +1,41 @@
+services:
+  db:
+    image: mysql:8.4
+    container_name: tfg_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: tfg
+      MYSQL_USER: tfg
+      MYSQL_PASSWORD: tfg
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  gestor_torneos:
+    build: .
+    container_name: gestor
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      DB_NAME: tfg
+      DB_USER: tfg
+      DB_PASSWORD: tfg
+      DB_HOST: db
+      DB_PORT: "3306"
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  mysql_data:
+
