@@ -34,7 +34,7 @@ services:
       DB_PASSWORD: tfg
       DB_HOST: db
       DB_PORT: "3306"
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "sleep infinity"
 
 volumes:
   mysql_data:
