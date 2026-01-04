@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'usuario.apps.UsuarioConfig',
     'equipo.apps.EquipoConfig',
     'torneo.apps.TorneoConfig',
+    'enfrentamiento.apps.EnfrentamientoConfig',
+    'estadisticas.apps.EstadisticasConfig',
 ]
 
 MIDDLEWARE = [
