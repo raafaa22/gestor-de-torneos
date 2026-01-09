@@ -16,3 +16,7 @@ class TipoRonda(models.TextChoices):
     CUARTOS = 'CUA', 'Cuartos de Final'
     SEMIFINAL = 'SEM', 'Semifinal'
     FINAL = 'FIN', 'Final'
+
+class RolUsuario(models.TextChoices):
+    ORGANIZADOR = 'ORG', 'Organizador'
+    EQUIPO = 'EQ', 'Equipo'
