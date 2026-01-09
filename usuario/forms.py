@@ -13,7 +13,7 @@ User = get_user_model()
 
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True, label=_('Correo Electrónico'))
+    email = forms.EmailField(required=True, label= _('Correo Electrónico'))
 
     class Meta:
         model = User
@@ -25,6 +25,7 @@ class UserRegisterForm(UserCreationForm):
 
         self.fields.pop('username', None)
 
+        self.fields['email'].label = _("Correo Electrónico")
         self.fields['password1'].label = _("Contraseña")
         self.fields['password2'].label = _("Repite la contraseña")
         self.fields['password2'].help_text = _("Debe coincidir con la contraseña anterior.")
@@ -54,13 +55,20 @@ class OrganizadorForm(forms.ModelForm):
     class Meta:
         model = Organizador
         fields = ['nombre']
-
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['nombre'].label = _("Nombre")
 
 class EquipoForm(forms.ModelForm):
     class Meta:
         model = Equipo
         fields = ['nombre', 'deporte']
-
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['nombre'].label = _("Nombre")
+        self.fields['deporte'].label = _("Deporte")
 
 
 class EmailAuthenticationForm(AuthenticationForm):
