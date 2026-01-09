@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.core.validators import RegexValidator
 from equipo.models import Equipo
@@ -21,7 +22,7 @@ class Organizador(models.Model):
         return self.nombre
     
 
-dni_validator = RegexValidator(regex=r"^\d{8}[A-Z]$", message="El DNI debe tener 8 dígitos seguidos de una letra mayúscula.")
+dni_validator = RegexValidator(regex=r"^\d{8}[A-Z]$", message= _("El DNI debe tener 8 dígitos seguidos de una letra mayúscula."))
 
 class Jugador(models.Model):
     dni = models.CharField(max_length=9, primary_key=True, validators=[dni_validator])

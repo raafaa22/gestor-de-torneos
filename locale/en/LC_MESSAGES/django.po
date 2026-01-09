@@ -1,0 +1,135 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Rafael Serano Algar <rafaelserranoalgar@gmail.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-09 20:18+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: gestor/choices.py:5
+msgid "Fútbol"
+msgstr "Football"
+
+#: gestor/choices.py:6
+msgid "Baloncesto"
+msgstr "Basketball"
+
+#: gestor/choices.py:7
+msgid "Pádel"
+msgstr "Paddle tennis"
+
+#: gestor/choices.py:10
+msgid "Liga"
+msgstr "League"
+
+#: gestor/choices.py:11
+msgid "Eliminatoria"
+msgstr "Knockout round"
+
+#: gestor/choices.py:12
+msgid "Eliminatoria con Fase de Grupos"
+msgstr "Group Phase and Knockout round"
+
+#: gestor/choices.py:15
+msgid "Dieciseisavos de Final"
+msgstr "Round of 32"
+
+#: gestor/choices.py:16
+msgid "Octavos de Final"
+msgstr "Round of 16"
+
+#: gestor/choices.py:17
+msgid "Cuartos de Final"
+msgstr "Quarter finals"
+
+#: gestor/choices.py:18
+msgid "Semifinal"
+msgstr "Semifinal"
+
+#: gestor/choices.py:19
+msgid "Final"
+msgstr "Final"
+
+#: gestor/choices.py:21
+msgid "Organizador"
+msgstr "Organiser"
+
+#: gestor/choices.py:22
+msgid "Equipo"
+msgstr "Team"
+
+#: templates/usuario/login.html:10 templates/usuario/login.html:42
+msgid "Inicio de sesión"
+msgstr "Log in"
+
+#: templates/usuario/login.html:49
+msgid "Regístrate"
+msgstr "Sing up"
+
+#: templates/usuario/login.html:51
+msgid "Iniciar sesión"
+msgstr "Log in"
+
+#: templates/usuario/registro.html:10
+msgid "Registro"
+msgstr "Sign up"
+
+#: templates/usuario/registro.html:24
+msgid "Volver"
+msgstr "Return"
+
+#: templates/usuario/registro.html:44
+msgid "Registro de usuario"
+msgstr "User sign up"
+
+#: templates/usuario/registro.html:64
+msgid "Rol de usuario:"
+msgstr "User role:"
+
+#: templates/usuario/registro.html:72
+msgid "Registrarse"
+msgstr "Sign up"
+
+#: usuario/forms.py:16 usuario/forms.py:28 usuario/forms.py:78
+#: usuario/forms.py:80
+msgid "Correo Electrónico"
+msgstr "Email"
+
+#: usuario/forms.py:29 usuario/forms.py:81
+msgid "Contraseña"
+msgstr "Password"
+
+#: usuario/forms.py:30
+msgid "Repite la contraseña"
+msgstr "Repeat the password"
+
+#: usuario/forms.py:31
+msgid "Debe coincidir con la contraseña anterior."
+msgstr "Must meet the previous one."
+
+#: usuario/forms.py:38
+msgid "Ya existe una cuenta con este correo electrónico."
+msgstr "An account already exists with this email."
+
+#: usuario/forms.py:61 usuario/forms.py:70
+msgid "Nombre"
+msgstr "Name"
+
+#: usuario/forms.py:71
+msgid "Deporte"
+msgstr "Sport"
+
+#: usuario/models.py:25
+msgid "El DNI debe tener 8 dígitos seguidos de una letra mayúscula."
+msgstr "Spanish ID must have 8 digits followed by a capital letter."
