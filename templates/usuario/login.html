@@ -1,6 +1,9 @@
 {% load i18n %} {% load static %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+{% get_language_info_list for LANGUAGES as languages %}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ LANGUAGE_CODE }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,6 +18,20 @@
     <link rel="icon" href="{% static 'usuario/img/logo.png' %}" />
   </head>
   <body>
+    <div class="selector-idioma">
+      <form action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <select name="language" onchange="this.form.submit()" class="form-select form-select-sm">
+          {% for language in languages %}
+            <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
+              {{ language.name_local|title }}
+            </option>
+          {% endfor %}
+        </select>
+      </form>
+    </div>
+
     <div class="auth-user">
       <img
         src="{% static 'usuario/img/logo.png' %}"

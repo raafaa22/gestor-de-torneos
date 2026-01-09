@@ -1,14 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# Rafael Serano Algar <rafaelserranoalgar@gmail.com>, 2026.
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-07 18:50+0100\n"
+"POT-Creation-Date: 2026-01-09 18:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,10 +16,55 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: templates/usuario/registro.html:6
-msgid "Registro"
-msgstr "Sign in"
 
-#: templates/usuario/registro.html:17
+#: templates/usuario/login.html:7 templates/usuario/login.html:25
+msgid "Inicio de sesión"
+msgstr "Log in"
+
+#: templates/usuario/login.html:32
+msgid "Regístrate"
+msgstr "Sing up"
+
+#: templates/usuario/login.html:34
+msgid "Iniciar sesión"
+msgstr "Log in"
+
+#: templates/usuario/registro.html:7
+msgid "Registro"
+msgstr "Sign up"
+
+#: templates/usuario/registro.html:21
+msgid "Volver"
+msgstr "Return"
+
+#: templates/usuario/registro.html:26
 msgid "Registro de usuario"
-msgstr "User sign in"
+msgstr "User sign up"
+
+#: templates/usuario/registro.html:46
+msgid "Rol de usuario:"
+msgstr "User role:"
+
+#: templates/usuario/registro.html:54
+msgid "Registrarse"
+msgstr "Sign up"
+
+#: usuario/forms.py:16 usuario/forms.py:70 usuario/forms.py:72
+msgid "Correo Electrónico"
+msgstr "Email"
+
+#: usuario/forms.py:28 usuario/forms.py:73
+msgid "Contraseña"
+msgstr "Password"
+
+#: usuario/forms.py:29
+msgid "Repite la contraseña"
+msgstr "Repeat the password"
+
+#: usuario/forms.py:30
+msgid "Debe coincidir con la contraseña anterior."
+msgstr "Must meet the previous one."
+
+#: usuario/forms.py:37
+msgid "Ya existe una cuenta con este correo electrónico."
+msgstr "An account already exists with this email."
