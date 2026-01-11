@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Rafael Serano Algar <rafaelserranoalgar@gmail.com>, 2026.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-09 20:18+0100\n"
+"POT-Creation-Date: 2026-01-11 19:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,6 +68,17 @@ msgstr "Organiser"
 #: gestor/choices.py:22
 msgid "Equipo"
 msgstr "Team"
+
+#: templates/base.html:51
+msgid "Cerrar Sesión"
+msgstr "Log Out"
+
+#: templates/equipo/dashboard.html:12
+#: templates/torneo/jugador_dashboard.html:12
+#: templates/torneo/organizador_dashboard.html:12
+#: templates/usuario/admin_dashboard.html:12
+msgid "Principal"
+msgstr "Main"
 
 #: templates/usuario/login.html:10 templates/usuario/login.html:42
 msgid "Inicio de sesión"
