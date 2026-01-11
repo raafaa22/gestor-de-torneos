@@ -7,4 +7,4 @@ def jugador_dashboard(request):
 
 @login_required
 def organizador_dashboard(request):
-    return render(request, 'torneo/organizador_dashboard.html')
+    return render(request, 'base.html')

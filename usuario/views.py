@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.utils.translation import gettext as _
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from gestor.choices import RolUsuario
 from usuario.forms import UserRegisterForm, OrganizadorForm, EquipoForm, EmailAuthenticationForm
@@ -73,6 +74,12 @@ def login(request):
         'form': form
     })
 
+@require_POST
+@login_required
+def logout(request):
+    auth_logout(request)
+    return redirect('usuario:login')
+
 def post_login(user):
 
     if Administrador.objects.filter(user=user).exists():
@@ -83,6 +90,17 @@ def post_login(user):
         return 'torneo:jugador'
     elif Equipo.objects.filter(user=user).exists():
         return 'equipo:dashboard'
+
+
+@login_required
+def home(request):
+    return redirect(post_login(request.user))
+
+
+@login_required
+def perfil(request):
+    return render(request, 'usuario/perfil.html')
+
 
 @login_required
 def admin_dashboard(request):
