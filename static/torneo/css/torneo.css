@@ -1,0 +1,100 @@
+.torneo-header {
+  margin-top: 20px;
+  margin-bottom: 40px;
+  margin-left: 35px;
+  margin-right: 20px;
+  overflow: auto;
+}
+
+.nuevo {
+  text-decoration: none;
+  color: black;
+  font-size: 18px;
+}
+
+.nuevo img {
+  margin-right: 8px !important;
+}
+
+.container-table {
+  border-top: solid 1px grey;
+  margin: 0 20px;
+}
+
+.buscador {
+  margin: 20px 0;
+}
+
+.buscador input {
+  background: url("../img/lupa.png") no-repeat 10px center;
+  background-size: 18px 18px;
+  padding-left: 38px; /* 10px (margen) + 18px (imagen) + 10px (espacio extra) */
+  width: 300px;
+  height: 30px;
+  border: solid 1px #808080;
+  border-radius: 5px;
+}
+
+.table {
+  border-color: grey;
+}
+
+th {
+  border-right: solid 1px grey;
+}
+
+tbody tr {
+    cursor: pointer;
+}
+
+.acciones {
+  border-right: none !important;
+}
+
+.borrar {
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.paginacion {
+  margin: 35px 8px;
+  font-size: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.paginacion .paginacion-info {
+  white-space: nowrap;
+}
+
+.paginacion .paginacion-button .current:hover {
+  background: #e1ebfa !important;
+  color: white !important;
+  border-color: #246bd6 !important;
+}
+
+.paginacion .paginacion-button {
+  margin-left: auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.paginacion .paginacion-button .current {
+  background: none !important;
+  width: fit-content;
+  height: fit-content;
+  font-size: 10px !important;
+  align-content: right !important;
+}
+
+.paginacion .paginacion-button .previous,
+.paginacion .paginacion-button .next,
+.paginacion .paginacion-button .last,
+.paginacion .paginacion-button .first {
+  font-size: 20px !important;
+}

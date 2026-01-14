@@ -1,17 +1,107 @@
-{% extends "base.html" %}
-{% load i18n %}
-{% load static %}
-{% get_current_language as LANGUAGE_CODE %}
-{% get_available_languages as LANGUAGES %}
-{% get_language_info_list for LANGUAGES as languages %}
-<!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans 'Principal' %}</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends "base.html" %} {% load i18n %} {% load static %} 
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+<link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}" />
+{% endblock %} 
+{% block content %}
+<div class="torneo-header">
+  <h3 class="float-start">
+    <strong>{% trans 'Listado de torneos' %}</strong>
+  </h3>
+
+  <a
+    href="{% url 'torneo:crear_torneo' %}"
+    class="navbar-brand float-end nuevo d-flex align-items-center"
+  >
+    <img
+      src="{% static 'torneo/img/nuevo.png' %}"
+      alt="nuevo"
+      width="25"
+      height="25"
+      class="align-middle me-1"
+    />
+    <strong class="align-middle">{% trans 'Crear torneo' %}</strong>
+  </a>
+</div>
+
+<div class="container-table">
+  <div class="buscador">
+    <input
+      id="buscar-torneo"
+      type="text"
+      class="form-control"
+      placeholder="{% trans 'Buscar torneo...' %}"
+    />
+  </div>
+
+    <table id="torneosTable" class="table table-hover">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Deporte</th>
+          <th>Tipo</th>
+          <th class="acciones"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for torneo in torneos %}
+        <tr data-id="{{ torneo.id }}">
+          <td>{{ torneo.nombre }}</td>
+          <td>{{ torneo.get_deporte_display }}</td>
+          <td class="align-middle">{{ torneo.get_tipo_display }}</td>
+          <td class="align-middle">
+            <form
+              action="{% url 'torneo:borrar_torneo' torneo.id %}"
+              method="post"
+            >
+              {% csrf_token %}
+              <button id="borrar" type="submit" class="borrar">
+                <img
+                  src="{% static 'torneo/img/eliminar.png' %}"
+                  alt="borrar"
+                  width="20"
+                  height="20"
+                />
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+</div>
+
+{% endblock %} 
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+<script>
+  $(document).ready(function() {
+        var table = $('#torneosTable').DataTable({
+            pageLength: 10,
+            lengthMenu: [10, 25, 50, 100 ],
+            dom: 't<"paginacion"<"paginacion-info"i><"paginacion-button"p>',
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/2.3.6/i18n/es-ES.json",
+            },
+            columnDefs: [
+                { orderable: false, searchable: false, targets: 3 }
+            ]
+        });
+
+
+        $('#torneosTable tbody').on('click', 'tr', function(e){
+          if (e.target.closest('#borrar'))
+            return;
+
+          const torneoId = this.getAttribute('data-id');
+          window.location.href = "{% url 'torneo:principal_torneo' 0 %}".replace('0', torneoId);
+        });
+
+        $('#buscar-torneo').on('input', function() {
+            table.search(this.value).draw();
+        });
+  });
+</script>
+{% endblock %}
