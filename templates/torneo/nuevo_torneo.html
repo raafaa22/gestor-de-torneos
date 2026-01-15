@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="torneo-header">
+        <div class="navbar-brand float-start nuevo d-flex align-items-center">
+            <a href="javascript:history.back()" class="align-middle">
+                <img src="{% static 'torneo/img/atras.png' %}" alt="nuevo" width="40" height="40" />
+            </a>
+            <h3 class="align-middle">
+                <strong>{% trans "Crear nuevo torneo" %}</strong>
+            </h3>
+        </div>
+    </div>
+    <form method="post">
+        <div class="container-form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            {{ form.as_p }}
+        </div>
+
+        <div class="form-btn">
+            <button type="submit" class="btn float-end">{% trans "Crear Torneo" %}</button>
+        </div>
+    </form>
+    
+{% endblock %}
+
+{% block scripts %}
+<script>
+    
+    const playoffsCheckbox = document.getElementById('id_playoffs');
+    const descensoCheckbox = document.getElementById('id_descenso');
+
+    function cambioPlayOffs() {
+        const numPlayOffsField = document.getElementById("id_n_equipos_playoffs");
+        const numPlayOffsLabel = document.querySelector('label[for="id_n_equipos_playoffs"]');
+
+        if (playoffsCheckbox.checked) {
+            numPlayOffsField.classList.remove('d-none');
+            numPlayOffsLabel.classList.remove('d-none');
+        } else {
+            numPlayOffsField.classList.add('d-none');
+            numPlayOffsLabel.classList.add('d-none');
+        }
+    }
+
+    function cambioDescenso() {
+        const numDescensoField = document.getElementById("id_n_equipos_descenso");
+        const numDescensoLabel = document.querySelector('label[for="id_n_equipos_descenso"]');
+
+        if (descensoCheckbox.checked) {
+            numDescensoField.classList.remove('d-none');
+            numDescensoLabel.classList.remove('d-none');
+        } else {
+            numDescensoField.classList.add('d-none');
+            numDescensoLabel.classList.add('d-none');
+        }
+    }
+
+    function elementosLiga() {
+        const selectorTipo = document.getElementById('id_tipo');
+        const tipoSeleccionado = selectorTipo.value;
+
+        if (tipoSeleccionado === 'LIG'){
+            playoffsCheckbox.disabled = false;
+            descensoCheckbox.disabled = false;
+        } else {
+            playoffsCheckbox.disabled = true;
+            playoffsCheckbox.checked = false;
+            cambioPlayOffs();
+            descensoCheckbox.disabled = true;
+            descensoCheckbox.checked = false;
+            cambioDescenso();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        cambioPlayOffs();
+        cambioDescenso();
+        elementosLiga();
+        document.getElementById('id_tipo').addEventListener('change', elementosLiga);
+        document.getElementById('id_playoffs').addEventListener('change', cambioPlayOffs);
+        document.getElementById('id_descenso').addEventListener('change', cambioDescenso);
+        document.documentElement.classList.remove('js-loading');
+    });
+</script>
+{% endblock %}

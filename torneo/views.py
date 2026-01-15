@@ -4,8 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_GET, require_POST
 from django.http import HttpResponseForbidden, JsonResponse
+
 from usuario.models import Organizador, Administrador
 from .models import Torneo
+from .forms import CrearTorneoForm
 from gestor.choices import TipoTorneo
 
 @login_required
@@ -54,7 +56,26 @@ def borrar_torneo(request, torneo_id : int):
 
 @login_required
 def crear_torneo(request):
-    return render(request, 'torneo/nuevo_torneo.html')
+    user = request.user
+
+    is_organizador = Organizador.objects.filter(user=user).exists()
+    is_admin = Administrador.objects.filter(user=user).exists()
+
+    if is_admin or is_organizador:
+        if request.method == 'POST':
+            form = CrearTorneoForm(request.POST, user=user)
+            if form.is_valid():
+                form.save()
+                if is_admin:
+                    return redirect('usuario:admin_dashboard')
+                else:
+                    return redirect('torneo:organizador')
+        else:
+            form = CrearTorneoForm(user=user)
+    else:
+        return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
+
+    return render(request, 'torneo/nuevo_torneo.html', {'form': form})
 
 
 @login_required

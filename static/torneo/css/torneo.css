@@ -6,6 +6,11 @@
   overflow: auto;
 }
 
+.torneo-header h3 {
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
 .nuevo {
   text-decoration: none;
   color: black;
@@ -14,6 +19,81 @@
 
 .nuevo img {
   margin-right: 8px !important;
+}
+
+.container-form {
+  border: solid 1px grey;
+  border-radius: 6px;
+  margin: 20px 20px;
+}
+
+.container-form input[type="text"],
+.container-form input[type="number"] {
+  width: 80%;
+  height: 25px;
+  font-size: 14px;
+  padding: 5px 7px;
+  border: black 1px solid;
+  border-radius: 3px;
+  grid-column: 2 / span 2;
+}
+
+.container-form input:focus,
+.container-form select:focus,
+.container-form textarea:focus {
+  outline: none;
+  border-color: black;
+  box-shadow: 0 0 0 2px black;
+}
+
+.container-form select{
+  width: 80%;
+  height: 27px;
+  font-size: 14px;
+  padding: 2px 7px;
+  border: black 1px solid;
+  border-radius: 3px;
+  grid-column: 2 / span 2;
+}
+
+.container-form textarea {
+  width: 80%;
+  font-size: 14px;
+  padding: 5px 7px;
+  border: black 1px solid;
+  border-radius: 3px;
+  grid-column: 2 / span 2;
+}
+
+.container-form input[type="checkbox"] {
+  grid-column: 2;
+  width: 16px !important;
+  height: 16px;
+  margin: 0 !important;
+}
+
+.container-form .helptext {
+  grid-column: 3;
+  font-size: 12px;
+  justify-self: start;
+  text-align: left;
+  padding-left: 0; 
+  align-self: start;
+  display: inline;
+}
+
+
+
+.container-form p {
+  margin: 18px 18px;
+  display: grid;
+  grid-template-columns: 260px auto 1fr;
+  column-gap: 26px;
+  align-items: middle;
+}
+
+.container-form label {
+  margin: 0;
 }
 
 .container-table {
@@ -44,7 +124,7 @@ th {
 }
 
 tbody tr {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .acciones {
@@ -55,7 +135,18 @@ tbody tr {
   border: none;
   background: none;
   padding: 0;
+  transition: background 0.2s;
+  border-radius: 4px;
 }
+
+.borrar:hover,
+.borrar:focus {
+  background: grey
+}
+
+
+
+
 
 .paginacion {
   margin: 35px 8px;
@@ -97,4 +188,18 @@ tbody tr {
 .paginacion .paginacion-button .last,
 .paginacion .paginacion-button .first {
   font-size: 20px !important;
+}
+
+.form-btn {
+  margin: 20px;
+}
+
+.form-btn button {
+  background-color: #4784e0;
+  color: white;
+}
+
+.form-btn button:hover {
+  background-color: #6d9ee6;
+  color: white;
 }
