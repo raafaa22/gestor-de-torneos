@@ -20,3 +20,9 @@ class TipoRonda(models.TextChoices):
 class RolUsuario(models.TextChoices):
     ORGANIZADOR = 'ORG', _('Organizador')
     EQUIPO = 'EQ', _('Equipo')
+
+class TipoUsuario(models.TextChoices):
+    ADMINISTRADOR = 'ADM', _('Administrador')
+    ORGANIZADOR = 'ORG', _('Organizador')
+    EQUIPO = 'EQ', _('Equipo')
+    JUGADOR = 'JUG', _('Jugador')

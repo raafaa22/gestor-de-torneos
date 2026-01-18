@@ -4,16 +4,179 @@
   margin-left: 35px;
   margin-right: 20px;
   overflow: auto;
+  height: 45px;
+
+  display: flex;
+  align-items: center;         
+  justify-content: space-between;
 }
 
-.nuevo {
-  text-decoration: none;
-  color: black;
-  font-size: 18px;
+.torneo-base {
+  margin-left: 200px !important;
+  margin-top: 60px !important;
 }
 
-.nuevo img {
+.torneo-base .torneo-header {
+  margin-left: 0 !important;
+}
+
+.torneo-header .float-start,
+.torneo-header .float-end{
+  float: none !important;
+}
+
+.torneo-header a {
+  display: inline-flex;
+  align-items: center;
+  font-size: 20px;
+}
+
+.torneo-header h3{
+  margin: 0;
+  line-height: 1;              
+}
+
+.torneo-header img {
+  margin-right: 10px !important;
+}
+
+.torneo-base {
+  margin-top: 20px;
+  margin-bottom: 15%;
+  margin-left: 35px;
+  margin-right: 20px;
+  overflow: auto;
+}
+
+.torneo-base h3 {
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+.torneo-base img {
   margin-right: 8px !important;
+}
+
+.menu-torneo {
+  background-color: #f3f7ff;
+  border-right: 1px solid #839FD8;
+  width: 180px;
+  height: calc(100vh - 60px);  /*encaje con el menu superior*/
+  position: fixed;
+  top: 60px;
+  left: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.menu-torneo li {
+  flex: 1;                    
+  display: flex;              
+  align-items: center;
+  justify-content: center;
+
+  border-bottom: 1px solid #839FD8;
+}
+
+.menu-torneo a {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+  color: #27437C;
+  font-size: 13px;
+
+  padding: 0;                
+}
+
+.menu-torneo .active {
+  background-color: #d6e6ff;
+}
+
+.menu-torneo a:hover {
+  background: #e7f0ff;
+  color: #3D69C2;
+}
+
+.container-form {
+  border: solid 1px grey;
+  border-radius: 6px;
+  margin: 20px 20px;
+}
+
+.container-form input[type="text"],
+.container-form input[type="number"] {
+  width: 80%;
+  height: 25px;
+  font-size: 14px;
+  padding: 5px 7px;
+  border: black 1px solid;
+  border-radius: 3px;
+  grid-column: 2 / span 2;
+}
+
+.container-form input:focus,
+.container-form select:focus,
+.container-form textarea:focus {
+  outline: none;
+  border-color: black;
+  box-shadow: 0 0 0 2px black;
+}
+
+.container-form select {
+  width: 80%;
+  height: 27px;
+  font-size: 14px;
+  padding: 2px 7px;
+  border: black 1px solid;
+  border-radius: 3px;
+  grid-column: 2 / span 2;
+}
+
+.container-form textarea {
+  width: 80%;
+  font-size: 14px;
+  padding: 5px 7px;
+  border: black 1px solid;
+  border-radius: 3px;
+  grid-column: 2 / span 2;
+}
+
+.container-form input[type="checkbox"] {
+  grid-column: 2;
+  width: 16px !important;
+  height: 16px;
+  margin: 0 !important;
+}
+
+.container-form .helptext {
+  grid-column: 3;
+  font-size: 12px;
+  justify-self: start;
+  text-align: left;
+  padding-left: 0;
+  align-self: start;
+  display: inline;
+}
+
+.container-form p {
+  margin: 18px 18px;
+  display: grid;
+  grid-template-columns: 260px auto 1fr;
+  column-gap: 26px;
+}
+
+.container-form label {
+  margin: 0;
 }
 
 .container-table {
@@ -44,7 +207,7 @@ th {
 }
 
 tbody tr {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .acciones {
@@ -55,6 +218,13 @@ tbody tr {
   border: none;
   background: none;
   padding: 0;
+  transition: background 0.2s;
+  border-radius: 4px;
+}
+
+.borrar:hover,
+.borrar:focus {
+  background: grey;
 }
 
 .paginacion {
@@ -97,4 +267,18 @@ tbody tr {
 .paginacion .paginacion-button .last,
 .paginacion .paginacion-button .first {
   font-size: 20px !important;
+}
+
+.form-btn {
+  margin: 20px;
+}
+
+.form-btn button {
+  background-color: #4784e0;
+  color: white;
+}
+
+.form-btn button:hover {
+  background-color: #6d9ee6;
+  color: white;
 }

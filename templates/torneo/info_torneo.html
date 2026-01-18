@@ -1,0 +1,41 @@
+{% extends "torneo/base_torneo.html" %}
+{% load i18n %}
+{% load static %}
+
+
+{% block titulo %}{% trans 'Información del torneo' %}{% endblock %}
+
+{% block torneo_content %}
+    {% if editor %}
+        <form method="post">
+            <div class="container-form">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                {{ form.as_p }}
+            </div>
+            <div class="form-btn">
+                <button type="submit" class="btn float-end">{% trans "Guardar" %}</button>
+            </div>
+        </form>
+    {% else %}
+        <div class="container-form">
+            <p><strong>{% trans "Nombre del torneo:" %}</strong> {{ torneo.nombre }}</p>
+            <p><strong>{% trans "Descripción:" %}</strong> {{ torneo.descripcion }}</p>
+            <p><strong>{% trans "Organizador:" %}</strong> {{ torneo.organizador }}</p>
+            {% if torneo.ganador %}
+                <p><strong>{% trans "Ganador:" %}</strong> {{ torneo.ganador }}</p>
+            {% endif %}
+            <p><strong>{% trans "Deporte:" %}</strong> {{ torneo.get_deporte_display }}</p>
+            <p><strong>{% trans "Tipo de torneo:" %}</strong> {{ torneo.get_tipo_display }}</p>
+            <p><strong>{% trans "Play-offs:" %}</strong> {% if torneo.playoffs %}{% trans "Sí" %}{% else %}{% trans "No" %}{% endif %}</p>
+            {% if torneo.playoffs %}
+                <p><strong>{% trans "Número de equipos en play-offs:" %}</strong> {{ torneo.num_equipos_playoffs }}</p>
+            {% endif %}
+            <p><strong>{% trans "Descenso:" %}</strong> {% if torneo.descenso %}{% trans "Sí" %}{% else %}{% trans "No" %}{% endif %}</p>
+            {% if torneo.descenso %}
+                <p><strong>{% trans "Número de equipos en descenso:" %}</strong> {{ torneo.num_equipos_descenso }}</p>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

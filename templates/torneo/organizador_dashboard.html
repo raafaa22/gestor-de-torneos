@@ -9,17 +9,8 @@
     <strong>{% trans 'Listado de torneos' %}</strong>
   </h3>
 
-  <a
-    href="{% url 'torneo:crear_torneo' %}"
-    class="navbar-brand float-end nuevo d-flex align-items-center"
-  >
-    <img
-      src="{% static 'torneo/img/nuevo.png' %}"
-      alt="nuevo"
-      width="25"
-      height="25"
-      class="align-middle me-1"
-    />
+  <a href="{% url 'torneo:crear_torneo' %}" class="navbar-brand float-end nuevo d-flex align-items-center">
+    <img src="{% static 'torneo/img/nuevo.png' %}" alt="nuevo" width="25" height="25" class="align-middle me-1"/>
     <strong class="align-middle">{% trans 'Crear torneo' %}</strong>
   </a>
 </div>
