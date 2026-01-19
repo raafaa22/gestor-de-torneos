@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-11 19:10+0100\n"
+"POT-Creation-Date: 2026-01-19 11:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,24 +61,136 @@ msgstr "Semifinal"
 msgid "Final"
 msgstr "Final"
 
-#: gestor/choices.py:21
+#: gestor/choices.py:21 gestor/choices.py:26 torneo/forms.py:13
 msgid "Organizador"
 msgstr "Organiser"
 
-#: gestor/choices.py:22
+#: gestor/choices.py:22 gestor/choices.py:27
 msgid "Equipo"
 msgstr "Team"
 
-#: templates/base.html:51
+#: gestor/choices.py:25
+msgid "Administrador"
+msgstr "Administrator"
+
+#: gestor/choices.py:28
+msgid "Jugador"
+msgstr "Player"
+
+#: templates/base.html:52
 msgid "Cerrar Sesión"
 msgstr "Log Out"
 
 #: templates/equipo/dashboard.html:12
 #: templates/torneo/jugador_dashboard.html:12
-#: templates/torneo/organizador_dashboard.html:12
 #: templates/usuario/admin_dashboard.html:12
 msgid "Principal"
 msgstr "Main"
+
+#: templates/torneo/base_torneo.html:14
+msgid "Editar Información"
+msgstr "Edit Information"
+
+#: templates/torneo/base_torneo.html:14
+msgid "Información Torneo"
+msgstr "Tournament Information"
+
+#: templates/torneo/base_torneo.html:21 templates/torneo/clasificacion.html:5
+msgid "Clasificación"
+msgstr "Classification"
+
+#: templates/torneo/base_torneo.html:28 templates/torneo/enfrentamientos.html:5
+msgid "Enfrentamientos"
+msgstr "Matches"
+
+#: templates/torneo/base_torneo.html:35
+msgid "Gestionar Equipos"
+msgstr "Manage Teams"
+
+#: templates/torneo/base_torneo.html:35 templates/torneo/equipos_torneo.html:5
+msgid "Equipos"
+msgstr "Teams"
+
+#: templates/torneo/base_torneo.html:42
+#: templates/torneo/estadisticas_torneo.html:5
+msgid "Estadísticas"
+msgstr "Statistics"
+
+#: templates/torneo/info_torneo.html:6
+msgid "Información del torneo"
+msgstr "Tournament information"
+
+#: templates/torneo/info_torneo.html:18
+msgid "Guardar"
+msgstr "Save"
+
+#: templates/torneo/info_torneo.html:23
+msgid "Nombre del torneo:"
+msgstr "Tournament name:"
+
+#: templates/torneo/info_torneo.html:24
+msgid "Descripción:"
+msgstr "Description:"
+
+#: templates/torneo/info_torneo.html:25
+msgid "Organizador:"
+msgstr "Organiser:"
+
+#: templates/torneo/info_torneo.html:27
+msgid "Ganador:"
+msgstr "Winner"
+
+#: templates/torneo/info_torneo.html:29
+msgid "Deporte:"
+msgstr "Sport:"
+
+#: templates/torneo/info_torneo.html:30
+msgid "Tipo de torneo:"
+msgstr "Tournament type:"
+
+#: templates/torneo/info_torneo.html:31
+msgid "Play-offs:"
+msgstr "Play-offs:"
+
+#: templates/torneo/info_torneo.html:31 templates/torneo/info_torneo.html:35
+msgid "Sí"
+msgstr "Yes"
+
+#: templates/torneo/info_torneo.html:31 templates/torneo/info_torneo.html:35
+msgid "No"
+msgstr "No"
+
+#: templates/torneo/info_torneo.html:33
+msgid "Número de equipos en play-offs:"
+msgstr "Number of play-offs teams:"
+
+#: templates/torneo/info_torneo.html:35
+msgid "Descenso:"
+msgstr "Relegation:"
+
+#: templates/torneo/info_torneo.html:37
+msgid "Número de equipos en descenso:"
+msgstr "Number of teams relegated:"
+
+#: templates/torneo/nuevo_torneo.html:16
+msgid "Crear nuevo torneo"
+msgstr "Create a new tournament"
+
+#: templates/torneo/nuevo_torneo.html:29
+msgid "Crear Torneo"
+msgstr "Create tournament"
+
+#: templates/torneo/organizador_dashboard.html:9
+msgid "Listado de torneos"
+msgstr "Tournament list"
+
+#: templates/torneo/organizador_dashboard.html:14
+msgid "Crear torneo"
+msgstr "Create tournament"
+
+#: templates/torneo/organizador_dashboard.html:24
+msgid "Buscar torneo..."
+msgstr "Search tournament..."
 
 #: templates/usuario/login.html:10 templates/usuario/login.html:42
 msgid "Inicio de sesión"
@@ -91,6 +203,10 @@ msgstr "Sing up"
 #: templates/usuario/login.html:51
 msgid "Iniciar sesión"
 msgstr "Log in"
+
+#: templates/usuario/perfil.html:12
+msgid "Perfil de usuario"
+msgstr "User profile"
 
 #: templates/usuario/registro.html:10
 msgid "Registro"
@@ -111,6 +227,92 @@ msgstr "User role:"
 #: templates/usuario/registro.html:72
 msgid "Registrarse"
 msgstr "Sign up"
+
+#: torneo/forms.py:23
+msgid ""
+"Marcar si el torneo es una liga y se quiere que haya una fase eliminatoria "
+"que decida al campeón, con el número de equipos especificado abajo."
+msgstr "Only mark if the tournament is a league and a knockout phase to decide champion "
+"is wanted, select the number of teams taking part below."
+
+#: torneo/forms.py:24
+msgid ""
+"Marcar si el torneo es una liga y se quiere que haya descenso, con el número "
+"de equipos especificado abajo."
+msgstr ""
+"Only mark if tournament is a league and team relegation is wanted, select the number of relegated teams below."
+
+#: torneo/forms.py:32
+msgid "Nombre del Torneo"
+msgstr "Tournament Name"
+
+#: torneo/forms.py:33
+msgid "Descripción"
+msgstr "Description"
+
+#: torneo/forms.py:34
+msgid "Número máximo de equipos"
+msgstr "Maximum number of teams"
+
+#: torneo/forms.py:35 usuario/forms.py:71
+msgid "Deporte"
+msgstr "Sport"
+
+#: torneo/forms.py:36
+msgid "Tipo de Torneo"
+msgstr "Tournament Type"
+
+#: torneo/forms.py:37
+msgid "Play-offs"
+msgstr "Play-offs:"
+
+#: torneo/forms.py:38
+msgid "Número de equipos en play-offs"
+msgstr "Number of teams in play-offs"
+
+#: torneo/forms.py:39
+msgid "Descenso"
+msgstr "Relegation"
+
+#: torneo/forms.py:40
+msgid "Número de equipos en descenso"
+msgstr "Number of teams in relegation"
+
+#: torneo/forms.py:59
+msgid ""
+"Debe especificar el número de equipos en play-offs si ha marcado que hay "
+"play-offs."
+msgstr "You must specify number of teams in play-offs if play-offs is marked."
+
+#: torneo/forms.py:61
+msgid ""
+"El número de equipos en play-offs no puede ser mayor que el número máximo de "
+"equipos del torneo."
+msgstr ""
+"Number of temas in play-offs cannot be bigger than the maximum of the tournament."
+
+#: torneo/forms.py:69
+msgid ""
+"Debe especificar el número de equipos en descenso si ha marcado que hay "
+"descenso."
+msgstr "You must specify number of teams in relegation if relegation is marked."
+
+#: torneo/forms.py:71
+msgid ""
+"El número de equipos en descenso no puede ser mayor que el número máximo de "
+"equipos del torneo."
+msgstr "Number of temas in relegation cannot be bigger than the maximum of the tournament."
+
+#: torneo/forms.py:79
+msgid ""
+"La suma de equipos en play-offs y en descenso no puede ser mayor que el "
+"número máximo de equipos del torneo."
+msgstr "The sum of teams in play-offs and relegation cannot be bigger than the maximum of the tournament."
+
+#: torneo/views.py:42 torneo/views.py:83 torneo/views.py:126
+#: torneo/views.py:166
+msgid "No tienes permiso para acceder a esta página."
+msgstr "You don't have permission to access to this page."
 
 #: usuario/forms.py:16 usuario/forms.py:28 usuario/forms.py:78
 #: usuario/forms.py:80
@@ -136,10 +338,6 @@ msgstr "An account already exists with this email."
 #: usuario/forms.py:61 usuario/forms.py:70
 msgid "Nombre"
 msgstr "Name"
-
-#: usuario/forms.py:71
-msgid "Deporte"
-msgstr "Sport"
 
 #: usuario/models.py:25
 msgid "El DNI debe tener 8 dígitos seguidos de una letra mayúscula."

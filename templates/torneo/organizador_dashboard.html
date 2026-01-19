@@ -69,12 +69,18 @@
 <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
 <script>
   $(document).ready(function() {
+        const lang = "{{ LANGUAGE_CODE }}";
+        if (lang.toLowerCase().startsWith('es')){
+          langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/es-ES.json"
+        } else {
+          langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/en-GB.json"
+        }
         var table = $('#torneosTable').DataTable({
             pageLength: 10,
             lengthMenu: [10, 25, 50, 100 ],
             dom: 't<"paginacion"<"paginacion-info"i><"paginacion-button"p>',
             language: {
-                url: "https://cdn.datatables.net/plug-ins/2.3.6/i18n/es-ES.json",
+                url: langUrl,
             },
             columnDefs: [
                 { orderable: false, searchable: false, targets: 3 }
