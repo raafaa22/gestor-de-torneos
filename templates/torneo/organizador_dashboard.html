@@ -37,8 +37,8 @@
       <tbody>
         {% for torneo in torneos %}
         <tr data-id="{{ torneo.id }}">
-          <td>{{ torneo.nombre }}</td>
-          <td>{{ torneo.get_deporte_display }}</td>
+          <td class="align-middle">{{ torneo.nombre }}</td>
+          <td class="align-middle">{{ torneo.get_deporte_display }}</td>
           <td class="align-middle">{{ torneo.get_tipo_display }}</td>
           <td class="align-middle">
             <form
@@ -70,6 +70,7 @@
 <script>
   $(document).ready(function() {
         const lang = "{{ LANGUAGE_CODE }}";
+        let langUrl = "";
         if (lang.toLowerCase().startsWith('es')){
           langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/es-ES.json"
         } else {
@@ -78,7 +79,7 @@
         var table = $('#torneosTable').DataTable({
             pageLength: 10,
             lengthMenu: [10, 25, 50, 100 ],
-            dom: 't<"paginacion"<"paginacion-info"i><"paginacion-button"p>',
+            dom: 't<"paginacion"<"paginacion-info"i><"paginacion-button"p>>',
             language: {
                 url: langUrl,
             },

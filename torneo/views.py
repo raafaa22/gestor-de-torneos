@@ -169,5 +169,35 @@ def informacion_torneo(request, torneo_id: int):
 @login_required
 def equipos_torneo(request, torneo_id: int):
     torneo = get_object_or_404(Torneo, id=torneo_id)
-    return render(request, 'torneo/equipos_torneo.html', {'torneo': torneo})
+    usuario = request.user
 
+    if tiene_permiso(usuario, torneo):
+        equipos_torneo = TorneoEquipo.objects.filter(torneo=torneo)
+        equipos = [te.equipo for te in equipos_torneo]
+        return render(request, 'torneo/equipos_torneo.html', {'torneo': torneo, 'equipos': equipos})
+    else:
+        return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
+    
+
+@login_required
+@require_POST
+def borrar_equipo_torneo(request, torneo_id: int, equipo_id: int):
+    torneo = get_object_or_404(Torneo, id=torneo_id)
+    usuario = request.user
+
+    tipo = tipo_usuario(usuario)
+
+    if tipo == TipoUsuario.ORGANIZADOR or tipo == TipoUsuario.ADMINISTRADOR:
+        equipo = get_object_or_404(Equipo, id=equipo_id)
+        torneo_equipo = TorneoEquipo.objects.filter(torneo=torneo, equipo=equipo).first()
+        if torneo_equipo:
+            torneo_equipo.delete()
+            
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({"ok": True})
+            
+            return redirect('torneo:equipos_torneo', torneo_id=torneo.id)
+        else:
+            return JsonResponse({"ok": False, "error": "El equipo no está en el torneo"}, status=404)
+    else:
+        return JsonResponse({"ok": False, "error": "No autorizado"}, status=403)

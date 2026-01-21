@@ -207,7 +207,7 @@ th {
   border-right: solid 1px grey;
 }
 
-tbody tr {
+.table-hover tbody tr {
   cursor: pointer;
 }
 
