@@ -16,6 +16,7 @@
                 </strong>
             </a>
         </li>
+        {% if torneo.tipo != 'ELI' %}
         <li class="nav-item">
             <a class="nav-link {% if actual == 'clasificacion_torneo' %}active{% endif %}" href="{% url 'torneo:clasificacion_torneo' torneo.id %}">
                 <strong>
@@ -23,6 +24,7 @@
                 </strong>
             </a>
         </li>
+        {% endif %}
         <li class="nav-item">
             <a class="nav-link {% if actual == 'enfrentamientos_torneo' %}active{% endif %}" href="{% url 'torneo:enfrentamientos_torneo' torneo.id %}">
                 <strong>
