@@ -92,8 +92,7 @@ class EliminatoriaGrupos(models.Model):
     
     
 class Clasificacion(models.Model):
-    torneo = models.ForeignKey(Torneo, null=False, blank=False, on_delete=models.CASCADE, related_name='clasificaciones')
-    equipo = models.ForeignKey(Equipo, null=False, blank=False, on_delete=models.CASCADE, related_name='clasificaciones')
+    torneo_equipo = models.ForeignKey(TorneoEquipo, null=False, blank=False, on_delete=models.CASCADE, related_name='clasificaciones')
     eliminatoria_grupos = models.ForeignKey(EliminatoriaGrupos, null=True, blank=True, on_delete=models.CASCADE, related_name='clasificaciones')
     grupo = models.CharField(max_length=20, default="GENERAL")
     posicion = models.PositiveIntegerField(null=False)
@@ -106,12 +105,11 @@ class Clasificacion(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["torneo", "grupo", "equipo"], name="uq_clasif_torneo_grupo_equipo"),
-            models.UniqueConstraint(fields=["torneo", "grupo", "posicion"], name="uq_clasif_torneo_grupo_posicion"),
+            models.UniqueConstraint(fields=["torneo_equipo", "grupo"], name="uq_clasif_torneo_grupo_equipo"),
         ]
 
     def __str__(self):
-        return f'Clasificacion: {self.equipo.nombre} en {self.torneo.nombre}'
+        return f'Clasificacion: {self.torneo_equipo.equipo.nombre} en {self.torneo_equipo.torneo.nombre}'
     
 
 
