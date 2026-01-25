@@ -26,14 +26,14 @@
             <tbody>
                 {% for fila in clasificacion %}
                 <tr>
-                    <td>{{ fila.posicion }}</td>
-                    <td>{{ fila.equipo }}</td>
+                    <td><strong>{{ fila.posicion }}</strong></td>
+                    <td><strong>{{ fila.torneo_equipo.equipo }}</strong></td>
                     <td>{{ fila.victorias }}</td>
                     <td>{{ fila.empates }}</td>
                     <td>{{ fila.derrotas }}</td>
                     <td>{{ fila.anotacion_favor }}</td>
                     <td>{{ fila.anotacion_contra }}</td>
-                    <td>{{ fila.puntos }}</td>
+                    <td><strong>{{ fila.puntos }}</strong></td>
                 </tr>
                 {% endfor %}
             </tbody>

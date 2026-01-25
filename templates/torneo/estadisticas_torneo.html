@@ -2,4 +2,151 @@
 {% load i18n %}
 {% load static %}
 
+{% block head_torneo %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+{% endblock %}
+
 {% block titulo %}{% trans 'Estadísticas' %}{% endblock %}
+
+{% block torneo_content %}
+    <div class="container-estadisticas">
+        <div class="tabla-estadisticas">
+            <table id="anotacionTabla" class="table">
+                {% if torneo.deporte == 'FUT' %}
+                    {% blocktranslate asvar header %}Goles{% endblocktranslate %}
+                {% else %}
+                    {% blocktranslate asvar header %}Puntos{% endblocktranslate %}
+                {% endif %}
+                <h5>{{ header }}</h5>
+                <thead>
+                    <tr>
+                        <th>{% trans "Jugador" %}</th>
+                        <th>{{ header }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if torneo.deporte == 'FUT' %}
+                        {% for goles in estadisticas.goles %}
+                            <tr>
+                                <td>{{ goles.jugador }}</td>
+                                <td>{{ goles.goles }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        {% for puntos in estadisticas.puntos %}
+                            <tr>
+                                <td>{{ puntos.jugador }}</td>
+                                <td>{{ puntos.puntos }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tabla-estadisticas">
+            <h5>{% trans "Asistencias" %}</h5>
+            <table id="asistenciasTabla" class="table">
+                <thead>
+                    <tr>
+                        <th>{% trans "Jugador" %}</th>
+                        <th>{% trans "Asistencias" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for asistencias in estadisticas.asistencias %}
+                        <tr>
+                            <td>{{ asistencias.jugador }}</td>
+                            <td>{{ asistencias.asistencias }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>        
+    </div>
+
+    <div class="tabla-estadisticas-centro">
+        <table id="terceraTabla" class="table">
+            {% if torneo.deporte == 'FUT' %}
+                {% blocktranslate asvar header %}Goles en contra{% endblocktranslate %}
+            {% else %}
+                {% blocktranslate asvar header %}Rebotes{% endblocktranslate %}
+            {% endif %}
+            <h5>{{ header }}</h5>
+            <thead>
+                <tr>
+                    <th>{% trans "Jugador" %}</th>
+                    <th>{{ header }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if torneo.deporte == 'FUT' %}
+                    {% for goles in estadisticas.goles_contra %}
+                        <tr>
+                            <td>{{ goles.jugador }}</td>
+                            <td>{{ goles.goles_contra }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    {% for rebotes in estadisticas.rebotes %}
+                        <tr>
+                            <td>{{ rebotes.jugador }}</td>
+                            <td>{{ rebotes.rebotes }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+            const lang = "{{ LANGUAGE_CODE }}";
+            let langUrl = "";
+            if (lang.toLowerCase().startsWith('es')){
+                langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/es-ES.json";
+            } else {
+                langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/en-GB.json";
+            }
+
+            var tableAnotacion = $('#anotacionTabla').DataTable({
+                pageLength: 20,
+                lengthMenu: [20, 30, 50, 100 ],
+                dom: 't<"paginacion"<"paginacion-button"p>>',
+                language: {
+                    url: langUrl,
+                },
+                columnDefs: [
+                    { orderable: true, searchable: false, targets: "_all"}
+                ]
+            });
+
+            var tableAsistencias = $('#asistenciasTabla').DataTable({
+                pageLength: 20,
+                lengthMenu: [20, 30, 50, 100 ],
+                dom: 't<"paginacion"<"paginacion-button"p>>',
+                language: {
+                    url: langUrl,
+                },
+                columnDefs: [
+                    { orderable: true, searchable: false, targets: "_all"}
+                ]
+            });
+
+            var tableTercera = $('#terceraTabla').DataTable({
+                pageLength: 20,
+                lengthMenu: [20, 30, 50, 100 ],
+                dom: 't<"paginacion"<"paginacion-button"p>>',
+                language: {
+                    url: langUrl,
+                },
+                columnDefs: [
+                    { orderable: true, searchable: false, targets: "_all"}
+                ]
+            });
+       } );
+    </script>
+{% endblock %}

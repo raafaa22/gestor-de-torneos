@@ -7,6 +7,7 @@ from django.http import HttpResponseForbidden, JsonResponse
 
 from usuario.models import Organizador, Administrador, Jugador
 from equipo.models import Equipo
+from estadisticas.models import EstadisticasBaloncesto, EstadisticasFutbol
 from .models import Torneo, TorneoEquipo, Clasificacion
 from .forms import CrearTorneoForm
 from gestor.choices import TipoTorneo, TipoUsuario
@@ -133,7 +134,7 @@ def clasificacion_torneo(request, torneo_id: int):
     usuario = request.user
 
     if tiene_permiso(usuario, torneo):
-        clasificacion = Clasificacion.objects.filter(torneo=torneo).order_by('posicion')
+        clasificacion = Clasificacion.objects.filter(torneo_equipo__torneo=torneo).order_by('posicion')
         return render(request, 'torneo/clasificacion.html', {'torneo': torneo, 'clasificacion': clasificacion})
     else:
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
@@ -143,10 +144,6 @@ def enfrentamientos_torneo(request, torneo_id: int):
     torneo = get_object_or_404(Torneo, id=torneo_id)
     return render(request, 'torneo/enfrentamientos.html', {'torneo': torneo})
 
-@login_required
-def estadisticas_torneo(request, torneo_id: int):
-    torneo = get_object_or_404(Torneo, id=torneo_id)
-    return render(request, 'torneo/estadisticas_torneo.html', {'torneo': torneo})
 
 @login_required
 def informacion_torneo(request, torneo_id: int):

@@ -39,13 +39,15 @@
                 </strong>
             </a>
         </li>
+        {% if torneo.deporte != 'PAD' %}
         <li class="nav-item">
-            <a class="nav-link {% if actual == 'estadisticas_torneo' %}active{% endif %}" href="{% url 'torneo:estadisticas_torneo' torneo.id %}">
+            <a class="nav-link {% if actual == 'estadisticas_torneo' %}active{% endif %}" href="{% url 'estadisticas:estadisticas_torneo' torneo.id %}">
                 <strong>
                     {% trans 'Estadísticas' %}
                 </strong>
             </a>
         </li>
+        {% endif %}
     </ul>
 
     <div class="torneo-base">

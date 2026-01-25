@@ -287,3 +287,21 @@ th {
   background-color: #6d9ee6;
   color: white;
 }
+
+.container-estadisticas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.tabla-estadisticas {
+  padding: 14px;
+  overflow-x: auto;
+}
+
+.tabla-estadisticas-centro {
+  grid-column: 1;
+  width: min(100%, 500px);
+  justify-self: center;
+}

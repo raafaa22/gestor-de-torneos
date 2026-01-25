@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import borrar_torneo, jugador_dashboard, organizador_dashboard, crear_torneo, principal_torneo, clasificacion_torneo, enfrentamientos_torneo,\
-informacion_torneo, estadisticas_torneo, equipos_torneo, borrar_equipo_torneo
+informacion_torneo, equipos_torneo, borrar_equipo_torneo
 
 app_name = 'torneo'
 
@@ -13,7 +13,6 @@ urlpatterns = [
     path('<int:torneo_id>/clasificacion/', clasificacion_torneo, name='clasificacion_torneo'),
     path('<int:torneo_id>/enfrentamientos/', enfrentamientos_torneo, name='enfrentamientos_torneo'),
     path('<int:torneo_id>/informacion/', informacion_torneo, name='informacion_torneo'),
-    path('<int:torneo_id>/estadisticas/', estadisticas_torneo, name='estadisticas_torneo'),
     path('<int:torneo_id>/equipos/', equipos_torneo, name='equipos_torneo'),
     path('<int:torneo_id>/equipos/borrar/<int:equipo_id>/', borrar_equipo_torneo, name='borrar_equipo'),
 ]
