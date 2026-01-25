@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-19 11:54+0100\n"
+"POT-Creation-Date: 2026-01-25 19:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: estadisticas/views.py:39 torneo/views.py:43 torneo/views.py:84
+#: torneo/views.py:127 torneo/views.py:140 torneo/views.py:169
+#: torneo/views.py:182
+msgid "No tienes permiso para acceder a esta página."
+msgstr "You don't have permission to access to this page."
 
 #: gestor/choices.py:5
 msgid "Fútbol"
@@ -66,6 +72,7 @@ msgid "Organizador"
 msgstr "Organiser"
 
 #: gestor/choices.py:22 gestor/choices.py:27
+#: templates/torneo/clasificacion.html:17
 msgid "Equipo"
 msgstr "Team"
 
@@ -73,7 +80,9 @@ msgstr "Team"
 msgid "Administrador"
 msgstr "Administrator"
 
-#: gestor/choices.py:28
+#: gestor/choices.py:28 templates/torneo/estadisticas_torneo.html:23
+#: templates/torneo/estadisticas_torneo.html:52
+#: templates/torneo/estadisticas_torneo.html:78
 msgid "Jugador"
 msgstr "Player"
 
@@ -87,34 +96,85 @@ msgstr "Log Out"
 msgid "Principal"
 msgstr "Main"
 
-#: templates/torneo/base_torneo.html:14
+#: templates/torneo/base_torneo.html:15
 msgid "Editar Información"
 msgstr "Edit Information"
 
-#: templates/torneo/base_torneo.html:14
+#: templates/torneo/base_torneo.html:15
 msgid "Información Torneo"
 msgstr "Tournament Information"
 
-#: templates/torneo/base_torneo.html:21 templates/torneo/clasificacion.html:5
+#: templates/torneo/base_torneo.html:23 templates/torneo/clasificacion.html:9
 msgid "Clasificación"
 msgstr "Classification"
 
-#: templates/torneo/base_torneo.html:28 templates/torneo/enfrentamientos.html:5
+#: templates/torneo/base_torneo.html:31 templates/torneo/enfrentamientos.html:5
 msgid "Enfrentamientos"
 msgstr "Matches"
 
-#: templates/torneo/base_torneo.html:35
+#: templates/torneo/base_torneo.html:38
 msgid "Gestionar Equipos"
 msgstr "Manage Teams"
 
-#: templates/torneo/base_torneo.html:35 templates/torneo/equipos_torneo.html:5
+#: templates/torneo/base_torneo.html:38 templates/torneo/equipos_torneo.html:10
 msgid "Equipos"
 msgstr "Teams"
 
-#: templates/torneo/base_torneo.html:42
-#: templates/torneo/estadisticas_torneo.html:5
+#: templates/torneo/base_torneo.html:46
+#: templates/torneo/estadisticas_torneo.html:9
 msgid "Estadísticas"
 msgstr "Statistics"
+
+#: templates/torneo/clasificacion.html:18
+msgid "Victorias"
+msgstr "Victories"
+
+#: templates/torneo/clasificacion.html:19
+msgid "Empates"
+msgstr "Draws"
+
+#: templates/torneo/clasificacion.html:20
+msgid "Derrotas"
+msgstr "Defeats"
+
+#: templates/torneo/clasificacion.html:21
+msgid "Anotación a favor"
+msgstr "Scoring made"
+
+#: templates/torneo/clasificacion.html:22
+msgid "Anotación en contra"
+msgstr "Scoring received"
+
+#: templates/torneo/clasificacion.html:23
+#: templates/torneo/estadisticas_torneo.html:18
+msgid "Puntos"
+msgstr "Points"
+
+#: templates/torneo/equipos_torneo.html:15
+msgid "Buscar equipo..."
+msgstr "Search team..."
+
+#: templates/torneo/equipos_torneo.html:20 usuario/forms.py:61
+#: usuario/forms.py:70
+msgid "Nombre"
+msgstr "Name"
+
+#: templates/torneo/estadisticas_torneo.html:16
+msgid "Goles"
+msgstr "Goals"
+
+#: templates/torneo/estadisticas_torneo.html:48
+#: templates/torneo/estadisticas_torneo.html:53
+msgid "Asistencias"
+msgstr "Assists"
+
+#: templates/torneo/estadisticas_torneo.html:71
+msgid "Goles en contra"
+msgstr "Goals received"
+
+#: templates/torneo/estadisticas_torneo.html:73
+msgid "Rebotes"
+msgstr "Rebounds"
 
 #: templates/torneo/info_torneo.html:6
 msgid "Información del torneo"
@@ -232,15 +292,17 @@ msgstr "Sign up"
 msgid ""
 "Marcar si el torneo es una liga y se quiere que haya una fase eliminatoria "
 "que decida al campeón, con el número de equipos especificado abajo."
-msgstr "Only mark if the tournament is a league and a knockout phase to decide champion "
-"is wanted, select the number of teams taking part below."
+msgstr ""
+"Only mark if the tournament is a league and a knockout phase to decide "
+"champion is wanted, select the number of teams taking part below."
 
 #: torneo/forms.py:24
 msgid ""
 "Marcar si el torneo es una liga y se quiere que haya descenso, con el número "
 "de equipos especificado abajo."
 msgstr ""
-"Only mark if tournament is a league and team relegation is wanted, select the number of relegated teams below."
+"Only mark if tournament is a league and team relegation is wanted, select "
+"the number of relegated teams below."
 
 #: torneo/forms.py:32
 msgid "Nombre del Torneo"
@@ -289,30 +351,31 @@ msgid ""
 "El número de equipos en play-offs no puede ser mayor que el número máximo de "
 "equipos del torneo."
 msgstr ""
-"Number of temas in play-offs cannot be bigger than the maximum of the tournament."
+"Number of temas in play-offs cannot be bigger than the maximum of the "
+"tournament."
 
 #: torneo/forms.py:69
 msgid ""
 "Debe especificar el número de equipos en descenso si ha marcado que hay "
 "descenso."
-msgstr "You must specify number of teams in relegation if relegation is marked."
+msgstr ""
+"You must specify number of teams in relegation if relegation is marked."
 
 #: torneo/forms.py:71
 msgid ""
 "El número de equipos en descenso no puede ser mayor que el número máximo de "
 "equipos del torneo."
-msgstr "Number of temas in relegation cannot be bigger than the maximum of the tournament."
+msgstr ""
+"Number of temas in relegation cannot be bigger than the maximum of the "
+"tournament."
 
 #: torneo/forms.py:79
 msgid ""
 "La suma de equipos en play-offs y en descenso no puede ser mayor que el "
 "número máximo de equipos del torneo."
-msgstr "The sum of teams in play-offs and relegation cannot be bigger than the maximum of the tournament."
-
-#: torneo/views.py:42 torneo/views.py:83 torneo/views.py:126
-#: torneo/views.py:166
-msgid "No tienes permiso para acceder a esta página."
-msgstr "You don't have permission to access to this page."
+msgstr ""
+"The sum of teams in play-offs and relegation cannot be bigger than the "
+"maximum of the tournament."
 
 #: usuario/forms.py:16 usuario/forms.py:28 usuario/forms.py:78
 #: usuario/forms.py:80
@@ -334,10 +397,6 @@ msgstr "Must meet the previous one."
 #: usuario/forms.py:38
 msgid "Ya existe una cuenta con este correo electrónico."
 msgstr "An account already exists with this email."
-
-#: usuario/forms.py:61 usuario/forms.py:70
-msgid "Nombre"
-msgstr "Name"
 
 #: usuario/models.py:25
 msgid "El DNI debe tener 8 dígitos seguidos de una letra mayúscula."
