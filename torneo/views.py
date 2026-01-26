@@ -139,11 +139,6 @@ def clasificacion_torneo(request, torneo_id: int):
     else:
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
 
-@login_required
-def enfrentamientos_torneo(request, torneo_id: int):
-    torneo = get_object_or_404(Torneo, id=torneo_id)
-    return render(request, 'torneo/enfrentamientos.html', {'torneo': torneo})
-
 
 @login_required
 def informacion_torneo(request, torneo_id: int):
@@ -204,3 +199,4 @@ def borrar_equipo_torneo(request, torneo_id: int, equipo_id: int):
             return JsonResponse({"ok": False, "error": "El equipo no está en el torneo"}, status=404)
     else:
         return JsonResponse({"ok": False, "error": "No autorizado"}, status=403)
+
