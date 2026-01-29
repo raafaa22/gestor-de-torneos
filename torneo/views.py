@@ -122,7 +122,7 @@ def principal_torneo(request, torneo_id: int):
             return redirect('torneo:clasificacion_torneo', torneo_id=torneo.id)
     
         if torneo.tipo == TipoTorneo.ELIMINATORIA:
-            return redirect('torneo:enfrentamientos_torneo', torneo_id=torneo.id)
+            return redirect('enfrentamientos:enfrentamientos_torneo', torneo_id=torneo.id, n_ronda=1)
     else:
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
     
