@@ -33,7 +33,11 @@
             <div class="enfrentamientos">
                 {% for enf in enfrentamientos.items %}
                 <div class="enf">
-                    <span>{{ enf.equipo_local }}</span>
+                    {% if enf.ganador == enf.equipo_local %}
+                        <span class="ganador"><strong>{{ enf.equipo_local }}</strong></span>
+                    {% else %}
+                        <span>{{ enf.equipo_local }}</span>
+                    {% endif %}
                     {% if torneo.deporte == 'PAD' %}
                         {% if enf.juegos_local_1 is not None and enf.juegos_local_2 is not None %}
                             <span>{{ enf.juegos_local_1 }}  {{ enf.juegos_local_2 }} {% if enf.juegos_local_3 %}{{ enf.juegos_local_3 }}{% endif %}</span>
@@ -41,6 +45,8 @@
                     {% else %}
                         {% if enf.anotacion_local is not None %}
                             <span>{{ enf.anotacion_local }}</span>
+                        {% else %}
+                            <span> </span>
                         {% endif %}
                     {% endif %}
                     <span> - </span>
@@ -51,11 +57,17 @@
                     {% else %}
                         {% if enf.anotacion_visitante is not None %}
                             <span>{{ enf.anotacion_visitante }}</span>
+                        {% else %}
+                            <span> </span>
                         {% endif %}
                     {% endif %}
                     <div class="grid-5">
-                        <span>{{ enf.equipo_visitante }}</span>
-                        <div class="acciones">
+                        {% if enf.ganador == enf.equipo_visitante %}
+                            <span class="ganador"><strong>{{ enf.equipo_visitante }}</strong></span>
+                        {% else %}
+                            <span>{{ enf.equipo_visitante }}</span>
+                        {% endif %}
+                        <div class="acciones-enfr">
                             {% if is_organizador or is_admin %}
                                 <a href="{% url 'enfrentamientos:editar_enfrentamiento' torneo.id n_ronda enf.id %}">
                                     <img src="{% static 'torneo/img/editar.png' %}" alt="editar_enfrentamiento" width="20" height="20">

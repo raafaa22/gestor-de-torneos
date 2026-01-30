@@ -383,7 +383,7 @@ th {
 }
 
 
-.acciones {
+.acciones-enfr {
   grid-column: 3;
   justify-self: end;
   display: flex;
@@ -394,11 +394,11 @@ th {
 }
 
 .no-enfrentamientos{
-  min-height: 40vh;            /* o 100vh si quieres pantalla completa */
+  min-height: 40vh;            
   display: flex;
   flex-direction: column;
-  align-items: center;         /* centro horizontal */
-  justify-content: center;     /* centro vertical */
+  align-items: center;         
+  justify-content: center;   
   text-align: center;
   gap: 16px;
 }
@@ -434,4 +434,45 @@ th {
 .btn-enf-2:hover {
   background-color: #a0a0a0;
   color: white;
+}
+
+.ganador {
+  color: #113264;
+}
+
+.detalle-enfr {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.local, .visitante{
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;  
+  
+}
+
+.local {
+  align-items: flex-start;
+  text-align: left;
+  padding-right: 18px;       
+  border-right: 1px solid grey;
+}
+
+.resultado {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;   
+  padding: 0 18px;
+}
+
+.visitante {
+  align-items: flex-end;
+  text-align: right;
+  padding-left: 18px;
+  border-left: 1px solid grey;
 }

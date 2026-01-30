@@ -6,8 +6,10 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 
 from .models import Enfrentamiento
-from torneo.models import Torneo, Jornada, Eliminatoria, EliminatoriaGrupos
+from estadisticas.models import EstadisticasBaloncesto, EstadisticasFutbol
+from torneo.models import Torneo, Jornada, Eliminatoria, EliminatoriaGrupos, Clasificacion, TorneoEquipo
 from gestor.choices import TipoUsuario, TipoTorneo, TipoRonda
+from usuario.models import Administrador, Organizador, Jugador
 from torneo.views import tipo_usuario, tiene_permiso
 
 
@@ -190,7 +192,28 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
 def detalle_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento_id: int):
     torneo = get_object_or_404(Torneo, id=torneo_id)
     enfrentamiento = get_object_or_404(Enfrentamiento, id=enfrentamiento_id)
-    return render(request, 'enfrentamientos/editar.html', {'torneo': torneo, 'n_ronda': n_ronda, 'enfrentamiento': enfrentamiento})
+
+    jugadores_local = Jugador.objects.filter(equipo=enfrentamiento.equipo_local)
+    jugadores_visitante = Jugador.objects.filter(equipo=enfrentamiento.equipo_visitante)
+
+    clasificacion_local = None
+    clasificacion_visitante = None
+
+    if torneo.tipo == TipoTorneo.LIGA or torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
+        equipo_local = TorneoEquipo.objects.filter(torneo=torneo, equipo=enfrentamiento.equipo_local).first()
+        clasificacion_local = Clasificacion.objects.filter(torneo_equipo=equipo_local).first()
+        equipo_visitante = TorneoEquipo.objects.filter(torneo=torneo, equipo=enfrentamiento.equipo_visitante).first()
+        clasificacion_visitante = Clasificacion.objects.filter(torneo_equipo=equipo_visitante).first()
+
+    contexto = {
+        'jugadores_local': jugadores_local,
+        'jugadores_visitante': jugadores_visitante,
+        'clasificacion_local': clasificacion_local,
+        'clasificacion_visitante': clasificacion_visitante
+    }
+ 
+
+    return render(request, 'enfrentamientos/detalle.html', {'torneo': torneo, 'n_ronda': n_ronda, 'enfrentamiento': enfrentamiento, 'contexto': contexto})
 
 @login_required
 def editar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento_id: int):
