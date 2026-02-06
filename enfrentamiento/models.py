@@ -1,7 +1,9 @@
 from django.db import models
-from gestor.choices import TipoRonda
+from django.core.validators import MinValueValidator
+from gestor.choices import TipoRonda, EstadisticaFutbol, EstadisticaBaloncesto
 from equipo.models import Equipo
 from torneo.models import Eliminatoria, Jornada
+from usuario.models import Jugador
 
 class Enfrentamiento(models.Model):
     eliminatoria = models.ForeignKey(Eliminatoria, null=True, blank=True, on_delete=models.CASCADE, related_name='enfrentamientos')
@@ -44,3 +46,35 @@ class Enfrentamiento(models.Model):
 
     def __str__(self):
         return f'{self.equipo_local} vs {self.equipo_visitante}'
+    
+
+class GuardadoEnfrentamiento(models.Model):
+    enfrentamiento = models.ForeignKey(Enfrentamiento, on_delete=models.CASCADE, related_name='guardados')
+    jugador = models.ForeignKey(Jugador, on_delete=models.CASCADE, related_name='guardados_enfrentamientos')
+    estadistica_futbol = models.CharField(max_length=3, choices=EstadisticaFutbol.choices, null=True, blank=True)
+    estadistica_baloncesto = models.CharField(max_length=3, choices=EstadisticaBaloncesto.choices, null=True, blank=True)
+    cantidad = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['enfrentamiento', 'jugador', 'estadistica_futbol', 'estadistica_baloncesto'],
+                name='unique_estadistica_enfrentamiento_guardado_jugador_tipo'
+            )
+        ]
+
+
+class EstadisticasEnfrentamiento(models.Model):
+    enfrentamiento = models.ForeignKey(Enfrentamiento, on_delete=models.CASCADE, related_name='estadisticas')
+    jugador = models.ForeignKey(Jugador, on_delete=models.CASCADE, related_name='estadisticas_enfrentamientos')
+    estadistica_futbol = models.CharField(max_length=3, choices=EstadisticaFutbol.choices, null=True, blank=True)
+    estadistica_baloncesto = models.CharField(max_length=3, choices=EstadisticaBaloncesto.choices, null=True, blank=True)
+    cantidad = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['enfrentamiento', 'jugador', 'estadistica_futbol', 'estadistica_baloncesto'],
+                name='unique_estadistica_enfrentamiento_jugador_tipo'
+            )
+        ]
