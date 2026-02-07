@@ -11,7 +11,7 @@ class Enfrentamiento(models.Model):
     ronda = models.CharField(max_length=4, choices=TipoRonda.choices, null=True, blank=True)
     equipo_local = models.ForeignKey(Equipo, null=True, blank=True, on_delete=models.SET_NULL, related_name='enfrentamientos_local')
     equipo_visitante = models.ForeignKey(Equipo, null=True, blank=True, on_delete=models.SET_NULL, related_name='enfrentamientos_visitante')
-    ganador = models.ForeignKey(Equipo, null=True, blank=True, on_delete=models.SET_NULL, related_name='enfrentamientos_ganados')
+    ganador = models.ForeignKey(Equipo, null=True, blank=True, on_delete=models.SET_NULL, related_name='enfrentamientos_ganador')
     anotacion_local = models.PositiveIntegerField(null=True, blank=True)
     anotacion_visitante = models.PositiveIntegerField(null=True, blank=True)
     juegos_local_1 = models.PositiveIntegerField(null=True, blank=True)
@@ -20,6 +20,8 @@ class Enfrentamiento(models.Model):
     juegos_visitante_2 = models.PositiveIntegerField(null=True, blank=True)
     juegos_local_3 = models.PositiveIntegerField(null=True, blank=True)
     juegos_visitante_3 = models.PositiveIntegerField(null=True, blank=True)
+    prev_local = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='enfrentamientos_siguientes_local')
+    prev_visitante = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='enfrentamientos_siguientes_visitante')
 
     class Meta:
         constraints = [

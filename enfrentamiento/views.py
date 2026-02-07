@@ -9,7 +9,7 @@ from django.http import HttpResponseForbidden, HttpResponse
 
 from equipo.models import Equipo
 
-from .models import Enfrentamiento, EstadisticasEnfrentamiento
+from .models import Enfrentamiento, EstadisticasEnfrentamiento, GuardadoEnfrentamiento
 from .forms import EstadisticasEnfrentamientoForm
 from estadisticas.models import EstadisticasBaloncesto, EstadisticasFutbol
 from torneo.models import Torneo, Jornada, Eliminatoria, EliminatoriaGrupos, Clasificacion, TorneoEquipo
@@ -390,13 +390,107 @@ def actualizar_clasificacion(torneo: Torneo, enfrentamiento: Enfrentamiento):
             equipo.save()
 
     
+@transaction.atomic
+def actualizar_eliminatoria(enfrentamiento: Enfrentamiento):
+    if enfrentamiento.ganador is not None:
+        siguiente = Enfrentamiento.objects.filter(eliminatoria=enfrentamiento.eliminatoria, prev_local=enfrentamiento).first()
+        if siguiente is not None:
+            siguiente.equipo_local = enfrentamiento.ganador
+            siguiente.save()
+        else:
+            siguiente = Enfrentamiento.objects.filter(eliminatoria=enfrentamiento.eliminatoria, prev_visitante=enfrentamiento).first()
+            if siguiente is not None:
+                siguiente.equipo_visitante = enfrentamiento.ganador
+                siguiente.save()
+            else:
+                return HttpResponse( _("No se encontró el siguiente enfrentamiento para actualizar."), status=400 )
+    else:
+        return HttpResponse( _("No se puede actualizar la eliminatoria sin un ganador definido."), status=400 )
 
-def actualizar_eliminatoria(torneo: Torneo, enfrentamiento: Enfrentamiento):
-    pass
-
-
+@transaction.atomic
 def actualizar_estadisticas_generales(torneo: Torneo, enfrentamiento: Enfrentamiento):
+    estadisticas_guardadas = GuardadoEnfrentamiento.objects.filter(enfrentamiento=enfrentamiento)
+    estadisticas_pendientes = EstadisticasEnfrentamiento.objects.filter(enfrentamiento=enfrentamiento)
+
+    if estadisticas_guardadas.exists():
+        for existe in estadisticas_guardadas:
+            if not estadisticas_pendientes.filter(
+                jugador=existe.jugador,
+                estadistica_futbol=existe.estadistica_futbol,
+                estadistica_baloncesto=existe.estadistica_baloncesto
+            ).exists():
+                if existe.estadistica_futbol:
+                    general = EstadisticasFutbol.objects.filter(torneo=torneo, jugador=existe.jugador).first()
+
+                    if existe.estadistica_futbol == EstadisticaFutbol.GOLES:
+                        general.goles -= existe.cantidad
+                    elif existe.estadistica_futbol == EstadisticaFutbol.ASISTENCIAS:
+                        general.asistencias -= existe.cantidad
+                
+                elif existe.estadistica_baloncesto:
+                    general = EstadisticasBaloncesto.objects.filter(torneo=torneo, jugador=existe.jugador).first()
+
+                    if existe.estadistica_baloncesto == EstadisticaBaloncesto.PUNTOS:
+                        general.puntos -= existe.cantidad
+                    elif existe.estadistica_baloncesto == EstadisticaBaloncesto.ASISTENCIAS:
+                        general.asistencias -= existe.cantidad
+                    elif existe.estadistica_baloncesto == EstadisticaBaloncesto.REBOTES:
+                        general.rebotes -= existe.cantidad
+
+                general.save()
+                existe.delete()
+            
+
+    for estadistica in estadisticas_pendientes:
+        guardada = estadisticas_guardadas.filter(
+            jugador=estadistica.jugador,
+            estadistica_futbol=estadistica.estadistica_futbol,
+            estadistica_baloncesto=estadistica.estadistica_baloncesto
+        ).first()
+
+        diferencia = 0
+        if guardada is not None:
+            if guardada.cantidad != estadistica.cantidad:
+                diferencia = estadistica.cantidad - guardada.cantidad
+                guardada.cantidad = estadistica.cantidad
+                guardada.save()
+        else:
+            diferencia = estadistica.cantidad
+            GuardadoEnfrentamiento.objects.create(
+                enfrentamiento=enfrentamiento,
+                jugador=estadistica.jugador,
+                estadistica_futbol=estadistica.estadistica_futbol,
+                estadistica_baloncesto=estadistica.estadistica_baloncesto,
+                cantidad=estadistica.cantidad
+            )
+
+        if diferencia != 0:
+            if estadistica.estadistica_futbol:
+                general = EstadisticasFutbol.objects.filter(torneo=torneo, jugador=estadistica.jugador).first()
+
+                if estadistica.estadistica_futbol == EstadisticaFutbol.GOLES:
+                    general.goles += diferencia
+                elif estadistica.estadistica_futbol == EstadisticaFutbol.ASISTENCIAS:
+                    general.asistencias += diferencia
+                
+            
+            elif estadistica.estadistica_baloncesto:
+                general = EstadisticasBaloncesto.objects.filter(torneo=torneo, jugador=estadistica.jugador).first()
+
+                if estadistica.estadistica_baloncesto == EstadisticaBaloncesto.PUNTOS:
+                    general.puntos += diferencia
+                elif estadistica.estadistica_baloncesto == EstadisticaBaloncesto.ASISTENCIAS:
+                    general.asistencias += diferencia
+                elif estadistica.estadistica_baloncesto == EstadisticaBaloncesto.REBOTES:
+                    general.rebotes += diferencia
+            
+            general.save()
+
+
+def crear_eliminatoria_tras_liga(torneo: Torneo):
     pass
+                        
+
 
 
 
@@ -478,13 +572,44 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
         enfrentamiento.save()
         
         if torneo.tipo == TipoTorneo.LIGA:
-            actualizar_clasificacion(torneo, enfrentamiento)
+            if enfrentamiento.jornada is not None:
+                actualizar_clasificacion(torneo, enfrentamiento)
+        
+                max_jornada = (
+                    Jornada.objects.filter(torneo=torneo)
+                    .aggregate(mx=Max("n_jornada"))
+                    .get("mx") or 0
+                )
+                if enfrentamiento.jornada.n_jornada == max_jornada:
+                    equipos_torneo = TorneoEquipo.objects.filter(torneo=torneo)
+                    clas_equipos = Clasificacion.objects.filter(torneo_equipo__in=equipos_torneo)
+
+                    liga_terminada = True
+
+                    for equipo in clas_equipos:
+                        if equipo.partidos_jugados < max_jornada:
+                            liga_terminada = False
+                            break
+                    
+                    if liga_terminada:
+                        if torneo.playoffs:
+                            crear_eliminatoria_tras_liga(torneo)
+                        else:
+                            clas_ganador = clas_equipos.filter(posicion=1).first()
+                            torneo.ganador = clas_ganador.torneo_equipo.equipo
+                            torneo.save()
+            else:
+                if enfrentamiento.ronda == TipoRonda.FINAL:
+                    torneo.ganador = enfrentamiento.ganador
+                    torneo.save()
+                        
+
         elif torneo.tipo == TipoTorneo.ELIMINATORIA:
             if enfrentamiento.ronda == TipoRonda.FINAL:
                 torneo.ganador = enfrentamiento.ganador
                 torneo.save()
             else:
-                actualizar_eliminatoria(torneo, enfrentamiento)
+                actualizar_eliminatoria(enfrentamiento)
         elif torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
             if enfrentamiento.jornada is not None:
                 actualizar_clasificacion(torneo, enfrentamiento)
@@ -505,13 +630,27 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
                             break
                     
                     if fase_grupos_terminada:
-                        crear_eliminatoria(torneo)
+                        crear_eliminatoria_tras_liga(torneo)
             else:
                 if enfrentamiento.ronda == TipoRonda.FINAL:
                     torneo.ganador = enfrentamiento.ganador
                     torneo.save()
                 else:
-                    actualizar_eliminatoria(torneo, enfrentamiento)
+                    actualizar_eliminatoria(enfrentamiento)
+
+        if torneo.deporte == Deporte.FUTBOL:
+            portero_local = Jugador.objects.filter(equipo=enfrentamiento.equipo_local, es_portero=True).first()
+            portero_visitante = Jugador.objects.filter(equipo=enfrentamiento.equipo_visitante, es_portero=True).first()
+
+            if portero_local:
+                estadisticas_portero_local = EstadisticasFutbol.objects.filter(torneo=torneo, jugador=portero_local).first()
+                estadisticas_portero_local.goles_contra += enfrentamiento.anotacion_visitante or 0
+                estadisticas_portero_local.save()
+            
+            if portero_visitante:
+                estadisticas_portero_visitante = EstadisticasFutbol.objects.filter(torneo=torneo, jugador=portero_visitante).first()
+                estadisticas_portero_visitante.goles_contra += enfrentamiento.anotacion_local or 0
+                estadisticas_portero_visitante.save()
 
         actualizar_estadisticas_generales(torneo, enfrentamiento)
                     
@@ -520,5 +659,3 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
     
 
 
-def crear_eliminatoria(torneo: Torneo):
-    pass
