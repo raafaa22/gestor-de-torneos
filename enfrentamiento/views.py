@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.db.models import Max, F, ExpressionWrapper, IntegerField
+from math import log2
 from django.db import transaction
 from django.utils.translation import gettext as _
 from django.contrib.auth.decorators import login_required
@@ -487,8 +488,80 @@ def actualizar_estadisticas_generales(torneo: Torneo, enfrentamiento: Enfrentami
             general.save()
 
 
+def sig_potencia_2(n: int) -> int:
+    return 1 << (n - 1).bit_length()
+
 def crear_eliminatoria_tras_liga(torneo: Torneo):
-    pass
+    espacios = sig_potencia_2(torneo.n_equipos_playoffs)
+    partidos_ronda = espacios // 2
+    directos = espacios - torneo.n_equipos_playoffs
+    rondas = int(log2(espacios))
+
+    if torneo.tipo == TipoTorneo.LIGA:
+        clasificados = Clasificacion.objects.filter(torneo_equipo__torneo=torneo, posicion__lte=torneo.n_equipos_playoffs).order_by('posicion')
+        eliminatoria = Eliminatoria.objects.create(torneo=torneo, rondas=rondas)
+
+    elif torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
+        eliminatoria_grupos = EliminatoriaGrupos.objects.filter(torneo=torneo).first()
+        clasificados = Clasificacion.objects.filter(torneo_equipo__torneo=torneo, posicion__lte=eliminatoria_grupos.n_clasificados_grupo).order_by('posicion', '-puntos', '-victorias', 'derrotas', '-anotacion_favor', 'anotacion_contra')
+        eliminatoria = eliminatoria_grupos.eliminatoria
+
+
+    enfrentamientos = []
+
+    rondas_torneo = RONDAS[-rondas:]
+
+    for i in range(partidos_ronda):
+        if i < directos:
+            enfrentamientos.append(
+                Enfrentamiento.objects.create(ronda=rondas_torneo[0], eliminatoria=eliminatoria, equipo_local=clasificados[i].torneo_equipo.equipo, equipo_visitante=None)
+            )
+        else:
+            enfrentamientos.append(
+                Enfrentamiento.objects.create(
+                    ronda=rondas_torneo[0],
+                    eliminatoria=eliminatoria,
+                    equipo_local=clasificados[i].torneo_equipo.equipo,
+                    equipo_visitante=clasificados[espacios - i - 1].torneo_equipo.equipo
+                )
+            )
+
+    for i in range(1, rondas):
+        guardado = enfrentamientos.copy()
+        enfrentamientos = []
+        for j in range(partidos_ronda//2):
+            enfrentamientos.append(
+                Enfrentamiento.objects.create(
+                    ronda=rondas_torneo[i],
+                    eliminatoria=eliminatoria,
+                    prev_local=guardado[j],
+                    prev_visitante=guardado[partidos_ronda - j - 1]
+                )
+            )
+
+        partidos_ronda = partidos_ronda // 2
+
+    
+    enf_no_validos = Enfrentamiento.objects.filter(eliminatoria=eliminatoria, equipo_local__isnull=False, equipo_visitante__isnull=True, ronda=rondas_torneo[0])
+    for enf in enf_no_validos:
+        siguiente = Enfrentamiento.objects.filter(prev_local=enf).first()
+        if siguiente:
+            siguiente.equipo_local = enf.equipo_local
+            siguiente.save()
+        else:
+            siguiente = Enfrentamiento.objects.filter(prev_visitante=enf).first()
+            if siguiente:
+                siguiente.equipo_visitante = enf.equipo_local
+                siguiente.save()
+        
+        enf.delete()
+        
+            
+
+
+
+        
+
                         
 
 
