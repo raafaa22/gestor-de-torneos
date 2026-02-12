@@ -7,7 +7,7 @@ from usuario.models import Jugador
 from gestor.choices import EstadisticaFutbol, EstadisticaBaloncesto
 
 class EstadisticasEnfrentamientoForm(forms.ModelForm):
-    tipo = forms.ChoiceField(label=_('Estadísticas'))
+    tipo = forms.ChoiceField(label=_('Estadística'))
 
     class Meta:
         model = EstadisticasEnfrentamiento
@@ -73,17 +73,18 @@ class EstadisticasEnfrentamientoForm(forms.ModelForm):
             else:
                 anotacion = self.enfrentamiento.anotacion_visitante
 
-                if anotacion <= 0 or anotacion is None:
-                    raise forms.ValidationError(_('No se pueden asignar asistencias si el equipo no ha anotado ningún gol.'))
-                else:
-                    asistencias_totales = EstadisticasEnfrentamiento.objects.filter(
-                        enfrentamiento=self.enfrentamiento,
-                        estadistica_futbol="ASI",
-                        jugador__equipo=self.equipo,
-                    ).aggregate(total=Sum("cantidad"))["total"] or 0
-
-                    if asistencias_totales + cantidad > anotacion:
-                        raise forms.ValidationError(_('El número total de asistencias no puede superar el número de goles anotados por el equipo.'))
+            if anotacion <= 0 or anotacion is None:
+                raise forms.ValidationError(_('No se pueden asignar asistencias si el equipo no ha anotado ningún gol.'))
+            else:
+                asistencias_totales = EstadisticasEnfrentamiento.objects.filter(
+                    enfrentamiento=self.enfrentamiento,
+                    estadistica_futbol="ASI",
+                    jugador__equipo=self.equipo,
+                ).aggregate(total=Sum("cantidad"))["total"] or 0
+                
+                if asistencias_totales + cantidad > anotacion:
+                    raise forms.ValidationError(_('El número total de asistencias no puede superar el número de goles anotados por el equipo.'))
+                
         elif tipo == 'ASI' and self.torneo.deporte == 'BAL':
             if jugador.equipo == self.enfrentamiento.equipo_local:
                 anotacion = self.enfrentamiento.anotacion_local

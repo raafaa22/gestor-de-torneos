@@ -100,8 +100,8 @@ class Clasificacion(models.Model):
     victorias = models.PositiveIntegerField(null=False, default=0)
     empates = models.PositiveIntegerField(null=False, default=0)
     derrotas = models.PositiveIntegerField(null=False, default=0)
-    anotacion_favor = models.PositiveIntegerField(null=False, default=0)
-    anotacion_contra = models.PositiveIntegerField(null=False, default=0)
+    anotacion_favor = models.IntegerField(null=False, default=0)
+    anotacion_contra = models.IntegerField(null=False, default=0)
 
     class Meta:
         constraints = [

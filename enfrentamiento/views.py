@@ -212,11 +212,15 @@ def detalle_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
             equipo_visitante = TorneoEquipo.objects.filter(torneo=torneo, equipo=enfrentamiento.equipo_visitante).first()
             clasificacion_visitante = Clasificacion.objects.filter(torneo_equipo=equipo_visitante).first()
 
+        estadisticas_local = GuardadoEnfrentamiento.objects.filter(enfrentamiento=enfrentamiento, jugador__equipo=enfrentamiento.equipo_local)
+        estadisticas_visitante = GuardadoEnfrentamiento.objects.filter(enfrentamiento=enfrentamiento, jugador__equipo=enfrentamiento.equipo_visitante)
         contexto = {
             'jugadores_local': jugadores_local,
             'jugadores_visitante': jugadores_visitante,
             'clasificacion_local': clasificacion_local,
-            'clasificacion_visitante': clasificacion_visitante
+            'clasificacion_visitante': clasificacion_visitante,
+            'estadisticas_local': estadisticas_local,
+            'estadisticas_visitante': estadisticas_visitante
         }
     
 
@@ -274,11 +278,38 @@ def guardar_estadistica(request, torneo_id: int, n_ronda: int, enfrentamiento_id
                     enfrentamiento.anotacion_local = (enfrentamiento.anotacion_local or 0) + cantidad
                 else:
                     enfrentamiento.anotacion_visitante = (enfrentamiento.anotacion_visitante or 0) + cantidad
+                breakpoint()
                 enfrentamiento.save()
             
             form.save()
 
-        return redirect('enfrentamientos:editar_enfrentamiento', torneo_id=torneo_id, n_ronda=n_ronda, enfrentamiento_id=enfrentamiento_id)
+            return redirect('enfrentamientos:editar_enfrentamiento', torneo_id=torneo_id, n_ronda=n_ronda, enfrentamiento_id=enfrentamiento_id)
+        else:
+            estadisticas_local = EstadisticasEnfrentamiento.objects.filter(
+                enfrentamiento=enfrentamiento, jugador__equipo=enfrentamiento.equipo_local
+            )
+            estadisticas_visitante = EstadisticasEnfrentamiento.objects.filter(
+                enfrentamiento=enfrentamiento, jugador__equipo=enfrentamiento.equipo_visitante
+            )
+
+            
+            form_local = form if equipo_id == enfrentamiento.equipo_local_id else EstadisticasEnfrentamientoForm(
+                torneo=torneo, equipo=enfrentamiento.equipo_local, enfrentamiento=enfrentamiento
+            )
+            form_visitante = form if equipo_id == enfrentamiento.equipo_visitante_id else EstadisticasEnfrentamientoForm(
+                torneo=torneo, equipo=enfrentamiento.equipo_visitante, enfrentamiento=enfrentamiento
+            )
+
+        return render(request, "enfrentamientos/editar.html", {
+            "torneo": torneo,
+            "n_ronda": n_ronda,
+            "enfrentamiento": enfrentamiento,
+            "form_local": form_local,
+            "form_visitante": form_visitante,
+            "estadisticas_local": estadisticas_local,
+            "estadisticas_visitante": estadisticas_visitante,
+        })
+
     else:
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
 
@@ -287,7 +318,6 @@ def guardar_estadistica(request, torneo_id: int, n_ronda: int, enfrentamiento_id
     
 
 @login_required
-@require_POST
 def borrar_estadistica(request, torneo_id: int, n_ronda: int, enfrentamiento_id: int, estadistica_id: int):
     usuario = request.user
 
@@ -554,17 +584,7 @@ def crear_eliminatoria_tras_liga(torneo: Torneo):
                 siguiente.equipo_visitante = enf.equipo_local
                 siguiente.save()
         
-        enf.delete()
-        
-            
-
-
-
-        
-
-                        
-
-
+        enf.delete()         
 
 
 @login_required
@@ -579,12 +599,13 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
         enfrentamiento = get_object_or_404(Enfrentamiento, id=enfrentamiento_id)
         
         if torneo.deporte == Deporte.PADEL:
-            enfrentamiento.juegos_local_1 = request.POST.get('juegos_local_1')
-            enfrentamiento.juegos_visitante_1 = request.POST.get('juegos_visitante_1')
-            enfrentamiento.juegos_local_2 = request.POST.get('juegos_local_2')
-            enfrentamiento.juegos_visitante_2 = request.POST.get('juegos_visitante_2')
-            enfrentamiento.juegos_local_3 = request.POST.get('juegos_local_3')
-            enfrentamiento.juegos_visitante_3 = request.POST.get('juegos_visitante_3')
+            enfrentamiento.juegos_local_1 = int(request.POST.get('juegos_local_1'))
+            enfrentamiento.juegos_visitante_1 = int(request.POST.get('juegos_visitante_1'))
+            enfrentamiento.juegos_local_2 = int(request.POST.get('juegos_local_2'))
+            enfrentamiento.juegos_visitante_2 = int(request.POST.get('juegos_visitante_2'))
+            enfrentamiento.juegos_local_3 = int(request.POST.get('juegos_local_3'))
+            enfrentamiento.juegos_visitante_3 = int(request.POST.get('juegos_visitante_3'))
+            
 
             sets_local = 0
             sets_visitante = 0
@@ -628,8 +649,9 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
                 return HttpResponse( _("Debe introducir el resultado del primer set."), status=400 )
             
         else:
-            enfrentamiento.anotacion_local = request.POST.get('anotacion_local')
-            enfrentamiento.anotacion_visitante = request.POST.get('anotacion_visitante')
+            enfrentamiento.anotacion_local = int(request.POST.get('anotacion_local'))
+            enfrentamiento.anotacion_visitante = int(request.POST.get('anotacion_visitante'))
+
 
             if enfrentamiento.anotacion_local is not None and enfrentamiento.anotacion_visitante is not None:
                 if enfrentamiento.anotacion_local > enfrentamiento.anotacion_visitante:
@@ -726,6 +748,8 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
                 estadisticas_portero_visitante.save()
 
         actualizar_estadisticas_generales(torneo, enfrentamiento)
+
+        return redirect('enfrentamientos:enfrentamientos_torneo', torneo_id=torneo.id, n_ronda=n_ronda)
                     
     else:
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )

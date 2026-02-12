@@ -114,6 +114,10 @@
   margin: 20px 20px;
 }
 
+.container-form li {
+  color: red;
+}
+
 .container-form input[type="text"],
 .container-form input[type="number"] {
   width: 80%;
@@ -350,6 +354,7 @@ th {
 
 .enfrentamientos {
   border: 1px solid grey;
+  border-radius: 6px;
 }
 
 .enf {
@@ -447,8 +452,12 @@ th {
   margin-top: 20px;
 }
 
-.local, .visitante{
-  flex: 2;
+.detalle-enfr li {
+  color: red;
+}
+
+.local, .visitante {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 6px;  
@@ -462,12 +471,52 @@ th {
   border-right: 1px solid grey;
 }
 
+
 .resultado {
-  flex: 1;
+  width: 100%;
+  flex: 2;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;   
-  padding: 0 18px;
+}
+
+.estadisticas-enfrentamiento {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 40px;
+  margin: 10px 0;
+}
+
+ .est_local {
+  grid-column: 1;
+  border: solid 1px #808080;
+  border-radius: 5px;
+  padding: 1px;
+  width: 50px;
+  margin: 8px 0px;
+}
+
+.est_visitante {
+  grid-column: 2;
+  border: solid 1px #808080;
+  border-radius: 5px;
+  margin: 8px 0px;
+}
+
+
+.resultado h4 {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.resultado span {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 2px;
 }
 
 .visitante {
@@ -476,3 +525,50 @@ th {
   padding-left: 18px;
   border-left: 1px solid grey;
 }
+
+.estadisticas-form{
+  width: 100%;
+  margin-top: 15px;
+}
+
+.estadisticas-form p {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  column-gap: 10px;
+  row-gap: 1000px;
+  align-items: center;
+  margin: 50px 0;
+}
+
+.estadisticas-form label {
+  justify-self: start;
+}
+
+ .btn-guardar-est {
+   background-color: #a0a0a0;
+   color: white;
+   padding: 7px;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+   display: block;
+   margin: 20px auto 20px auto;
+}
+
+.btn-guardar-est:hover {
+  background-color: grey;
+  color: white;
+}
+
+.editar-enfr {
+  border-bottom: 1px solid grey;
+}
+
+.input-anotacion {
+  width: 45px;
+  height: 45px;
+  text-align: center;
+  padding: 2px;
+}
+
+

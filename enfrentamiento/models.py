@@ -65,6 +65,10 @@ class GuardadoEnfrentamiento(models.Model):
             )
         ]
 
+    def __str__(self):
+        label = self.get_estadistica_futbol_display() or self.get_estadistica_baloncesto_display()
+        return f'{self.jugador.nombre} - {label}: {self.cantidad}'
+
 
 class EstadisticasEnfrentamiento(models.Model):
     enfrentamiento = models.ForeignKey(Enfrentamiento, on_delete=models.CASCADE, related_name='estadisticas')
@@ -80,3 +84,7 @@ class EstadisticasEnfrentamiento(models.Model):
                 name='unique_estadistica_enfrentamiento_jugador_tipo'
             )
         ]
+
+    def __str__(self):
+        label = self.get_estadistica_futbol_display() or self.get_estadistica_baloncesto_display()
+        return f'{self.jugador.nombre} - {label}: {self.cantidad}'
