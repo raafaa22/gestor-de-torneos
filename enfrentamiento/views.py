@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.db.models import Max, F, ExpressionWrapper, IntegerField
+from django.db.models import Max, F, ExpressionWrapper, IntegerField, Q, Sum
 from math import log2
 from django.db import transaction
 from django.utils.translation import gettext as _
@@ -278,7 +278,7 @@ def guardar_estadistica(request, torneo_id: int, n_ronda: int, enfrentamiento_id
                     enfrentamiento.anotacion_local = (enfrentamiento.anotacion_local or 0) + cantidad
                 else:
                     enfrentamiento.anotacion_visitante = (enfrentamiento.anotacion_visitante or 0) + cantidad
-                breakpoint()
+                
                 enfrentamiento.save()
             
             form.save()
@@ -363,38 +363,125 @@ def actualizar_clasificacion(torneo: Torneo, enfrentamiento: Enfrentamiento):
     else:
         puntos_ganador = 1
 
-    ganador = None
-    perdedor = None
-
-    if enfrentamiento.ganador == enfrentamiento.equipo_local:
-        ganador = clasif_local
-        perdedor = clasif_visitante
-    elif enfrentamiento.ganador == enfrentamiento.equipo_visitante:
-        ganador = clasif_visitante
-        perdedor = clasif_local
-    else:
-        if torneo.deporte == Deporte.FUTBOL:
-            clasif_local.puntos += 1
-            clasif_visitante.puntos += 1
-            clasif_local.empates += 1
-            clasif_visitante.empates += 1
     
-    if ganador and perdedor:
-        ganador.puntos += puntos_ganador
-        ganador.victorias += 1
-        perdedor.puntos += puntos_perdedor
-        perdedor.derrotas += 1
+    #Recalcular todos los datos de la clasificacion de estos equipos
+    
+    qs_local = Enfrentamiento.objects.filter(
+        Q(equipo_local=enfrentamiento.equipo_local) | Q(equipo_visitante=enfrentamiento.equipo_local),
+        jornada__torneo=torneo
+    )
+
+    qs_visitante = Enfrentamiento.objects.filter(
+        Q(equipo_local=enfrentamiento.equipo_visitante) | Q(equipo_visitante=enfrentamiento.equipo_visitante),
+        jornada__torneo=torneo
+    )
 
     if torneo.deporte == Deporte.PADEL:
-        clasif_local.anotacion_favor += (enfrentamiento.juegos_local_1 or 0) + (enfrentamiento.juegos_local_2 or 0) + (enfrentamiento.juegos_local_3 or 0)
-        clasif_local.anotacion_contra += (enfrentamiento.juegos_visitante_1 or 0) + (enfrentamiento.juegos_visitante_2 or 0) + (enfrentamiento.juegos_visitante_3 or 0)
-        clasif_visitante.anotacion_favor += (enfrentamiento.juegos_visitante_1 or 0) + (enfrentamiento.juegos_visitante_2 or 0) + (enfrentamiento.juegos_visitante_3 or 0)
-        clasif_visitante.anotacion_contra += (enfrentamiento.juegos_local_1 or 0) + (enfrentamiento.juegos_local_2 or 0) + (enfrentamiento.juegos_local_3 or 0)
+        qs_local_jugados = qs_local.filter(ganador__isnull=False)
+        qs_visitante_jugados = qs_visitante.filter(ganador__isnull=False)
+
+        anotacion_local = qs_local_jugados.aggregate(
+            juegos_local_1=Sum('juegos_local_1', filter=Q(equipo_local=enfrentamiento.equipo_local)),
+            juegos_local_2=Sum('juegos_local_2', filter=Q(equipo_local=enfrentamiento.equipo_local)),
+            juegos_local_3=Sum('juegos_local_3', filter=Q(equipo_local=enfrentamiento.equipo_local)),
+
+            juegos_visitante_1=Sum('juegos_visitante_1', filter=Q(equipo_visitante=enfrentamiento.equipo_local)),
+            juegos_visitante_2=Sum('juegos_visitante_2', filter=Q(equipo_visitante=enfrentamiento.equipo_local)),
+            juegos_visitante_3=Sum('juegos_visitante_3', filter=Q(equipo_visitante=enfrentamiento.equipo_local)),
+
+            contra_local_1=Sum('juegos_visitante_1', filter=Q(equipo_local=enfrentamiento.equipo_local)),
+            contra_local_2=Sum('juegos_visitante_2', filter=Q(equipo_local=enfrentamiento.equipo_local)),
+            contra_local_3=Sum('juegos_visitante_3', filter=Q(equipo_local=enfrentamiento.equipo_local)),
+
+            contra_visitante_1=Sum('juegos_local_1', filter=Q(equipo_visitante=enfrentamiento.equipo_local)),
+            contra_visitante_2=Sum('juegos_local_2', filter=Q(equipo_visitante=enfrentamiento.equipo_local)),
+            contra_visitante_3=Sum('juegos_local_3', filter=Q(equipo_visitante=enfrentamiento.equipo_local))
+        )
+
+        anotacion_total_local = (anotacion_local['juegos_local_1'] or 0) + (anotacion_local['juegos_local_2'] or 0) + (anotacion_local['juegos_local_3'] or 0) + (anotacion_local['juegos_visitante_1'] or 0) + (anotacion_local['juegos_visitante_2'] or 0) + (anotacion_local['juegos_visitante_3'] or 0)
+
+        anotacion_contra_local = (anotacion_local['contra_local_1'] or 0) + (anotacion_local['contra_local_2'] or 0) + (anotacion_local['contra_local_3'] or 0) + (anotacion_local['contra_visitante_1'] or 0) + (anotacion_local['contra_visitante_2'] or 0) + (anotacion_local['contra_visitante_3'] or 0)
+
+
+        anotacion_visitante = qs_visitante_jugados.aggregate(
+            juegos_local_1=Sum('juegos_local_1', filter=Q(equipo_local=enfrentamiento.equipo_visitante)),
+            juegos_local_2=Sum('juegos_local_2', filter=Q(equipo_local=enfrentamiento.equipo_visitante)),
+            juegos_local_3=Sum('juegos_local_3', filter=Q(equipo_local=enfrentamiento.equipo_visitante)),
+
+            juegos_visitante_1=Sum('juegos_visitante_1', filter=Q(equipo_visitante=enfrentamiento.equipo_visitante)),
+            juegos_visitante_2=Sum('juegos_visitante_2', filter=Q(equipo_visitante=enfrentamiento.equipo_visitante)),
+            juegos_visitante_3=Sum('juegos_visitante_3', filter=Q(equipo_visitante=enfrentamiento.equipo_visitante)),
+
+            contra_local_1=Sum('juegos_visitante_1', filter=Q(equipo_local=enfrentamiento.equipo_visitante)),
+            contra_local_2=Sum('juegos_visitante_2', filter=Q(equipo_local=enfrentamiento.equipo_visitante)),
+            contra_local_3=Sum('juegos_visitante_3', filter=Q(equipo_local=enfrentamiento.equipo_visitante)),
+
+            contra_visitante_1=Sum('juegos_local_1', filter=Q(equipo_visitante=enfrentamiento.equipo_visitante)),
+            contra_visitante_2=Sum('juegos_local_2', filter=Q(equipo_visitante=enfrentamiento.equipo_visitante)),
+            contra_visitante_3=Sum('juegos_local_3', filter=Q(equipo_visitante=enfrentamiento.equipo_visitante))
+        )
+
+        anotacion_total_visitante = (anotacion_visitante['juegos_local_1'] or 0) + (anotacion_visitante['juegos_local_2'] or 0) + (anotacion_visitante['juegos_local_3'] or 0) + (anotacion_visitante['juegos_visitante_1'] or 0) + (anotacion_visitante['juegos_visitante_2'] or 0) + (anotacion_visitante['juegos_visitante_3'] or 0)
+
+        anotacion_contra_visitante = (anotacion_visitante['contra_local_1'] or 0) + (anotacion_visitante['contra_local_2'] or 0) + (anotacion_visitante['contra_local_3'] or 0) + (anotacion_visitante['contra_visitante_1'] or 0) + (anotacion_visitante['contra_visitante_2'] or 0) + (anotacion_visitante['contra_visitante_3'] or 0)
+
     else:
-        clasif_local.anotacion_favor += enfrentamiento.anotacion_local or 0
-        clasif_local.anotacion_contra += enfrentamiento.anotacion_visitante or 0
-        clasif_visitante.anotacion_favor += enfrentamiento.anotacion_visitante or 0
-        clasif_visitante.anotacion_contra += enfrentamiento.anotacion_local or 0
+        qs_local_jugados = qs_local.filter(anotacion_local__isnull=False, anotacion_visitante__isnull=False)
+        qs_visitante_jugados = qs_visitante.filter(anotacion_local__isnull=False, anotacion_visitante__isnull=False)
+
+        anotacion_local = qs_local_jugados.aggregate(
+            total_local=Sum('anotacion_local', filter=Q(equipo_local=enfrentamiento.equipo_local)),
+            total_visitante=Sum('anotacion_visitante', filter=Q(equipo_visitante=enfrentamiento.equipo_local)),
+            contra_local=Sum('anotacion_visitante', filter=Q(equipo_local=enfrentamiento.equipo_local)),
+            contra_visitante=Sum('anotacion_local', filter=Q(equipo_visitante=enfrentamiento.equipo_local))
+        )
+        anotacion_contra_local = (anotacion_local['contra_local'] or 0) + (anotacion_local['contra_visitante'] or 0)
+        anotacion_total_local = (anotacion_local['total_local'] or 0) + (anotacion_local['total_visitante'] or 0)
+
+        anotacion_visitante = qs_visitante_jugados.aggregate(
+            total_local=Sum('anotacion_local', filter=Q(equipo_local=enfrentamiento.equipo_visitante)),
+            total_visitante=Sum('anotacion_visitante', filter=Q(equipo_visitante=enfrentamiento.equipo_visitante)),
+            contra_local=Sum('anotacion_visitante', filter=Q(equipo_local=enfrentamiento.equipo_visitante)),
+            contra_visitante=Sum('anotacion_local', filter=Q(equipo_visitante=enfrentamiento.equipo_visitante))
+        )
+        anotacion_total_visitante = (anotacion_visitante['total_local'] or 0) + (anotacion_visitante['total_visitante'] or 0)
+        anotacion_contra_visitante = (anotacion_visitante['contra_local'] or 0) + (anotacion_visitante['contra_visitante'] or 0)
+
+    victorias_local = qs_local_jugados.filter(ganador=enfrentamiento.equipo_local).count()
+    derrotas_local = qs_local_jugados.exclude(ganador__isnull=True).exclude(ganador=enfrentamiento.equipo_local).count()
+
+    victorias_visitante = qs_visitante_jugados.filter(ganador=enfrentamiento.equipo_visitante).count()
+    derrotas_visitante = qs_visitante_jugados.exclude(ganador__isnull=True).exclude(ganador=enfrentamiento.equipo_visitante).count()
+
+    if torneo.deporte == Deporte.FUTBOL:
+        empates_local = qs_local_jugados.filter(ganador__isnull=True).count()
+        empates_visitante = qs_visitante_jugados.filter(ganador__isnull=True).count()
+    else:
+        empates_local = 0
+        empates_visitante = 0
+        
+
+
+    puntos_local = victorias_local * puntos_ganador + derrotas_local * puntos_perdedor + empates_local
+
+    clasif_local.puntos = puntos_local
+    clasif_local.victorias = victorias_local
+    clasif_local.empates = empates_local
+    clasif_local.derrotas = derrotas_local
+    clasif_local.anotacion_favor= anotacion_total_local
+    clasif_local.anotacion_contra = anotacion_contra_local
+
+    
+
+    puntos_visitante = victorias_visitante * puntos_ganador + derrotas_visitante * puntos_perdedor + empates_visitante
+
+    clasif_visitante.puntos = puntos_visitante
+    clasif_visitante.victorias = victorias_visitante
+    clasif_visitante.empates = empates_visitante
+    clasif_visitante.derrotas = derrotas_visitante
+    clasif_visitante.anotacion_favor = anotacion_total_visitante
+    clasif_visitante.anotacion_contra = anotacion_contra_visitante
+    
 
     clasif_local.save()
     clasif_visitante.save()
@@ -411,7 +498,7 @@ def actualizar_clasificacion(torneo: Torneo, enfrentamiento: Enfrentamiento):
             equipo.save()
 
     elif torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
-        grupo = Clasificacion.objects.filter(torneo_equipo=eq_local).first().grupo
+        grupo = clasif_local.grupo
         equipos = Clasificacion.objects.filter(torneo_equipo__torneo=torneo, grupo=grupo).annotate(
             dif=ExpressionWrapper(F('anotacion_favor') - F('anotacion_contra'), output_field=IntegerField())
         ).order_by('-puntos', '-victorias', '-dif', 'derrotas', '-anotacion_favor', 'anotacion_contra')
@@ -661,6 +748,7 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
                 else:
                     if torneo.deporte == Deporte.BALONCESTO:
                         return HttpResponse( _("En baloncesto no puede haber empates."), status=400 )
+                    enfrentamiento.ganador = None
             else:
                 enfrentamiento.ganador = None
 
