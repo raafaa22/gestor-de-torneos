@@ -33,7 +33,9 @@
             <div class="enfrentamientos">
                 {% for enf in enfrentamientos.items %}
                 <div class="enf">
-                    {% if enf.ganador == enf.equipo_local %}
+                    {% if enf.equipo_local is None %}
+                        <span>{% trans 'Por Determinar' %}</span>
+                    {% elif enf.ganador == enf.equipo_local %}
                         <span class="ganador"><strong>{{ enf.equipo_local }}</strong></span>
                     {% else %}
                         <span>{{ enf.equipo_local }}</span>
@@ -41,6 +43,8 @@
                     {% if torneo.deporte == 'PAD' %}
                         {% if enf.juegos_local_1 is not None and enf.juegos_local_2 is not None %}
                             <span>{{ enf.juegos_local_1 }}  {{ enf.juegos_local_2 }} {% if enf.juegos_local_3 %}{{ enf.juegos_local_3 }}{% endif %}</span>
+                        {% else %}
+                            <span> </span>
                         {% endif %}
                     {% else %}
                         {% if enf.anotacion_local is not None %}
@@ -53,6 +57,8 @@
                     {% if torneo.deporte == 'PAD' %}
                         {% if enf.juegos_visitante_1 is not None and enf.juegos_visitante_2 is not None %}
                             <span>{{ enf.juegos_visitante_1 }}  {{ enf.juegos_visitante_2 }} {% if enf.juegos_visitante_3 %}{{ enf.juegos_visitante_3 }}{% endif %}</span>
+                        {% else %}
+                            <span> </span>
                         {% endif %}
                     {% else %}
                         {% if enf.anotacion_visitante is not None %}
@@ -62,7 +68,9 @@
                         {% endif %}
                     {% endif %}
                     <div class="grid-5">
-                        {% if enf.ganador == enf.equipo_visitante %}
+                        {% if enf.equipo_visitante is None %}
+                            <span>{% trans 'Por Determinar' %}</span>
+                        {% elif enf.ganador == enf.equipo_visitante %}
                             <span class="ganador"><strong>{{ enf.equipo_visitante }}</strong></span>
                         {% else %}
                             <span>{{ enf.equipo_visitante }}</span>
