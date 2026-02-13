@@ -25,7 +25,11 @@
             </thead>
             <tbody>
                 {% for fila in clasificacion %}
-                <tr>
+                <tr {% if fila.posicion <= torneo.n_equipos_playoffs %}
+                        class="playoffs"
+                    {% elif fila.posicion > limite_descenso %}
+                        class="descenso"
+                    {% endif %}>
                     <td><strong>{{ fila.posicion }}</strong></td>
                     <td><strong>{{ fila.torneo_equipo.equipo }}</strong></td>
                     <td>{{ fila.victorias }}</td>
