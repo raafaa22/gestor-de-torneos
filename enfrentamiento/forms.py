@@ -101,7 +101,7 @@ class EstadisticasEnfrentamientoForm(forms.ModelForm):
                     ).aggregate(total=Sum("cantidad"))["total"] or 0
 
                     if (asistencias_totales + cantidad) * 2 > anotacion:
-                        raise forms.ValidationError(_('El número total de asistencias no puede superar el número de goles anotados por el equipo.'))
+                        raise forms.ValidationError(_('El número total de asistencias no puede superar el número de tiros de campo anotados por el equipo.'))
                     
         return cleaned
     
