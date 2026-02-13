@@ -278,6 +278,14 @@ th {
   font-size: 20px !important;
 }
 
+.playoffs td {
+  color: #02A108!important;
+}
+
+.descenso td {
+  color: #A10202 !important;
+}
+
 .form-btn {
   margin: 20px;
 }

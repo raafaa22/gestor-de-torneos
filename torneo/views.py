@@ -135,7 +135,9 @@ def clasificacion_torneo(request, torneo_id: int):
 
     if tiene_permiso(usuario, torneo):
         clasificacion = Clasificacion.objects.filter(torneo_equipo__torneo=torneo).order_by('posicion')
-        return render(request, 'torneo/clasificacion.html', {'torneo': torneo, 'clasificacion': clasificacion})
+        n_equipos = TorneoEquipo.objects.filter(torneo=torneo).count()
+        limite_descenso = n_equipos - torneo.n_equipos_descenso
+        return render(request, 'torneo/clasificacion.html', {'torneo': torneo, 'clasificacion': clasificacion, 'limite_descenso': limite_descenso})
     else:
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
 
