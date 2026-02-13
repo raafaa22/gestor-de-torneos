@@ -26,3 +26,12 @@ class TipoUsuario(models.TextChoices):
     ORGANIZADOR = 'ORG', _('Organizador')
     EQUIPO = 'EQ', _('Equipo')
     JUGADOR = 'JUG', _('Jugador')
+
+class EstadisticaFutbol(models.TextChoices):
+    GOLES = 'GOL', _('Goles')
+    ASISTENCIAS = 'ASI', _('Asistencias')
+
+class EstadisticaBaloncesto(models.TextChoices):
+    PUNTOS = 'PTS', _('Puntos')
+    REBOTES = 'REB', _('Rebotes')
+    ASISTENCIAS = 'ASI', _('Asistencias')

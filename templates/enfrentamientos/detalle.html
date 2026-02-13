@@ -1,0 +1,86 @@
+{% extends "torneo/base_torneo.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block titulo %}{% trans 'Enfrentamiento:' %} {{ enfrentamiento }}{% endblock %}
+
+{% block torneo_content %}
+    <div class="d-flex justify-content-center">
+        {% if enfrentamiento.jornada %}
+            <h3>{% trans 'Jornada' %} {{ enfrentamiento.jornada.n_jornada }}</h3>
+        {% elif enfrentamiento.ronda %}
+            <h3>{{ enfrentamiento.ronda.label }}</h3>
+        {% endif %}
+    </div>
+    <div class="detalle-enfr">
+        <div class="local align-items-center">
+            <h4>{{ enfrentamiento.equipo_local}}</h4>
+            {% if contexto.clasificacion_local %}
+                <span>
+                    {% trans 'Posición en' %}
+                    {% if contexto.clasificacion_local.grupo == 'GENERAL' %}
+                        {% trans 'Liga' %}:
+                    {% else %}
+                        {{ contexto.clasificacion_local.grupo }}:
+                    {% endif %}
+                    <strong>{{ contexto.clasificacion_local.posicion}}</strong>
+                </span>
+            <span>{% trans 'Puntos:' %} <strong>{{ contexto.clasificacion_local.puntos }}</strong></span>
+                <span>{% trans 'Victorias/Derrotas:' %} 
+                    <strong>{{ contexto.clasificacion_local.victorias }}/{{ contexto.clasificacion_local.derrotas }}</strong>
+                </span>
+            {% endif %}
+            <span><strong><u>{% trans 'Jugadores' %}</u></strong></span>
+            {% for jug in contexto.jugadores_local %}
+                <span>{{ jug }}</span>
+            {% endfor %}
+        </div>
+        <div class="resultado">
+            {% if torneo.deporte == 'PAD' %}
+                {% if enfrentamiento.juegos_local_1 is not None and enfrentamiento.juegos_local_2 is not None %}
+                    <h4><strong>
+                        {{ enfrentamiento.juegos_local_1 }}  {{ enfrentamiento.juegos_local_2 }} {% if enfrentamiento.juegos_local_3 %}{{ enfrentamiento.juegos_local_3 }}{% endif %} - 
+                        {{ enfrentamiento.juegos_visitante_1 }}  {{ enfrentamiento.juegos_visitante_2 }} {% if enfrentamiento.juegos_visitante_3 %}{{ enfrentamiento.juegos_visitante_3 }}{% endif %}</strong></h4>
+                {% else %}
+                    <h4><strong> - </strong></h4>
+                {% endif %}
+            {% else %}
+                {% if enfrentamiento.anotacion_local is not None and enfrentamiento.anotacion_visitante is not None %}
+                    <h4><strong>{{ enfrentamiento.anotacion_local }} - {{ enfrentamiento.anotacion_visitante }}</strong></h4>
+                    <div class="estadisticas-enfrentamiento">
+                        {% for estadistica in contexto.estadisticas_local %}
+                            <span class="est_local">{{ estadistica }}</span>
+                        {% endfor %}
+                        {% for estadistica in contexto.estadisticas_visitante %}
+                            <span class="est_visitante">{{ estadistica }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <h4><strong> - </strong></h4>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="visitante align-items-center">
+            <h4>{{ enfrentamiento.equipo_visitante }}</h4>
+            {% if contexto.clasificacion_visitante %}
+                <span>
+                    {% trans 'Posición en' %}
+                    {% if contexto.clasificacion_visitante.grupo == 'GENERAL' %}
+                        {% trans 'Liga' %}:
+                    {% else %}
+                        {{ contexto.clasificacion_visitante.grupo }}:
+                    {% endif %}
+                    <strong>{{ contexto.clasificacion_visitante.posicion}}</strong>
+                </span>
+                <span>{% trans 'Puntos:' %} <strong>{{ contexto.clasificacion_visitante.puntos }}</strong></span>
+                <span>{% trans 'Victorias/Derrotas:' %} 
+                    <strong>{{ contexto.clasificacion_visitante.victorias }}/{{ contexto.clasificacion_visitante.derrotas }}</strong>
+                </span>
+            {% endif %}
+            <span><strong><u>{% trans 'Jugadores' %}</u></strong></span>
+            {% for jug in contexto.jugadores_visitante %}
+                <span>{{ jug }}</span>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

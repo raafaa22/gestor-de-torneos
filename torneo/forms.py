@@ -7,6 +7,9 @@ from usuario.models import Organizador, Administrador
 
 
 
+
+
+
 class CrearTorneoForm(forms.ModelForm):
     organizador = forms.ModelChoiceField(
         queryset=Organizador.objects.all(),
@@ -59,6 +62,10 @@ class CrearTorneoForm(forms.ModelForm):
                 self.add_error('n_equipos_playoffs', _('Debe especificar el número de equipos en play-offs si ha marcado que hay play-offs.'))
             elif n_eq_playoffs > max_eq:
                 self.add_error('n_equipos_playoffs', _('El número de equipos en play-offs no puede ser mayor que el número máximo de equipos del torneo.'))
+            elif n_eq_playoffs > 32:
+                self.add_error('n_equipos_playoffs', _('El número de equipos en play-offs no puede ser mayor que 32 ya que como máximo puede haber 5 rondas en una eliminatoria.'))
+            elif n_eq_playoffs < 2:
+                self.add_error('n_equipos_playoffs', _('El número de equipos en play-offs no puede ser menor que 2.'))
 
         else:
             cleaned['n_equipos_playoffs'] = None

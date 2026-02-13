@@ -1,0 +1,82 @@
+{% extends "torneo/base_torneo.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block titulo %}{% trans 'Editar enfrentamiento:' %} {{ enfrentamiento }}{% endblock %}
+
+{% block torneo_content %}
+    <div class="detalle-enfr editar-enfr">
+        <div class="local align-items-center">
+            <h4>{{ enfrentamiento.equipo_local}}</h4>
+            {% if torneo.deporte != 'PAD' %}
+                <form
+                    method="post" 
+                    action="{% url 'enfrentamientos:guardar_estadistica' torneo.id n_ronda enfrentamiento.id enfrentamiento.equipo_local.id %}">
+                    {% csrf_token %}
+                    <div class="estadisticas-form" >
+                        {{ form_local.as_p }}
+                    </div>
+                    
+                    <button class="btn btn-guardar-est" type="submit">{% trans 'Añadir' %}</button>
+                </form>
+            {% endif %}
+        </div>
+        <div class="resultado">
+            {% if torneo.deporte == 'PAD' %}
+                <h4><strong>
+                    <input type="number" name="juegos_local_1" value="{{ enfrentamiento.juegos_local_1 }}" form="guardar-enf" class="input-anotacion">
+                    <input type="number" name="juegos_local_2" value="{{ enfrentamiento.juegos_local_2 }}" form="guardar-enf" class="input-anotacion">
+                    <input type="number" name="juegos_local_3" value="{{ enfrentamiento.juegos_local_3 }}" form="guardar-enf" class="input-anotacion">
+                        -
+                    <input type="number" name="juegos_visitante_1" value="{{ enfrentamiento.juegos_visitante_1 }}" form="guardar-enf" class="input-anotacion">
+                    <input type="number" name="juegos_visitante_2" value="{{ enfrentamiento.juegos_visitante_2 }}" form="guardar-enf" class="input-anotacion">
+                    <input type="number" name="juegos_visitante_3" value="{{ enfrentamiento.juegos_visitante_3 }}" form="guardar-enf" class="input-anotacion">
+                </strong></h4>
+            {% else %}
+                <h4><strong>
+                    <input type="number" name="anotacion_local" value="{{ enfrentamiento.anotacion_local }}" form="guardar-enf" class="input-anotacion">
+                        -
+                    <input type="number" name="anotacion_visitante" value="{{ enfrentamiento.anotacion_visitante }}" form="guardar-enf" class="input-anotacion">
+                </strong></h4>
+                <div class="estadisticas-enfrentamiento">
+                    {% for estadistica in estadisticas_local %}
+                        <span class="est_local">
+                            {{ estadistica }}
+                            <a href="{% url 'enfrentamientos:borrar_estadistica' torneo.id n_ronda enfrentamiento.id estadistica.id %}">
+                                <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="15" height="15"/>
+                            </a>
+                        </span>
+                    {% endfor %}
+                    {% for estadistica in estadisticas_visitante %}
+                        <span class="est_visitante">
+                            {{ estadistica }}
+                            <a href="{% url 'enfrentamientos:borrar_estadistica' torneo.id n_ronda enfrentamiento.id estadistica.id %}">
+                                <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="15" height="15"/>
+                            </a>
+                        </span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="visitante align-items-center">
+            <h4>{{ enfrentamiento.equipo_visitante }}</h4>
+            {% if torneo.deporte != 'PAD' %}
+                <form
+                    method="post" 
+                    action="{% url 'enfrentamientos:guardar_estadistica' torneo.id n_ronda enfrentamiento.id enfrentamiento.equipo_visitante.id %}">
+                    {% csrf_token %}
+                    <div class="estadisticas-form" >
+                        {{ form_visitante.as_p }}
+                    </div>
+                    
+                    <button class="btn btn-guardar-est" type="submit">{% trans 'Añadir' %}</button>
+                </form>
+            {% endif %}
+        </div>
+            
+    </div>
+    <form id="guardar-enf" class="form-btn" method="post" action="{% url 'enfrentamientos:guardar_enfrentamiento' torneo.id n_ronda enfrentamiento.id %}">
+        {% csrf_token %}
+        <button class="btn float-end" type="submit">{% trans 'Guardar' %}</button>
+    </form>
+{% endblock %}

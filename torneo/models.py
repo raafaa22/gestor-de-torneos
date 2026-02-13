@@ -80,7 +80,7 @@ class EliminatoriaGrupos(models.Model):
     torneo = models.ForeignKey(Torneo, null=False, blank=False, on_delete=models.CASCADE, related_name='eliminatoria_grupos')
     eliminatoria = models.ForeignKey(Eliminatoria, null=False, blank=False, on_delete=models.CASCADE, related_name='eliminatoria_grupos')
     n_clasificados_grupo = models.PositiveIntegerField(null=False, validators=[MinValueValidator(1)])
-    n_grupos = models.PositiveIntegerField(null=False, validators=[MinValueValidator(1), MaxValueValidator(16)])
+    n_grupos = models.PositiveIntegerField(null=False, validators=[MinValueValidator(1), MaxValueValidator(32)])
 
     class Meta:
         constraints = [
@@ -100,8 +100,8 @@ class Clasificacion(models.Model):
     victorias = models.PositiveIntegerField(null=False, default=0)
     empates = models.PositiveIntegerField(null=False, default=0)
     derrotas = models.PositiveIntegerField(null=False, default=0)
-    anotacion_favor = models.PositiveIntegerField(null=False, default=0)
-    anotacion_contra = models.PositiveIntegerField(null=False, default=0)
+    anotacion_favor = models.IntegerField(null=False, default=0)
+    anotacion_contra = models.IntegerField(null=False, default=0)
 
     class Meta:
         constraints = [
