@@ -456,6 +456,20 @@ def actualizar_clasificacion(torneo: Torneo, enfrentamiento: Enfrentamiento):
     if torneo.deporte == Deporte.FUTBOL:
         empates_local = qs_local_jugados.filter(ganador__isnull=True).count()
         empates_visitante = qs_visitante_jugados.filter(ganador__isnull=True).count()
+
+        #Actualizamos porteros
+        portero_local = Jugador.objects.filter(equipo=enfrentamiento.equipo_local, es_portero=True).first()
+        portero_visitante = Jugador.objects.filter(equipo=enfrentamiento.equipo_visitante, es_portero=True).first()
+
+        if portero_local:
+            estadisticas_portero_local = EstadisticasFutbol.objects.filter(torneo=torneo, jugador=portero_local).first()
+            estadisticas_portero_local.goles_contra = anotacion_contra_local
+            estadisticas_portero_local.save()
+        
+        if portero_visitante:
+            estadisticas_portero_visitante = EstadisticasFutbol.objects.filter(torneo=torneo, jugador=portero_visitante).first()
+            estadisticas_portero_visitante.goles_contra = anotacion_contra_visitante
+            estadisticas_portero_visitante.save()
     else:
         empates_local = 0
         empates_visitante = 0
@@ -686,12 +700,12 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
         enfrentamiento = get_object_or_404(Enfrentamiento, id=enfrentamiento_id)
         
         if torneo.deporte == Deporte.PADEL:
-            enfrentamiento.juegos_local_1 = int(request.POST.get('juegos_local_1'))
-            enfrentamiento.juegos_visitante_1 = int(request.POST.get('juegos_visitante_1'))
-            enfrentamiento.juegos_local_2 = int(request.POST.get('juegos_local_2'))
-            enfrentamiento.juegos_visitante_2 = int(request.POST.get('juegos_visitante_2'))
-            enfrentamiento.juegos_local_3 = int(request.POST.get('juegos_local_3'))
-            enfrentamiento.juegos_visitante_3 = int(request.POST.get('juegos_visitante_3'))
+            enfrentamiento.juegos_local_1 = int(request.POST.get('juegos_local_1') or 0)
+            enfrentamiento.juegos_visitante_1 = int(request.POST.get('juegos_visitante_1') or 0)
+            enfrentamiento.juegos_local_2 = int(request.POST.get('juegos_local_2') or 0)
+            enfrentamiento.juegos_visitante_2 = int(request.POST.get('juegos_visitante_2') or 0)
+            enfrentamiento.juegos_local_3 = int(request.POST.get('juegos_local_3') or 0)
+            enfrentamiento.juegos_visitante_3 = int(request.POST.get('juegos_visitante_3') or 0)
             
 
             sets_local = 0
@@ -820,20 +834,6 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
                     torneo.save()
                 else:
                     actualizar_eliminatoria(enfrentamiento)
-
-        if torneo.deporte == Deporte.FUTBOL:
-            portero_local = Jugador.objects.filter(equipo=enfrentamiento.equipo_local, es_portero=True).first()
-            portero_visitante = Jugador.objects.filter(equipo=enfrentamiento.equipo_visitante, es_portero=True).first()
-
-            if portero_local:
-                estadisticas_portero_local = EstadisticasFutbol.objects.filter(torneo=torneo, jugador=portero_local).first()
-                estadisticas_portero_local.goles_contra += enfrentamiento.anotacion_visitante or 0
-                estadisticas_portero_local.save()
-            
-            if portero_visitante:
-                estadisticas_portero_visitante = EstadisticasFutbol.objects.filter(torneo=torneo, jugador=portero_visitante).first()
-                estadisticas_portero_visitante.goles_contra += enfrentamiento.anotacion_local or 0
-                estadisticas_portero_visitante.save()
 
         actualizar_estadisticas_generales(torneo, enfrentamiento)
 
