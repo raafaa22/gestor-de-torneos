@@ -1,7 +1,8 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from math import log2
 
-from .models import Torneo
+from .models import Torneo, EliminatoriaGrupos
 from gestor.choices import TipoTorneo
 from usuario.models import Organizador, Administrador
 
@@ -15,6 +16,19 @@ class CrearTorneoForm(forms.ModelForm):
         queryset=Organizador.objects.all(),
         label=_('Organizador'),
         required=True,
+    )
+
+    n_grupos = forms.IntegerField(
+        label = _('Número de grupos'),
+        required=False,
+        min_value=1,
+        max_value=32,
+    )
+
+    n_clasificados_grupo = forms.IntegerField(
+        label = _('Clasificados por grupo'),
+        required=False,
+        min_value=1,
     )
     class Meta:
         model = Torneo
@@ -85,6 +99,36 @@ class CrearTorneoForm(forms.ModelForm):
             if n_eq_playoffs + n_eq_descenso > max_eq:
                 self.add_error('n_equipos_descenso', _('La suma de equipos en play-offs y en descenso no puede ser mayor que el número máximo de equipos del torneo.'))
 
+        if cleaned.get('tipo') == TipoTorneo.ELIMINATORIA_GRUPOS:
+            n_grupos = cleaned.get('n_grupos')
+            n_clas = cleaned.get('n_clasificados_grupo')
+            
+
+            if not n_grupos:
+                self.add_error('n_grupos', _('Se debe indicar el número de grupos.'))
+                return cleaned
+            if not n_clas:
+                self.add_error('n_clasificados_grupo', _('Se debe indicar cuántos equipos se clasifican por grupo.'))
+                return cleaned
+
+            if max_eq and (max_eq % n_grupos != 0):
+                self.add_error('n_grupos', _('El número máximo de equipos debe ser divisible entre el número de grupos (para que los grupos tengan el mismo tamaño).'))
+
+            if max_eq:
+                equipos_por_grupo = max_eq // n_grupos
+                if n_clas > equipos_por_grupo:
+                    self.add_error('n_clasificados_grupo', _('No pueden clasificarse más equipos de los que hay en cada grupo.'))
+
+            total_clasificados = n_grupos * n_clas
+            if total_clasificados < 2:
+                self.add_error('n_clasificados_grupo', _('Debe haber al menos 2 clasificados en total para crear eliminatoria.'))
+            if total_clasificados > 32:
+                self.add_error('n_clasificados_grupo', _('El total de clasificados no puede superar 32 (máximo 5 rondas).'))
+
+        else:
+            cleaned['n_grupos'] = None
+            cleaned['n_clasificados_grupo'] = None 
+
         return cleaned
     
 
@@ -96,6 +140,16 @@ class CrearTorneoForm(forms.ModelForm):
 
         if commit:
             torneo.save()
+        
+        if torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
+            n_grupos = self.cleaned_data['n_grupos']
+            clasificados = self.cleaned_data['n_clasificados_grupo']
+
+            EliminatoriaGrupos.objects.create(
+                torneo=torneo,
+                n_grupos=n_grupos,
+                n_clasificados_grupo=clasificados
+            )
 
         return torneo
 
