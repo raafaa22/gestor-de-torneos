@@ -156,7 +156,8 @@
   grid-column: 2 / span 2;
 }
 
-.container-form input[type="checkbox"] {
+
+.container-form input[type="checkbox"]:not(.form-check-input) {
   grid-column: 2;
   width: 16px !important;
   height: 16px;
@@ -414,13 +415,14 @@ th {
   justify-content: center;   
   text-align: center;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
-.no-enfrentamientos form{
+.no-enfrentamientos div{
   display: flex;
   justify-content: center;
   gap: 12px;
-  flex-wrap: wrap;
+  
 }
 
 .btn-enf {
@@ -579,4 +581,46 @@ th {
   padding: 2px;
 }
 
+.txt-enf-pers {
+  text-align: center;
+}
 
+.txt-enf-pers h4 {
+  margin-bottom: 10px;
+}
+
+.txt-enf-pers p {
+  display: block;
+  font-size: 12px;
+  margin: 0 5px;
+}
+
+.ida-vuelta {
+  border: 1px solid grey;
+  border-radius: 3px;
+  width: fit-content;
+  padding-right: 5px;
+  margin-left: 10px;
+}
+
+.ida-vuelta.form-switch {
+  padding-left: 0 !important;
+}
+
+
+.ida-vuelta .form-check-input {
+  margin: 5px !important;
+}
+
+.equipo-nivel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 10px;
+  width: 50%;
+  justify-self: center;
+}
+
+.generar {
+  display: flex;
+  justify-self: end;
+}

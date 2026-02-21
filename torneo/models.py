@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from gestor.choices import Deporte, TipoTorneo, TipoRonda
+from gestor.choices import Deporte, TipoTorneo, TipoRonda, Nivel
 from usuario.models import Organizador, Jugador
 from equipo.models import Equipo
 
@@ -38,6 +38,7 @@ class Torneo(models.Model):
 class TorneoEquipo(models.Model):
     torneo = models.ForeignKey(Torneo, null=False, blank=False, on_delete=models.CASCADE, related_name='torneo_equipos')
     equipo = models.ForeignKey(Equipo, null=False, blank=False, on_delete=models.CASCADE, related_name='equipo_torneos')
+    nivel = models.PositiveIntegerField(null=True, blank=True, choices=Nivel.choices)
 
 
     # Un equipo no puede estar mas de una vez en el mismo torneo
