@@ -37,15 +37,17 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
         if torneo.tipo == TipoTorneo.LIGA:
             jornada = Jornada.objects.filter(torneo=torneo, n_jornada=n_ronda).first()
             selector=[]
+            num_jornadas = (
+                Jornada.objects.filter(torneo=torneo)
+                .aggregate(mx=Max("n_jornada"))
+                .get("mx") or 0
+            )
+
+            if n_ronda > num_jornadas:
+                return redirect('enfrentamientos:enfrentamientos_torneo', torneo_id=torneo.id, n_ronda=num_jornadas)
+            
             if jornada:
                 label = _("Jornada %(n)s") % {"n": n_ronda}
-
-                num_jornadas = (
-                    Jornada.objects.filter(torneo=torneo)
-                    .aggregate(mx=Max("n_jornada"))
-                    .get("mx") or 0
-                )
-
 
                 for i in range(1, num_jornadas + 1):
                     selector.append({
@@ -130,7 +132,7 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
                         })
 
                     if n_ronda > total_fases:
-                        enfrentamientos = None
+                        return redirect('enfrentamientos:enfrentamientos_torneo', torneo_id=torneo.id, n_ronda=total_fases)
                     else:
                         prev_jornada = n_ronda > 1
                         sig_jornada = n_ronda < total_fases
@@ -186,7 +188,7 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
 
 
                     if n_ronda > total_fases:
-                        enfrentamientos = None
+                        return redirect('enfrentamientos:enfrentamientos_torneo', torneo_id=torneo.id, n_ronda=total_fases)
                     else:
                         prev_jornada = n_ronda > 1
                         sig_jornada = n_ronda < total_fases
