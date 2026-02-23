@@ -4,11 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_GET, require_POST
 from django.http import HttpResponseForbidden, JsonResponse
+from itertools import groupby
 
 from usuario.models import Organizador, Administrador, Jugador
 from equipo.models import Equipo
 from estadisticas.models import EstadisticasBaloncesto, EstadisticasFutbol
-from .models import Torneo, TorneoEquipo, Clasificacion
+from .models import Torneo, TorneoEquipo, Clasificacion, EliminatoriaGrupos
 from .forms import CrearTorneoForm
 from gestor.choices import TipoTorneo, TipoUsuario
 
@@ -134,12 +135,35 @@ def clasificacion_torneo(request, torneo_id: int):
     usuario = request.user
 
     if tiene_permiso(usuario, torneo):
-        clasificacion = Clasificacion.objects.filter(torneo_equipo__torneo=torneo).order_by('posicion')
+        clasificacion_grupos = []
+        if torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
+            clasificacion = None
+            eg = EliminatoriaGrupos.objects.filter(torneo=torneo).first()
+            if eg:
+                clasificacion_qs = list(
+                    Clasificacion.objects
+                    .filter(torneo_equipo__torneo=torneo, eliminatoria_grupos=eg)
+                    .select_related('torneo_equipo__equipo')
+                    .order_by('grupo', 'posicion')
+                )
+
+                clasificacion_grupos = [
+                    {
+                        'nombre': grupo,
+                        'filas': list(filas)
+                    }
+                    for grupo, filas in groupby(clasificacion_qs, key=lambda c: c.grupo)
+                ]
+
+                n_clasificados = eg.n_clasificados_grupo
+
+        else:
+            clasificacion = Clasificacion.objects.filter(torneo_equipo__torneo=torneo).order_by('posicion')
         n_equipos = TorneoEquipo.objects.filter(torneo=torneo).count()
         limite_descenso = None
         if torneo.n_equipos_descenso:
             limite_descenso = n_equipos - torneo.n_equipos_descenso
-        return render(request, 'torneo/clasificacion.html', {'torneo': torneo, 'clasificacion': clasificacion, 'limite_descenso': limite_descenso})
+        return render(request, 'torneo/clasificacion.html', {'torneo': torneo, 'clasificacion': clasificacion, 'clasificacion_grupos': clasificacion_grupos, 'limite_descenso': limite_descenso, 'n_clasificados': n_clasificados})
     else:
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
 

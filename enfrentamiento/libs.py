@@ -302,11 +302,16 @@ def sig_potencia_2(n: int) -> int:
 @transaction.atomic
 def crear_eliminatoria_tras_liga(torneo: Torneo):
     elim = Eliminatoria.objects.filter(torneo=torneo).first()
+
     if elim:
+        Enfrentamiento.objects.filter(eliminatoria=elim).delete()
         elim.delete()
 
+    
     if torneo.tipo == TipoTorneo.LIGA:
         espacios = sig_potencia_2(torneo.n_equipos_playoffs)
+        partidos_ronda = espacios // 2
+        rondas = int(log2(espacios))
         directos = espacios - torneo.n_equipos_playoffs
         clasificados = Clasificacion.objects.filter(torneo_equipo__torneo=torneo, posicion__lte=torneo.n_equipos_playoffs).order_by('posicion')
         eliminatoria = Eliminatoria.objects.create(torneo=torneo, rondas=rondas)
@@ -315,15 +320,13 @@ def crear_eliminatoria_tras_liga(torneo: Torneo):
         eliminatoria_grupos = EliminatoriaGrupos.objects.filter(torneo=torneo).first()
         n_equipos = eliminatoria_grupos.n_clasificados_grupo * eliminatoria_grupos.n_grupos
         espacios = sig_potencia_2(n_equipos)
+        partidos_ronda = espacios // 2
+        rondas = int(log2(espacios))
         directos = espacios - n_equipos
         clasificados = Clasificacion.objects.filter(torneo_equipo__torneo=torneo, posicion__lte=eliminatoria_grupos.n_clasificados_grupo).order_by('posicion', '-puntos', '-victorias', 'derrotas', '-anotacion_favor', 'anotacion_contra')
         eliminatoria = Eliminatoria.objects.create(torneo=torneo, rondas=rondas)
         eliminatoria_grupos.eliminatoria = eliminatoria
         eliminatoria_grupos.save()
-
-        
-    partidos_ronda = espacios // 2
-    rondas = int(log2(espacios))
 
 
     enfrentamientos = []
@@ -550,7 +553,6 @@ def generar_liga_aleatorio(torneo: Torneo, ida_vuelta: bool = False):
                 equipo_visitante=visitante
             )
 
-    breakpoint()
 
     if ida_vuelta:
         fin_ida = len(jornadas_ida)
