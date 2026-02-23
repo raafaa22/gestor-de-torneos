@@ -124,7 +124,7 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
                             label = _("Grupos - Jornada %(n)s") % {"n": i}
                         else:
                             j = i - max_jornada
-                            label = _("Playoffs - %(r)s") % {"r": secuencia[j-1].label}
+                            label = secuencia[j-1].label
 
                         selector.append({
                             'num': i,
@@ -166,7 +166,7 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
                                 ronda=tipo_ronda
                             )
 
-                            label = _("Playoffs - %(r)s") % {"r": tipo_ronda.label}
+                            label =  tipo_ronda.label
 
                             enfrentamientos = {
                                 "items": items,
@@ -464,25 +464,42 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
                     .aggregate(mx=Max("n_jornada"))
                     .get("mx") or 0
                 )
-                if enfrentamiento.jornada.n_jornada == max_jornada:
-                    equipos_torneo = TorneoEquipo.objects.filter(torneo=torneo)
-                    clas_equipos = Clasificacion.objects.filter(torneo_equipo__in=equipos_torneo)
+                
+                equipos_torneo = TorneoEquipo.objects.filter(torneo=torneo)
+                clas_equipos = Clasificacion.objects.filter(torneo_equipo__in=equipos_torneo)
 
-                    liga_terminada = True
+                if len(equipos_torneo) % 2 == 0:
+                    jornadas_necesarias = len(equipos_torneo) - 1
+                else:
+                    jornadas_necesarias = len(equipos_torneo)
+                
+                if jornadas_necesarias == max_jornada:
+                    ida_vuelta = False
+                elif jornadas_necesarias * 2 == max_jornada:
+                    ida_vuelta = True
+                    
 
-                    for equipo in clas_equipos:
-                        partidos_jugados = equipo.victorias + equipo.empates + equipo.derrotas
-                        if partidos_jugados < max_jornada:
+                liga_terminada = True
+                n_equipos = len(equipos_torneo)
+
+                for equipo in clas_equipos:
+                    partidos_jugados = equipo.victorias + equipo.empates + equipo.derrotas
+                    if ida_vuelta:
+                        if partidos_jugados < 2 * (n_equipos - 1):
                             liga_terminada = False
                             break
-                    
-                    if liga_terminada:
-                        if torneo.playoffs:
-                            crear_eliminatoria_tras_liga(torneo)
-                        else:
-                            clas_ganador = clas_equipos.filter(posicion=1).first()
-                            torneo.ganador = clas_ganador.torneo_equipo.equipo
-                            torneo.save()
+                    else:
+                        if partidos_jugados < n_equipos - 1:
+                            liga_terminada = False
+                            break
+                
+                if liga_terminada:
+                    if torneo.playoffs:
+                        crear_eliminatoria_tras_liga(torneo)
+                    else:
+                        clas_ganador = clas_equipos.filter(posicion=1).first()
+                        torneo.ganador = clas_ganador.torneo_equipo.equipo
+                        torneo.save()
             else:
                 if enfrentamiento.ronda == TipoRonda.FINAL:
                     torneo.ganador = enfrentamiento.ganador
@@ -503,20 +520,42 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
                     .aggregate(mx=Max("n_jornada"))
                     .get("mx") or 0
                 )
-                if enfrentamiento.jornada.n_jornada == max_jornada:
-                    equipos_torneo = TorneoEquipo.objects.filter(torneo=torneo)
-                    clas_equipos = Clasificacion.objects.filter(torneo_equipo__in=equipos_torneo)
+                equipos_torneo = TorneoEquipo.objects.filter(torneo=torneo)
+                clas_equipos = Clasificacion.objects.filter(torneo_equipo__in=equipos_torneo)
 
-                    fase_grupos_terminada = True
+                grupos = {}
+                for eq in clas_equipos:
+                    grupos.setdefault(eq.grupo, []).append(eq)
+                
+                maximo_grupo = max(len(eq) for eq in grupos.values())
 
-                    for equipo in clas_equipos:
-                        partidos_jugados = equipo.victorias + equipo.empates + equipo.derrotas
-                        if partidos_jugados < max_jornada:
+                if maximo_grupo % 2 == 0:
+                    jornadas_necesarias = maximo_grupo - 1
+                else:
+                    jornadas_necesarias = maximo_grupo
+
+                if jornadas_necesarias == max_jornada:
+                    ida_vuelta = False
+                elif jornadas_necesarias * 2 == max_jornada:
+                    ida_vuelta = True
+
+                fase_grupos_terminada = True
+
+                for grupo, equipos in grupos.items():
+                    n_eq = len(equipos)
+                    if ida_vuelta:
+                        max_partidos = 2 * (n_eq - 1)
+                    else:
+                        max_partidos = n_eq - 1
+
+                    for eq in equipos:
+                        partidos_jugados = eq.victorias + eq.empates + eq.derrotas
+                        if partidos_jugados < max_partidos:
                             fase_grupos_terminada = False
                             break
-                    
-                    if fase_grupos_terminada:
-                        crear_eliminatoria_tras_liga(torneo)
+
+                if fase_grupos_terminada:
+                    crear_eliminatoria_tras_liga(torneo)
             else:
                 if enfrentamiento.ronda == TipoRonda.FINAL:
                     torneo.ganador = enfrentamiento.ganador
