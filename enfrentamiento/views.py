@@ -102,39 +102,95 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
                 
         elif torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
             eg = EliminatoriaGrupos.objects.filter(torneo=torneo).first()
+            max_jornada = (
+                Jornada.objects.filter(torneo=torneo)
+                .aggregate(mx=Max("n_jornada"))
+                .get("mx") or 0
+            )
+
             if eg:
                 eliminatoria = eg.eliminatoria
-                secuencia = RONDAS[-eliminatoria.rondas:]
-                selector=[]
+                if eliminatoria:
+                    secuencia = RONDAS[-eliminatoria.rondas:]
+                    selector=[]
 
-                max_jornada = (
-                    Jornada.objects.filter(torneo=torneo)
-                    .aggregate(mx=Max("n_jornada"))
-                    .get("mx") or 0
-                )
 
-                total_fases = max_jornada + eliminatoria.rondas
+                    total_fases = max_jornada + eliminatoria.rondas
 
-                for i in range(1, total_fases + 1):
-                    if i <= max_jornada:
-                        label = _("Grupos - Jornada %(n)s") % {"n": i}
+                    for i in range(1, total_fases + 1):
+                        if i <= max_jornada:
+                            label = _("Grupos - Jornada %(n)s") % {"n": i}
+                        else:
+                            j = i - max_jornada
+                            label = _("Playoffs - %(r)s") % {"r": secuencia[j-1].label}
+
+                        selector.append({
+                            'num': i,
+                            'label': label
+                        })
+
+                    if n_ronda > total_fases:
+                        enfrentamientos = None
                     else:
-                        j = i - max_jornada
-                        label = _("Playoffs - %(r)s") % {"r": secuencia[j-1].label}
+                        prev_jornada = n_ronda > 1
+                        sig_jornada = n_ronda < total_fases
 
-                    selector.append({
-                        'num': i,
-                        'label': label
-                    })
+                        # ---- FASE DE GRUPOS (JORNADAS) ----
+                        if n_ronda <= max_jornada:
+                            jornada = Jornada.objects.filter(torneo=torneo, n_jornada=n_ronda).first()
+                            if jornada:
+                                items = Enfrentamiento.objects.filter(jornada=jornada)
 
-                if n_ronda > total_fases:
-                    enfrentamientos = None
+                                label = _("Fase de grupos - Jornada %(n)s") % {"n": n_ronda}
+
+                                enfrentamientos = {
+                                    "items": items,
+                                    "prev_jornada": prev_jornada,
+                                    "sig_jornada": sig_jornada,
+                                    "label": label,
+                                    "selector": selector,
+                                }
+                            else:
+                                enfrentamientos = None
+
+                        # ---- (ELIMINATORIA) ----
+                        else:
+                            ronda_idx = n_ronda - max_jornada
+
+                            tipo_ronda = secuencia[ronda_idx - 1]  
+
+                            items = Enfrentamiento.objects.filter(
+                                eliminatoria=eliminatoria,
+                                ronda=tipo_ronda
+                            )
+
+                            label = _("Playoffs - %(r)s") % {"r": tipo_ronda.label}
+
+                            enfrentamientos = {
+                                "items": items,
+                                "prev_jornada": prev_jornada,
+                                "sig_jornada": sig_jornada,
+                                "label": label,
+                                "selector": selector,
+                            }
                 else:
-                    prev_jornada = n_ronda > 1
-                    sig_jornada = n_ronda < total_fases
+                    total_fases = max_jornada
 
-                    # ---- FASE DE GRUPOS (JORNADAS) ----
-                    if n_ronda <= max_jornada:
+                    selector = []
+
+                    for i in range(1, total_fases + 1):
+                        selector.append({
+                            'num': i,
+                            'label': _("Grupos - Jornada %(n)s") % {"n": i}
+                        })
+
+
+                    if n_ronda > total_fases:
+                        enfrentamientos = None
+                    else:
+                        prev_jornada = n_ronda > 1
+                        sig_jornada = n_ronda < total_fases
+
                         jornada = Jornada.objects.filter(torneo=torneo, n_jornada=n_ronda).first()
                         if jornada:
                             items = Enfrentamiento.objects.filter(jornada=jornada)
@@ -150,27 +206,6 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
                             }
                         else:
                             enfrentamientos = None
-
-                    # ---- (ELIMINATORIA) ----
-                    else:
-                        ronda_idx = n_ronda - max_jornada
-
-                        tipo_ronda = secuencia[ronda_idx - 1]  
-
-                        items = Enfrentamiento.objects.filter(
-                            eliminatoria=eliminatoria,
-                            ronda=tipo_ronda
-                        )
-
-                        label = _("Playoffs - %(r)s") % {"r": tipo_ronda.label}
-
-                        enfrentamientos = {
-                            "items": items,
-                            "prev_jornada": prev_jornada,
-                            "sig_jornada": sig_jornada,
-                            "label": label,
-                            "selector": selector,
-                        }
             else:
                 enfrentamientos = None
             
@@ -522,12 +557,13 @@ def generar_enfrentamientos_personalizados(request, torneo_id: int):
                 niveles[equipo.equipo.id] = int(nivel)
 
         ida_vuelta = False
-        if torneo.tipo == TipoTorneo.LIGA and request.POST.get("ida_vuelta") == "on":
+        if torneo.tipo == TipoTorneo.LIGA and request.POST.get("ida-vuelta") == "on":
             ida_vuelta = True
 
         if Enfrentamiento.objects.filter(Q(jornada__torneo=torneo) | Q(eliminatoria__torneo=torneo)).exists():
             return HttpResponse(_("Ya existen enfrentamientos para este torneo."), status=400)
         
+
         if torneo.tipo == TipoTorneo.LIGA:
             if iguales:
                 generar_liga_aleatorio(torneo, ida_vuelta)

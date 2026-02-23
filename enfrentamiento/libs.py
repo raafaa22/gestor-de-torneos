@@ -550,6 +550,8 @@ def generar_liga_aleatorio(torneo: Torneo, ida_vuelta: bool = False):
                 equipo_visitante=visitante
             )
 
+    breakpoint()
+
     if ida_vuelta:
         fin_ida = len(jornadas_ida)
         for i, partidos in enumerate(jornadas_ida, 1):
@@ -687,7 +689,7 @@ def generar_jornadas_fase_grupos(torneo: Torneo, grupos_equipos: list[list]):
     Jornada.objects.filter(torneo=torneo).delete()
 
     enfrentamientos_grupo = [round_robin(lista) for lista in grupos_equipos]
-    num_jornadas = max((len(s) for s in enfrentamientos_grupo), 0)
+    num_jornadas = max((len(s) for s in enfrentamientos_grupo), default=0)
 
     for jornada_idx in range(num_jornadas):
         jornada = Jornada.objects.create(torneo=torneo, n_jornada=jornada_idx + 1)
@@ -727,13 +729,15 @@ def generar_fase_grupos_aleatorio(torneo: Torneo):
                     torneo_equipo = te,
                     eliminatoria_grupos = eliminatoria_grupos,
                     grupo = nombre_grupos[idx_grupo],
-                    posicion = pos,
-                    puntos = 0,
-                    victorias = 0,
-                    empates = 0,
-                    derrotas = 0,
-                    anotacion_favor = 0,
-                    anotacion_contra = 0
+                    defaults={
+                        "posicion": pos,
+                        "puntos": 0,
+                        "victorias": 0,
+                        "empates": 0,
+                        "derrotas": 0,
+                        "anotacion_favor": 0,
+                        "anotacion_contra": 0,
+                    }
                 )
             pos += 1
 
