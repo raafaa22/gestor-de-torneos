@@ -93,10 +93,18 @@
     {% else %}
             <div class="no-enfrentamientos">
                 <h3>{% trans 'No existen enfrentamientos todavía' %}</h3>
-                <form>
-                    <button class="btn btn-enf">{% trans 'Generar enfrentamientos personalizados' %}</button>
-                    <button class="btn btn-enf-2">{% trans 'Generar enfrentamientos aleatorios' %}</button>
-                </form>
+                <div>
+                    <button onclick="window.location.href='{% url 'enfrentamientos:generar_personalizados' torneo.id %}'" class="btn btn-enf">
+                        {% trans 'Generar enfrentamientos personalizados' %}
+                    </button>
+
+                    <form method="post" action="{% url 'enfrentamientos:generar_aleatorios' torneo.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-enf-2">
+                            {% trans 'Generar enfrentamientos aleatorios' %}
+                        </button>
+                    </form>
+                </div>
             </div>
         {% endif %}
 {% endblock %}
