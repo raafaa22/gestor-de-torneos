@@ -136,6 +136,7 @@ def clasificacion_torneo(request, torneo_id: int):
 
     if tiene_permiso(usuario, torneo):
         clasificacion_grupos = []
+        n_clasificados = None
         if torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
             clasificacion = None
             eg = EliminatoriaGrupos.objects.filter(torneo=torneo).first()
