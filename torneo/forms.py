@@ -59,7 +59,12 @@ class CrearTorneoForm(forms.ModelForm):
         self.fields["n_equipos_playoffs"].required = False
         self.fields["n_equipos_descenso"].required = False
 
-
+       
+        if self.instance and self.instance.pk:
+            eg = EliminatoriaGrupos.objects.filter(torneo=self.instance).first()
+            if eg:
+                self.fields['n_grupos'].initial = eg.n_grupos
+                self.fields['n_clasificados_grupo'].initial = eg.n_clasificados_grupo
 
         if Organizador.objects.filter(user=user).exists():
             self.fields.pop('organizador')
@@ -145,11 +150,18 @@ class CrearTorneoForm(forms.ModelForm):
             n_grupos = self.cleaned_data['n_grupos']
             clasificados = self.cleaned_data['n_clasificados_grupo']
 
-            EliminatoriaGrupos.objects.create(
-                torneo=torneo,
-                n_grupos=n_grupos,
-                n_clasificados_grupo=clasificados
-            )
+            
+            eg = EliminatoriaGrupos.objects.filter(torneo=torneo).first()
+            if eg:
+                eg.n_grupos = n_grupos
+                eg.n_clasificados_grupo = clasificados
+                eg.save()
+            else:
+                EliminatoriaGrupos.objects.create(
+                    torneo=torneo,
+                    n_grupos=n_grupos,
+                    n_clasificados_grupo=clasificados
+                )
 
         return torneo
 
