@@ -43,7 +43,7 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
                 .get("mx") or 0
             )
 
-            if n_ronda > num_jornadas:
+            if num_jornadas > 0 and n_ronda > num_jornadas:
                 return redirect('enfrentamientos:enfrentamientos_torneo', torneo_id=torneo.id, n_ronda=num_jornadas)
             
             if jornada:
@@ -76,7 +76,7 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
         elif torneo.tipo == TipoTorneo.ELIMINATORIA:
             eliminatoria = Eliminatoria.objects.filter(torneo=torneo).first()
             selector=[]
-            if eliminatoria:
+            if eliminatoria and eliminatoria.rondas > 0:
                 secuencia = RONDAS[-eliminatoria.rondas:]
                 for i in range(1, eliminatoria.rondas + 1):
                     selector.append({
@@ -131,9 +131,9 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
                             'label': label
                         })
 
-                    if n_ronda > total_fases:
+                    if total_fases > 0 and n_ronda > total_fases:
                         return redirect('enfrentamientos:enfrentamientos_torneo', torneo_id=torneo.id, n_ronda=total_fases)
-                    else:
+                    elif total_fases > 0:
                         prev_jornada = n_ronda > 1
                         sig_jornada = n_ronda < total_fases
 
@@ -175,6 +175,8 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
                                 "label": label,
                                 "selector": selector,
                             }
+                    else:
+                        enfrentamientos = None
                 else:
                     total_fases = max_jornada
 
@@ -187,9 +189,9 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
                         })
 
 
-                    if n_ronda > total_fases:
+                    if total_fases > 0 and n_ronda > total_fases:
                         return redirect('enfrentamientos:enfrentamientos_torneo', torneo_id=torneo.id, n_ronda=total_fases)
-                    else:
+                    elif total_fases > 0:
                         prev_jornada = n_ronda > 1
                         sig_jornada = n_ronda < total_fases
 
@@ -208,12 +210,13 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
                             }
                         else:
                             enfrentamientos = None
+                    else:
+                        enfrentamientos = None
             else:
                 enfrentamientos = None
             
         else:
             enfrentamientos = None
-
 
         
         return render(request, 'torneo/enfrentamientos.html', {'torneo': torneo, 'n_ronda': n_ronda, 'enfrentamientos': enfrentamientos, 'editor': editor})

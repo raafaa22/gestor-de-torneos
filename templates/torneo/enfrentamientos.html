@@ -76,7 +76,7 @@
                             <span>{{ enf.equipo_visitante }}</span>
                         {% endif %}
                         <div class="acciones-enfr">
-                            {% if is_organizador or is_admin %}
+                            {% if editor %}
                                 <a href="{% url 'enfrentamientos:editar_enfrentamiento' torneo.id n_ronda enf.id %}">
                                     <img src="{% static 'torneo/img/editar.png' %}" alt="editar_enfrentamiento" width="20" height="20">
                                 </a>
@@ -93,6 +93,7 @@
     {% else %}
             <div class="no-enfrentamientos">
                 <h3>{% trans 'No existen enfrentamientos todavía' %}</h3>
+                {% if editor %}
                 <div>
                     <button onclick="window.location.href='{% url 'enfrentamientos:generar_personalizados' torneo.id %}'" class="btn btn-enf">
                         {% trans 'Generar enfrentamientos personalizados' %}
@@ -105,6 +106,7 @@
                         </button>
                     </form>
                 </div>
+                {% endif %}
             </div>
         {% endif %}
 {% endblock %}
