@@ -1,0 +1,110 @@
+{% extends "torneo/base_torneo.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head_torneo %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+{% endblock %}
+
+{% block titulo %}{% trans "Clasificación" %}{% endblock %}
+
+{% block torneo_content %}
+    <div class="container-tables-torneo">
+        {% if clasificacion_grupos %}
+            {% for grupo in clasificacion_grupos %}
+                <h3>{% trans "Grupo" %} {{ grupo.nombre }}</h3>
+                <table id="clasificacion-{{ forloop.counter }}" class="table tabla-clasificacion">
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>{% trans "Equipo" %}</th>
+                            <th>{% trans "Victorias" %}</th>
+                            <th>{% trans "Empates" %}</th>
+                            <th>{% trans "Derrotas" %}</th>
+                            <th>{% trans "Anotación a favor" %}</th>
+                            <th>{% trans "Anotación en contra" %}</th>
+                            <th>{% trans "Puntos" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fila in grupo.filas %}
+                        <tr {% if n_clasificados is not None and fila.posicion <= n_clasificados %}class="playoffs"{% endif %}>
+                            <td><strong>{{ fila.posicion }}</strong></td>
+                            <td><strong>{{ fila.torneo_equipo.equipo }}</strong></td>
+                            <td>{{ fila.victorias }}</td>
+                            <td>{{ fila.empates }}</td>
+                            <td>{{ fila.derrotas }}</td>
+                            <td>{{ fila.anotacion_favor }}</td>
+                            <td>{{ fila.anotacion_contra }}</td>
+                            <td><strong>{{ fila.puntos }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        {% else %}
+            <table id="clasificacion" class="table tabla-clasificacion">
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th>{% trans "Equipo" %}</th>
+                        <th>{% trans "Victorias" %}</th>
+                        <th>{% trans "Empates" %}</th>
+                        <th>{% trans "Derrotas" %}</th>
+                        <th>{% trans "Anotación a favor" %}</th>
+                        <th>{% trans "Anotación en contra" %}</th>
+                        <th>{% trans "Puntos" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fila in clasificacion %}
+                    <tr {% if torneo.n_equipos_playoffs is not None and fila.posicion <= torneo.n_equipos_playoffs %}
+                            class="playoffs"
+                        {% elif limite_descenso is not None and fila.posicion > limite_descenso %}
+                            class="descenso"
+                        {% endif %}>
+                        <td><strong>{{ fila.posicion }}</strong></td>
+                        <td><strong>{{ fila.torneo_equipo.equipo }}</strong></td>
+                        <td>{{ fila.victorias }}</td>
+                        <td>{{ fila.empates }}</td>
+                        <td>{{ fila.derrotas }}</td>
+                        <td>{{ fila.anotacion_favor }}</td>
+                        <td>{{ fila.anotacion_contra }}</td>
+                        <td><strong>{{ fila.puntos }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+            const lang = "{{ LANGUAGE_CODE }}";
+            let langUrl = "";
+            if (lang.toLowerCase().startsWith('es')){
+                langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/es-ES.json";
+            } else {
+                langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/en-GB.json";
+            }
+
+            $('.tabla-clasificacion').each(function () {
+                $(this).DataTable({
+                    pageLength: 20,
+                    lengthMenu: [20, 30, 50, 100 ],
+                    dom: 't<"paginacion"<"paginacion-info"i><"paginacion-button"p>>',
+                    language: {
+                        url: langUrl,
+                    },
+                    columnDefs: [
+                        { orderable: false, searchable: false, targets: "_all"}
+                    ]
+                });
+            });
+       } );
+    </script>
+{% endblock %}

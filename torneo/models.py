@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from gestor.choices import Deporte, TipoTorneo, TipoRonda
+from gestor.choices import Deporte, TipoTorneo, TipoRonda, Nivel
 from usuario.models import Organizador, Jugador
 from equipo.models import Equipo
 
@@ -38,6 +38,7 @@ class Torneo(models.Model):
 class TorneoEquipo(models.Model):
     torneo = models.ForeignKey(Torneo, null=False, blank=False, on_delete=models.CASCADE, related_name='torneo_equipos')
     equipo = models.ForeignKey(Equipo, null=False, blank=False, on_delete=models.CASCADE, related_name='equipo_torneos')
+    nivel = models.PositiveIntegerField(null=True, blank=True, choices=Nivel.choices)
 
 
     # Un equipo no puede estar mas de una vez en el mismo torneo
@@ -78,9 +79,9 @@ class Eliminatoria(models.Model):
 
 class EliminatoriaGrupos(models.Model):
     torneo = models.ForeignKey(Torneo, null=False, blank=False, on_delete=models.CASCADE, related_name='eliminatoria_grupos')
-    eliminatoria = models.ForeignKey(Eliminatoria, null=False, blank=False, on_delete=models.CASCADE, related_name='eliminatoria_grupos')
+    eliminatoria = models.ForeignKey(Eliminatoria, null=True, blank=True, on_delete=models.SET_NULL, related_name='eliminatoria_grupos')
     n_clasificados_grupo = models.PositiveIntegerField(null=False, validators=[MinValueValidator(1)])
-    n_grupos = models.PositiveIntegerField(null=False, validators=[MinValueValidator(1), MaxValueValidator(16)])
+    n_grupos = models.PositiveIntegerField(null=False, validators=[MinValueValidator(1), MaxValueValidator(32)])
 
     class Meta:
         constraints = [
@@ -92,8 +93,7 @@ class EliminatoriaGrupos(models.Model):
     
     
 class Clasificacion(models.Model):
-    torneo = models.ForeignKey(Torneo, null=False, blank=False, on_delete=models.CASCADE, related_name='clasificaciones')
-    equipo = models.ForeignKey(Equipo, null=False, blank=False, on_delete=models.CASCADE, related_name='clasificaciones')
+    torneo_equipo = models.ForeignKey(TorneoEquipo, null=False, blank=False, on_delete=models.CASCADE, related_name='clasificaciones')
     eliminatoria_grupos = models.ForeignKey(EliminatoriaGrupos, null=True, blank=True, on_delete=models.CASCADE, related_name='clasificaciones')
     grupo = models.CharField(max_length=20, default="GENERAL")
     posicion = models.PositiveIntegerField(null=False)
@@ -101,17 +101,16 @@ class Clasificacion(models.Model):
     victorias = models.PositiveIntegerField(null=False, default=0)
     empates = models.PositiveIntegerField(null=False, default=0)
     derrotas = models.PositiveIntegerField(null=False, default=0)
-    anotacion_favor = models.PositiveIntegerField(null=False, default=0)
-    anotacion_contra = models.PositiveIntegerField(null=False, default=0)
+    anotacion_favor = models.IntegerField(null=False, default=0)
+    anotacion_contra = models.IntegerField(null=False, default=0)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["torneo", "grupo", "equipo"], name="uq_clasif_torneo_grupo_equipo"),
-            models.UniqueConstraint(fields=["torneo", "grupo", "posicion"], name="uq_clasif_torneo_grupo_posicion"),
+            models.UniqueConstraint(fields=["torneo_equipo", "grupo"], name="uq_clasif_torneo_grupo_equipo"),
         ]
 
     def __str__(self):
-        return f'Clasificacion: {self.equipo.nombre} en {self.torneo.nombre}'
+        return f'Clasificacion: {self.torneo_equipo.equipo.nombre} en {self.torneo_equipo.torneo.nombre}'
     
 
 

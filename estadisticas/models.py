@@ -7,7 +7,7 @@ class EstadisticasFutbol(models.Model):
     jugador = models.ForeignKey(Jugador, null=False, blank=False, on_delete=models.CASCADE, related_name='estadisticas_futbol')
     goles = models.PositiveIntegerField(null=False, default=0)
     asistencias = models.PositiveIntegerField(null=False, default=0)
-    goles_contra = models.PositiveIntegerField(null=False, default=0)
+    goles_contra = models.PositiveIntegerField(null=True, default=0)
 
     class Meta:
         constraints = [

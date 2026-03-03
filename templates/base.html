@@ -13,9 +13,10 @@
     />
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     <link rel="icon" href="{% static 'usuario/img/logo.png' %}" />
+    {% block extra_head %}{% endblock %}
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
         <div class="container-fluid">
             <div class="d-flex align-items-center w-100">
 
@@ -59,5 +60,7 @@
             </div>
         </div>
     </nav>
+    {% block content %}{% endblock %}
   </body>
+  {% block scripts %}{% endblock %}
 </html>

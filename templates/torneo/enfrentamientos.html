@@ -1,0 +1,112 @@
+{% extends "torneo/base_torneo.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block titulo %}{% trans 'Enfrentamientos' %}{% endblock %}
+
+{% block torneo_content %}
+    {% if enfrentamientos %}
+        <div class="container-enfrentamientos">
+            <div class="selector-ronda">
+                <label>{% trans 'Seleccionar:' %}</label>
+                <select onchange="window.location.href=this.value">
+                    {% for opt in enfrentamientos.selector %}
+                    <option value="{% url 'enfrentamientos:enfrentamientos_torneo' torneo.id opt.num %}" {% if opt.num == n_ronda %}selected{% endif %}>
+                        {{ opt.label}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="navegacion-enf">
+            <form method="get" action="{% url 'enfrentamientos:enfrentamientos_torneo' torneo.id n_ronda|add:'-1' %}">
+                    <button type="submit" class="btn-nav-enf" {% if not enfrentamientos.prev_jornada %}disabled{% endif %}>
+                        <img src="{% static 'torneo/img/atras.png' %}" alt="atras_jornada" width="35" height="35">
+                    </button>
+            </form>
+            <h4>{{ enfrentamientos.label }}</h4>
+            <form method="get" action="{% url 'enfrentamientos:enfrentamientos_torneo' torneo.id n_ronda|add:'1' %}">
+                    <button type="submit" class="btn-nav-enf" {% if not enfrentamientos.sig_jornada %}disabled{% endif %}>
+                        <img src="{% static 'torneo/img/siguiente.png' %}" alt="siguiente_jornada" width="35" height="35">
+                    </button>
+            </form>
+            </div>
+            <div class="enfrentamientos">
+                {% for enf in enfrentamientos.items %}
+                <div class="enf">
+                    {% if enf.equipo_local is None %}
+                        <span>{% trans 'Por Determinar' %}</span>
+                    {% elif enf.ganador == enf.equipo_local %}
+                        <span class="ganador"><strong>{{ enf.equipo_local }}</strong></span>
+                    {% else %}
+                        <span>{{ enf.equipo_local }}</span>
+                    {% endif %}
+                    {% if torneo.deporte == 'PAD' %}
+                        {% if enf.juegos_local_1 is not None and enf.juegos_local_2 is not None %}
+                            <span>{{ enf.juegos_local_1 }}  {{ enf.juegos_local_2 }} {% if enf.juegos_local_3 %}{{ enf.juegos_local_3 }}{% endif %}</span>
+                        {% else %}
+                            <span> </span>
+                        {% endif %}
+                    {% else %}
+                        {% if enf.anotacion_local is not None %}
+                            <span>{{ enf.anotacion_local }}</span>
+                        {% else %}
+                            <span> </span>
+                        {% endif %}
+                    {% endif %}
+                    <span> - </span>
+                    {% if torneo.deporte == 'PAD' %}
+                        {% if enf.juegos_visitante_1 is not None and enf.juegos_visitante_2 is not None %}
+                            <span>{{ enf.juegos_visitante_1 }}  {{ enf.juegos_visitante_2 }} {% if enf.juegos_visitante_3 %}{{ enf.juegos_visitante_3 }}{% endif %}</span>
+                        {% else %}
+                            <span> </span>
+                        {% endif %}
+                    {% else %}
+                        {% if enf.anotacion_visitante is not None %}
+                            <span>{{ enf.anotacion_visitante }}</span>
+                        {% else %}
+                            <span> </span>
+                        {% endif %}
+                    {% endif %}
+                    <div class="grid-5">
+                        {% if enf.equipo_visitante is None %}
+                            <span>{% trans 'Por Determinar' %}</span>
+                        {% elif enf.ganador == enf.equipo_visitante %}
+                            <span class="ganador"><strong>{{ enf.equipo_visitante }}</strong></span>
+                        {% else %}
+                            <span>{{ enf.equipo_visitante }}</span>
+                        {% endif %}
+                        <div class="acciones-enfr">
+                            {% if editor %}
+                                <a href="{% url 'enfrentamientos:editar_enfrentamiento' torneo.id n_ronda enf.id %}">
+                                    <img src="{% static 'torneo/img/editar.png' %}" alt="editar_enfrentamiento" width="20" height="20">
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'enfrentamientos:detalle_enfrentamiento' torneo.id n_ronda enf.id %}">
+                                <img src="{% static 'torneo/img/detalle.png' %}" alt="detalle_enfrentamiento" width="20" height="20">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+            <div class="no-enfrentamientos">
+                <h3>{% trans 'No existen enfrentamientos todavía' %}</h3>
+                {% if editor %}
+                <div>
+                    <button onclick="window.location.href='{% url 'enfrentamientos:generar_personalizados' torneo.id %}'" class="btn btn-enf">
+                        {% trans 'Generar enfrentamientos personalizados' %}
+                    </button>
+
+                    <form method="post" action="{% url 'enfrentamientos:generar_aleatorios' torneo.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-enf-2">
+                            {% trans 'Generar enfrentamientos aleatorios' %}
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        {% endif %}
+{% endblock %}

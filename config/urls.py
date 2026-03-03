@@ -25,4 +25,6 @@ urlpatterns = [
     path('usuario/', include('usuario.urls')),
     path('equipo/', include('equipo.urls')),
     path('torneo/', include('torneo.urls')),
+    path('', include('estadisticas.urls')),
+    path('torneo/', include('enfrentamiento.urls')),
 ]

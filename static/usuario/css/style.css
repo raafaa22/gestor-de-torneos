@@ -96,7 +96,7 @@ body {
 .auth-user select:focus {
   outline: none;
   border-color: black;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 0 0 2px black;
 }
 
 /* Help text de Django */
@@ -135,7 +135,7 @@ body {
   min-width: 180px;
   padding: 10px 22px;
 
-  background: #246bd6 !important;
+  background: #4784E0 !important;
   color: white !important;
 
   border-radius: 3px;
