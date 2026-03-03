@@ -88,11 +88,38 @@
         }
     }
 
+    function elementosGrupos() {
+        const selectorTipo = document.getElementById('id_tipo');
+        const tipoSeleccionado = selectorTipo.value;
+
+        const nGruposField = document.getElementById("id_n_grupos");
+        const nGruposLabel = document.querySelector('label[for="id_n_grupos"]');
+
+        const clasificadosField = document.getElementById("id_n_clasificados_grupo");
+        const clasificadosLabel = document.querySelector('label[for="id_n_clasificados_grupo"]');
+
+        if (tipoSeleccionado === 'ELG') {
+            nGruposField.classList.remove('d-none');
+            nGruposLabel.classList.remove('d-none');
+            clasificadosField.classList.remove('d-none');
+            clasificadosLabel.classList.remove('d-none');
+        } else {
+            nGruposField.classList.add('d-none');
+            nGruposLabel.classList.add('d-none');
+            clasificadosField.classList.add('d-none');
+            clasificadosLabel.classList.add('d-none');
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
+        tipoTorneo = document.getElementById('id_tipo');
+        deporte = document.getElementById('id_deporte');
+        tipoTorneo.disabled = true;
+        deporte.disabled = true;
         cambioPlayOffs();
         cambioDescenso();
         elementosLiga();
-        document.getElementById('id_tipo').addEventListener('change', elementosLiga);
+        elementosGrupos();
         document.getElementById('id_playoffs').addEventListener('change', cambioPlayOffs);
         document.getElementById('id_descenso').addEventListener('change', cambioDescenso);
         document.documentElement.classList.remove('js-loading');
