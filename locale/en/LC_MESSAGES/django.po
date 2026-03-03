@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-13 17:03+0100\n"
+"POT-Creation-Date: 2026-03-03 20:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,71 +56,73 @@ msgid ""
 "El número total de asistencias no puede superar el número de tiros de campo "
 "anotados por el equipo."
 msgstr ""
-"Total number of assists cannot be bigger than the number of field goals scored by "
-"the team."
+"Total number of assists cannot be bigger than the number of field goals "
+"scored by the team."
 
-#: enfrentamiento/views.py:51 enfrentamiento/views.py:63
+#: enfrentamiento/libs.py:215
+msgid "No se encontró el siguiente enfrentamiento para actualizar."
+msgstr "Next match to update was not found."
+
+#: enfrentamiento/libs.py:217
+msgid "No se puede actualizar la eliminatoria sin un ganador definido."
+msgstr "Knockout cannot be updated if there is no winner for the match."
+
+#: enfrentamiento/views.py:50 enfrentamiento/views.py:55
 #, python-format
 msgid "Jornada %(n)s"
 msgstr "Match day %(n)s"
 
-#: enfrentamiento/views.py:130
+#: enfrentamiento/views.py:124 enfrentamiento/views.py:188
 #, python-format
 msgid "Grupos - Jornada %(n)s"
 msgstr "Groups - Matchday %(n)s"
 
-#: enfrentamiento/views.py:133 enfrentamiento/views.py:175
-msgid "Playoffs - %(r)s"
-msgstr "Playoffs - %(r)s"
-
-#: enfrentamiento/views.py:152
+#: enfrentamiento/views.py:146 enfrentamiento/views.py:202
+#, python-format
 msgid "Fase de grupos - Jornada %(n)s"
 msgstr "Groups phase - Match day %(n)s"
 
-#: enfrentamiento/views.py:194 enfrentamiento/views.py:229
-#: enfrentamiento/views.py:251 enfrentamiento/views.py:314
-#: enfrentamiento/views.py:345 enfrentamiento/views.py:843
-#: estadisticas/views.py:39 torneo/views.py:43 torneo/views.py:84
-#: torneo/views.py:127 torneo/views.py:140 torneo/views.py:164
-#: torneo/views.py:177
+#: enfrentamiento/views.py:224 enfrentamiento/views.py:259
+#: enfrentamiento/views.py:281 enfrentamiento/views.py:344
+#: enfrentamiento/views.py:375 enfrentamiento/views.py:574
+#: enfrentamiento/views.py:588 enfrentamiento/views.py:643
+#: estadisticas/views.py:39 torneo/views.py:44 torneo/views.py:85
+#: torneo/views.py:128 torneo/views.py:169 torneo/views.py:193
+#: torneo/views.py:206
 msgid "No tienes permiso para acceder a esta página."
 msgstr "You don't have permission to access to this page."
 
-#: enfrentamiento/views.py:267
+#: enfrentamiento/views.py:297
 msgid "El equipo no participa en este enfrentamiento."
 msgstr "The team is not part of this match."
 
-#: enfrentamiento/views.py:538
-msgid "No se encontró el siguiente enfrentamiento para actualizar."
-msgstr "Next match to update was not found."
-
-#: enfrentamiento/views.py:540
-msgid "No se puede actualizar la eliminatoria sin un ganador definido."
-msgstr "Knockout cannot be updated if there is no winner for the match."
-
-#: enfrentamiento/views.py:740
+#: enfrentamiento/views.py:430
 msgid "El tercer set no puede terminar en empate."
 msgstr "Third set cannot finish in draw."
 
-#: enfrentamiento/views.py:742
+#: enfrentamiento/views.py:432
 msgid "Debe introducir el resultado del tercer set."
 msgstr "You must introduce a result in third set."
 
-#: enfrentamiento/views.py:744 enfrentamiento/views.py:748
+#: enfrentamiento/views.py:434 enfrentamiento/views.py:438
 msgid "En pádel no puede haber empates."
 msgstr "In paddle, draws cannot happen."
 
-#: enfrentamiento/views.py:746
+#: enfrentamiento/views.py:436
 msgid "Debe introducir el resultado del segundo set."
 msgstr "You must introduce a result in second set."
 
-#: enfrentamiento/views.py:750
+#: enfrentamiento/views.py:440
 msgid "Debe introducir el resultado del primer set."
 msgstr "You must introduce a result in first set."
 
-#: enfrentamiento/views.py:764
+#: enfrentamiento/views.py:454
 msgid "En baloncesto no puede haber empates."
 msgstr "In basketball, draws cannot happen."
+
+#: enfrentamiento/views.py:608 enfrentamiento/views.py:646
+msgid "Ya existen enfrentamientos para este torneo."
+msgstr "There are already matches for this tournament."
 
 #: gestor/choices.py:5
 msgid "Fútbol"
@@ -167,12 +169,13 @@ msgstr "Semifinal"
 msgid "Final"
 msgstr "Final"
 
-#: gestor/choices.py:21 gestor/choices.py:26 torneo/forms.py:16
+#: gestor/choices.py:21 gestor/choices.py:26 torneo/forms.py:17
 msgid "Organizador"
 msgstr "Organiser"
 
 #: gestor/choices.py:22 gestor/choices.py:27
-#: templates/torneo/clasificacion.html:17
+#: templates/torneo/clasificacion.html:20
+#: templates/torneo/clasificacion.html:50
 msgid "Equipo"
 msgstr "Team"
 
@@ -196,7 +199,8 @@ msgstr "Goals"
 msgid "Asistencias"
 msgstr "Assists"
 
-#: gestor/choices.py:35 templates/torneo/clasificacion.html:23
+#: gestor/choices.py:35 templates/torneo/clasificacion.html:26
+#: templates/torneo/clasificacion.html:56
 #: templates/torneo/estadisticas_torneo.html:18
 msgid "Puntos"
 msgstr "Points"
@@ -205,12 +209,27 @@ msgstr "Points"
 msgid "Rebotes"
 msgstr "Rebounds"
 
+#: gestor/choices.py:40
+msgid "Nivel 1"
+msgstr "Level 1"
+
+#: gestor/choices.py:41
+msgid "Nivel 2"
+msgstr "Level 2"
+
+#: gestor/choices.py:42
+msgid "Nivel 3"
+msgstr "Level 3"
+
+#: gestor/choices.py:43
+msgid "Nivel 4"
+msgstr "Level 4"
+
 #: templates/base.html:52
 msgid "Cerrar Sesión"
 msgstr "Log Out"
 
 #: templates/enfrentamientos/detalle.html:5
-
 msgid "Enfrentamiento:"
 msgstr "Match:"
 
@@ -252,6 +271,57 @@ msgstr "Add"
 msgid "Guardar"
 msgstr "Save"
 
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:5
+msgid "Generar enfrentamientos personalizados:"
+msgstr "Generate customized matches:"
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:10
+msgid "Selección de niveles de los equipos del torneo"
+msgstr "Selection of the tournament team levels"
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:11
+msgid "Los niveles se escogen del 1 al 4, siendo 1 el mejor y 4 el peor."
+msgstr "Levels are chosen from 1 to 4, being 1 the best and 4 the worst."
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:13
+msgid ""
+"Para los torneos eliminatoria, los niveles se utilizarán para generar "
+"enfrentamientos como en el formato de play-offs (mejores niveles contra "
+"peores, dejando una hipotética final entre niveles 1)."
+msgstr ""
+"For knockout tournaments, levels will be used to generate matches in a play-"
+"offs format (best levels against worst, leaving an hypothetical level 1 "
+"final)."
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:16
+msgid ""
+"Para los torneos de liga, los niveles se utilizarán para generar un "
+"calendario de enfrentamientos justo y con emoción. Además se podrá escoger "
+"si se quiere que haya ida y vuelta o solo una vuelta."
+msgstr ""
+"For league tournaments, levels will be used to generate a  fair and exciting "
+"matchup schedule. In addition, home and away or one-way matches can be "
+"chosen."
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:19
+msgid ""
+"Para los torneos con eliminatorias y fase de grupos, los niveles se "
+"utilizarán para generar grupos de niveles equilibrados. Como en liga, "
+"también se podrá elegir generar enfrentamientos con ida y vuelta o solo una "
+"vuelta en la fase de grupos, no en eliminatorias."
+msgstr ""
+"For tournaments with groups and a knockout round, levels will be used to "
+"generate balanced groups. Like in leagues, home and away ore one-wy matches "
+"can be chosen in the group phase only, not in knockout rounds."
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:27
+msgid "Ida y vuelta"
+msgstr "Home and away"
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:44
+msgid "Generar"
+msgstr "Generate"
+
 #: templates/equipo/dashboard.html:12
 #: templates/torneo/jugador_dashboard.html:12
 #: templates/usuario/admin_dashboard.html:12
@@ -287,23 +357,32 @@ msgstr "Teams"
 msgid "Estadísticas"
 msgstr "Statistics"
 
-#: templates/torneo/clasificacion.html:18
+#: templates/torneo/clasificacion.html:15
+msgid "Grupo"
+msgstr "Group"
+
+#: templates/torneo/clasificacion.html:21
+#: templates/torneo/clasificacion.html:51
 msgid "Victorias"
 msgstr "Victories"
 
-#: templates/torneo/clasificacion.html:19
+#: templates/torneo/clasificacion.html:22
+#: templates/torneo/clasificacion.html:52
 msgid "Empates"
 msgstr "Draws"
 
-#: templates/torneo/clasificacion.html:20
+#: templates/torneo/clasificacion.html:23
+#: templates/torneo/clasificacion.html:53
 msgid "Derrotas"
 msgstr "Defeats"
 
-#: templates/torneo/clasificacion.html:21
+#: templates/torneo/clasificacion.html:24
+#: templates/torneo/clasificacion.html:54
 msgid "Anotación a favor"
 msgstr "Scoring made"
 
-#: templates/torneo/clasificacion.html:22
+#: templates/torneo/clasificacion.html:25
+#: templates/torneo/clasificacion.html:55
 msgid "Anotación en contra"
 msgstr "Scoring received"
 
@@ -320,11 +399,11 @@ msgstr "To Be Determined"
 msgid "No existen enfrentamientos todavía"
 msgstr "There are still no matches"
 
-#: templates/torneo/enfrentamientos.html:97
+#: templates/torneo/enfrentamientos.html:99
 msgid "Generar enfrentamientos personalizados"
 msgstr "Generate customized matches"
 
-#: templates/torneo/enfrentamientos.html:98
+#: templates/torneo/enfrentamientos.html:105
 msgid "Generar enfrentamientos aleatorios"
 msgstr "Generate random matches"
 
@@ -417,11 +496,11 @@ msgstr "Search tournament..."
 msgid "Inicio de sesión"
 msgstr "Log in"
 
-#: templates/usuario/login.html:49
+#: templates/usuario/login.html:48
 msgid "Regístrate"
 msgstr "Sing up"
 
-#: templates/usuario/login.html:51
+#: templates/usuario/login.html:50
 msgid "Iniciar sesión"
 msgstr "Log in"
 
@@ -441,15 +520,23 @@ msgstr "Return"
 msgid "Registro de usuario"
 msgstr "User sign up"
 
-#: templates/usuario/registro.html:64
+#: templates/usuario/registro.html:60
 msgid "Rol de usuario:"
 msgstr "User role:"
 
-#: templates/usuario/registro.html:72
+#: templates/usuario/registro.html:68
 msgid "Registrarse"
 msgstr "Sign up"
 
-#: torneo/forms.py:26
+#: torneo/forms.py:22
+msgid "Número de grupos"
+msgstr "Number of groups"
+
+#: torneo/forms.py:29
+msgid "Clasificados por grupo"
+msgstr "Qualified teams by group"
+
+#: torneo/forms.py:40
 msgid ""
 "Marcar si el torneo es una liga y se quiere que haya una fase eliminatoria "
 "que decida al campeón, con el número de equipos especificado abajo."
@@ -457,7 +544,7 @@ msgstr ""
 "Only mark if the tournament is a league and a knockout phase to decide "
 "champion is wanted, select the number of teams taking part below."
 
-#: torneo/forms.py:27
+#: torneo/forms.py:41
 msgid ""
 "Marcar si el torneo es una liga y se quiere que haya descenso, con el número "
 "de equipos especificado abajo."
@@ -465,49 +552,49 @@ msgstr ""
 "Only mark if tournament is a league and team relegation is wanted, select "
 "the number of relegated teams below."
 
-#: torneo/forms.py:35
+#: torneo/forms.py:49
 msgid "Nombre del Torneo"
 msgstr "Tournament Name"
 
-#: torneo/forms.py:36
+#: torneo/forms.py:50
 msgid "Descripción"
 msgstr "Description"
 
-#: torneo/forms.py:37
+#: torneo/forms.py:51
 msgid "Número máximo de equipos"
 msgstr "Maximum number of teams"
 
-#: torneo/forms.py:38 usuario/forms.py:71
+#: torneo/forms.py:52 usuario/forms.py:71
 msgid "Deporte"
 msgstr "Sport"
 
-#: torneo/forms.py:39
+#: torneo/forms.py:53
 msgid "Tipo de Torneo"
 msgstr "Tournament Type"
 
-#: torneo/forms.py:40
+#: torneo/forms.py:54
 msgid "Play-offs"
 msgstr "Play-offs:"
 
-#: torneo/forms.py:41
+#: torneo/forms.py:55
 msgid "Número de equipos en play-offs"
 msgstr "Number of teams in play-offs"
 
-#: torneo/forms.py:42
+#: torneo/forms.py:56
 msgid "Descenso"
 msgstr "Relegation"
 
-#: torneo/forms.py:43
+#: torneo/forms.py:57
 msgid "Número de equipos en descenso"
 msgstr "Number of teams in relegation"
 
-#: torneo/forms.py:62
+#: torneo/forms.py:92
 msgid ""
 "Debe especificar el número de equipos en play-offs si ha marcado que hay "
 "play-offs."
 msgstr "You must specify number of teams in play-offs if play-offs is marked."
 
-#: torneo/forms.py:64
+#: torneo/forms.py:94
 msgid ""
 "El número de equipos en play-offs no puede ser mayor que el número máximo de "
 "equipos del torneo."
@@ -515,26 +602,26 @@ msgstr ""
 "Number of teams in play-offs cannot be bigger than the maximum of the "
 "tournament."
 
-#: torneo/forms.py:66
+#: torneo/forms.py:96
 msgid ""
 "El número de equipos en play-offs no puede ser mayor que 32 ya que como "
 "máximo puede haber 5 rondas en una eliminatoria."
 msgstr ""
-"Number of teams in play-offs cannot be bigger than 32 due to the maximum number of rounds in a knockout: 5."
+"Number of teams in play-offs cannot be bigger than 32 due to the maximum "
+"number of rounds in a knockout: 5."
 
-#: torneo/forms.py:68
+#: torneo/forms.py:98
 msgid "El número de equipos en play-offs no puede ser menor que 2."
-msgstr ""
-"Number of temas in play-offs cannot be smaller than 2."
+msgstr "Number of temas in play-offs cannot be smaller than 2."
 
-#: torneo/forms.py:76
+#: torneo/forms.py:106
 msgid ""
 "Debe especificar el número de equipos en descenso si ha marcado que hay "
 "descenso."
 msgstr ""
 "You must specify number of teams in relegation if relegation is marked."
 
-#: torneo/forms.py:78
+#: torneo/forms.py:108
 msgid ""
 "El número de equipos en descenso no puede ser mayor que el número máximo de "
 "equipos del torneo."
@@ -542,13 +629,45 @@ msgstr ""
 "Number of temas in relegation cannot be bigger than the maximum of the "
 "tournament."
 
-#: torneo/forms.py:86
+#: torneo/forms.py:116
 msgid ""
 "La suma de equipos en play-offs y en descenso no puede ser mayor que el "
 "número máximo de equipos del torneo."
 msgstr ""
 "The sum of teams in play-offs and relegation cannot be bigger than the "
 "maximum of the tournament."
+
+#: torneo/forms.py:124
+msgid "Se debe indicar el número de grupos."
+msgstr "Number of groups must be filled."
+
+#: torneo/forms.py:127
+msgid "Se debe indicar cuántos equipos se clasifican por grupo."
+msgstr "Number of teams qualified by group must be filled."
+
+#: torneo/forms.py:131
+msgid ""
+"El número máximo de equipos debe ser divisible entre el número de grupos "
+"(para que los grupos tengan el mismo tamaño)."
+msgstr ""
+"The maximum number of teams must be divisible by the number of groups (for "
+"all groups having the same size)."
+
+#: torneo/forms.py:136
+msgid "No pueden clasificarse más equipos de los que hay en cada grupo."
+msgstr "There cannot be more teams qualified than are in each group."
+
+#: torneo/forms.py:140
+msgid "Debe haber al menos 2 clasificados en total para crear eliminatoria."
+msgstr ""
+"In total, there must be at least 2 qualified teams to create a knockout "
+"round."
+
+#: torneo/forms.py:142
+msgid "El total de clasificados no puede superar 32 (máximo 5 rondas)."
+msgstr ""
+"Total number of teams qualified cannot be bigger than 32 (maximum of 5 "
+"rounds)."
 
 #: usuario/forms.py:16 usuario/forms.py:28 usuario/forms.py:78
 #: usuario/forms.py:80
@@ -574,3 +693,6 @@ msgstr "An account already exists with this email."
 #: usuario/models.py:25
 msgid "El DNI debe tener 8 dígitos seguidos de una letra mayúscula."
 msgstr "Spanish ID must have 8 digits followed by a capital letter."
+
+#~ msgid "Playoffs - %(r)s"
+#~ msgstr "Playoffs - %(r)s"
