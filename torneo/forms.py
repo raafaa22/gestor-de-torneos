@@ -65,6 +65,12 @@ class CrearTorneoForm(forms.ModelForm):
             if eg:
                 self.fields['n_grupos'].initial = eg.n_grupos
                 self.fields['n_clasificados_grupo'].initial = eg.n_clasificados_grupo
+            
+            
+            self.fields['deporte'].required = False
+            self.fields['tipo'].required = False
+            self.fields['deporte'].widget.attrs['disabled'] = 'disabled'
+            self.fields['tipo'].widget.attrs['disabled'] = 'disabled'
 
         if Organizador.objects.filter(user=user).exists():
             self.fields.pop('organizador')
@@ -72,6 +78,11 @@ class CrearTorneoForm(forms.ModelForm):
     
     def clean(self):
         cleaned = super().clean()
+
+        
+        if self.instance and self.instance.pk:
+            cleaned['deporte'] = self.instance.deporte
+            cleaned['tipo'] = self.instance.tipo
 
         max_eq = cleaned.get('max_equipos')
 
