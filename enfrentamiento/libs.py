@@ -685,7 +685,7 @@ def generar_eliminatoria_personalizado(torneo: Torneo, niveles: dict[int, int]):
     crear_cuadro_eliminatoria(torneo, equipos) 
 
 
-def generar_jornadas_fase_grupos(torneo: Torneo, grupos_equipos: list[list]):
+def generar_jornadas_fase_grupos(torneo: Torneo, grupos_equipos: list[list], ida_vuelta: bool = False):
     #Borramos primero por si hubiese enfrentamientos y jornadas previas
     Enfrentamiento.objects.filter(jornada__torneo=torneo).delete()
     Jornada.objects.filter(torneo=torneo).delete()
@@ -704,9 +704,23 @@ def generar_jornadas_fase_grupos(torneo: Torneo, grupos_equipos: list[list]):
                         equipo_local=local,
                         equipo_visitante=visitante
                     )
+
+    if ida_vuelta:
+        fin_ida = num_jornadas
+        for jornada_idx in range(num_jornadas):
+            jornada = Jornada.objects.create(torneo=torneo, n_jornada=fin_ida + jornada_idx + 1)
+            for grupo in enfrentamientos_grupo:
+                if jornada_idx < len(grupo):
+                    partidos = grupo[jornada_idx]
+                    for local, visitante in partidos:
+                        Enfrentamiento.objects.create(
+                            jornada=jornada,
+                            equipo_local=visitante,
+                            equipo_visitante=local
+                        )
     
 
-def generar_fase_grupos_aleatorio(torneo: Torneo):
+def generar_fase_grupos_aleatorio(torneo: Torneo, ida_vuelta: bool = False):
     eliminatoria_grupos = EliminatoriaGrupos.objects.filter(torneo=torneo).first()
     if not eliminatoria_grupos:
         return
@@ -743,9 +757,9 @@ def generar_fase_grupos_aleatorio(torneo: Torneo):
                 )
             pos += 1
 
-    generar_jornadas_fase_grupos(torneo, grupos_equipos)
+    generar_jornadas_fase_grupos(torneo, grupos_equipos, ida_vuelta)
 
-def generar_fase_grupos_personalizado(torneo: Torneo, niveles: dict[int, int]):
+def generar_fase_grupos_personalizado(torneo: Torneo, niveles: dict[int, int], ida_vuelta: bool = False):
     eliminatoria_grupos = EliminatoriaGrupos.objects.filter(torneo=torneo).first()
     if not eliminatoria_grupos:
         return
@@ -783,4 +797,4 @@ def generar_fase_grupos_personalizado(torneo: Torneo, niveles: dict[int, int]):
                 )
             pos += 1
 
-    generar_jornadas_fase_grupos(torneo, grupos_equipos)
+    generar_jornadas_fase_grupos(torneo, grupos_equipos, ida_vuelta)

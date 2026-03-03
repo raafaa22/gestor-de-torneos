@@ -601,7 +601,7 @@ def generar_enfrentamientos_personalizados(request, torneo_id: int):
                 niveles[equipo.equipo.id] = int(nivel)
 
         ida_vuelta = False
-        if torneo.tipo == TipoTorneo.LIGA and request.POST.get("ida-vuelta") == "on":
+        if (torneo.tipo == TipoTorneo.LIGA or torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS) and request.POST.get("ida-vuelta") == "on":
             ida_vuelta = True
 
         if Enfrentamiento.objects.filter(Q(jornada__torneo=torneo) | Q(eliminatoria__torneo=torneo)).exists():
@@ -622,9 +622,9 @@ def generar_enfrentamientos_personalizados(request, torneo_id: int):
 
         elif torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
             if iguales:
-                generar_fase_grupos_aleatorio(torneo)
+                generar_fase_grupos_aleatorio(torneo, ida_vuelta)
             else:
-                generar_fase_grupos_personalizado(torneo, niveles)
+                generar_fase_grupos_personalizado(torneo, niveles, ida_vuelta)
 
         return redirect('enfrentamientos:enfrentamientos_torneo', torneo_id=torneo.id, n_ronda=1)
         
