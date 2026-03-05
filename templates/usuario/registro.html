@@ -46,6 +46,15 @@
       <form method="post" novalidate>
           {% csrf_token %}
 
+          <div>
+            <label for="id_rol">{% trans "Rol de usuario:" %}</label>
+            <select id="id_rol" name="rol">
+              {% for choice in rol_choices %}
+                  <option value="{{ choice.value }}" {% if choice.value == rol %}selected{% endif %}>{{ choice.label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
           <div id="org_form">
             {{ org_form.as_p }}
           </div>
@@ -56,14 +65,6 @@
 
           {{ user_form.as_p }}
 
-          <div>
-            <label for="id_rol">{% trans "Rol de usuario:" %}</label>
-            <select id="id_rol" name="rol">
-              {% for choice in rol_choices %}
-                  <option value="{{ choice.value }}" {% if choice.value == rol %}selected{% endif %}>{{ choice.label }}</option>
-              {% endfor %}
-            </select>
-          </div>
           
           <button type="submit" class="btn btn-primary">{% trans "Registrarse" %}</button>
       </form>
