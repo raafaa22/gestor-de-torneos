@@ -50,3 +50,13 @@
     </div>
 </div>
 {% endblock %}
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deporte = document.getElementById('id_deporte');
+        if (deporte) deporte.disabled = true;
+        const esPortero = document.getElementById('id_es_portero');
+        if (esPortero) esPortero.disabled = true;
+    });
+</script>
+{% endblock %}
