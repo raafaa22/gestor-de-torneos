@@ -30,11 +30,11 @@
             <p><strong>{% trans "Tipo de torneo:" %}</strong> {{ torneo.get_tipo_display }}</p>
             <p><strong>{% trans "Play-offs:" %}</strong> {% if torneo.playoffs %}{% trans "Sí" %}{% else %}{% trans "No" %}{% endif %}</p>
             {% if torneo.playoffs %}
-                <p><strong>{% trans "Número de equipos en play-offs:" %}</strong> {{ torneo.num_equipos_playoffs }}</p>
+                <p><strong>{% trans "Número de equipos en play-offs:" %}</strong> {{ torneo.n_equipos_playoffs }}</p>
             {% endif %}
             <p><strong>{% trans "Descenso:" %}</strong> {% if torneo.descenso %}{% trans "Sí" %}{% else %}{% trans "No" %}{% endif %}</p>
             {% if torneo.descenso %}
-                <p><strong>{% trans "Número de equipos en descenso:" %}</strong> {{ torneo.num_equipos_descenso }}</p>
+                <p><strong>{% trans "Número de equipos en descenso:" %}</strong> {{ torneo.n_equipos_descenso }}</p>
             {% endif %}
         </div>
     {% endif %}
