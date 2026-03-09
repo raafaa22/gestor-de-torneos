@@ -1,0 +1,27 @@
+.btn-torneos{
+    margin-right: 10px;
+    background-color: #4784E0;
+    color: white;
+    border: none;
+    font-size: 14px !important;
+}
+
+.btn-torneos:hover {
+    background-color: #9BBCEE;
+    color: white;
+    border: none;
+}
+
+.btn-jugadores {
+    margin-right: 10px;
+    background-color: #E0A347;
+    color: white;
+    border: none;
+    font-size: 14px !important;
+}
+
+.btn-jugadores:hover {
+    background-color: #EECD9B;
+    color: white;
+    border: none;
+}
