@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Rafael Serano Algar <rafaelserranoalgar@gmail.com>, 2026.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-06 13:26+0100\n"
+"POT-Creation-Date: 2026-03-09 21:18+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,11 +59,11 @@ msgstr ""
 "Total number of assists cannot be bigger than the number of field goals "
 "scored by the team."
 
-#: enfrentamiento/libs.py:215
+#: enfrentamiento/libs.py:415
 msgid "No se encontró el siguiente enfrentamiento para actualizar."
 msgstr "Next match to update was not found."
 
-#: enfrentamiento/libs.py:217
+#: enfrentamiento/libs.py:417
 msgid "No se puede actualizar la eliminatoria sin un ganador definido."
 msgstr "Knockout cannot be updated if there is no winner for the match."
 
@@ -85,10 +85,10 @@ msgstr "Groups phase - Match day %(n)s"
 #: enfrentamiento/views.py:224 enfrentamiento/views.py:259
 #: enfrentamiento/views.py:281 enfrentamiento/views.py:344
 #: enfrentamiento/views.py:375 enfrentamiento/views.py:574
-#: enfrentamiento/views.py:588 enfrentamiento/views.py:643
-#: estadisticas/views.py:39 torneo/views.py:44 torneo/views.py:85
-#: torneo/views.py:128 torneo/views.py:169 torneo/views.py:193
-#: torneo/views.py:206
+#: enfrentamiento/views.py:588 enfrentamiento/views.py:641
+#: estadisticas/views.py:39 torneo/views.py:45 torneo/views.py:86
+#: torneo/views.py:129 torneo/views.py:170 torneo/views.py:194
+#: torneo/views.py:207
 msgid "No tienes permiso para acceder a esta página."
 msgstr "You don't have permission to access to this page."
 
@@ -119,10 +119,6 @@ msgstr "You must introduce a result in first set."
 #: enfrentamiento/views.py:454
 msgid "En baloncesto no puede haber empates."
 msgstr "In basketball, draws cannot happen."
-
-#: enfrentamiento/views.py:608 enfrentamiento/views.py:646
-msgid "Ya existen enfrentamientos para este torneo."
-msgstr "There are already matches for this tournament."
 
 #: gestor/choices.py:5
 msgid "Fútbol"
@@ -254,6 +250,7 @@ msgstr "Victories/Loses"
 
 #: templates/enfrentamientos/detalle.html:33
 #: templates/enfrentamientos/detalle.html:80
+#: templates/equipo/listado_jugadores.html:6
 msgid "Jugadores"
 msgstr "Players"
 
@@ -322,11 +319,57 @@ msgstr "Home and away"
 msgid "Generar"
 msgstr "Generate"
 
-#: templates/equipo/dashboard.html:12
-#: templates/torneo/jugador_dashboard.html:12
+#: templates/equipo/dashboard.html:6 templates/torneo/jugador_dashboard.html:12
 #: templates/usuario/admin_dashboard.html:12
 msgid "Principal"
 msgstr "Main"
+
+#: templates/equipo/dashboard.html:16
+#: templates/torneo/organizador_dashboard.html:9
+msgid "Listado de torneos"
+msgstr "Tournament list"
+
+#: templates/equipo/dashboard.html:20
+msgid "Inscribirse en torneo"
+msgstr "Register for a tournament"
+
+#: templates/equipo/dashboard.html:23
+msgid "Ver jugadores"
+msgstr "See players"
+
+#: templates/equipo/dashboard.html:34
+#: templates/torneo/organizador_dashboard.html:24
+msgid "Buscar torneo..."
+msgstr "Search tournament..."
+
+#: templates/equipo/dashboard.html:41 templates/torneo/equipos_torneo.html:20
+#: templates/torneo/organizador_dashboard.html:31 usuario/forms.py:91
+#: usuario/forms.py:100 usuario/forms.py:109 usuario/forms.py:118
+msgid "Nombre"
+msgstr "Name"
+
+#: templates/equipo/dashboard.html:42
+#: templates/torneo/organizador_dashboard.html:33
+msgid "Tipo"
+msgstr "Type"
+
+#: templates/equipo/dashboard.html:43
+msgid "Estado"
+msgstr "Status"
+
+#: templates/equipo/dashboard.html:44 templates/torneo/clasificacion.html:24
+#: templates/torneo/clasificacion.html:54
+msgid "Anotación a favor"
+msgstr "Scoring made"
+
+#: templates/equipo/dashboard.html:45 templates/torneo/clasificacion.html:25
+#: templates/torneo/clasificacion.html:55
+msgid "Anotación en contra"
+msgstr "Scoring received"
+
+#: templates/equipo/listado_torneos.html:6
+msgid "Inscribirse"
+msgstr "Register"
 
 #: templates/torneo/base_torneo.html:15
 msgid "Editar Información"
@@ -376,45 +419,38 @@ msgstr "Draws"
 msgid "Derrotas"
 msgstr "Defeats"
 
-#: templates/torneo/clasificacion.html:24
-#: templates/torneo/clasificacion.html:54
-msgid "Anotación a favor"
-msgstr "Scoring made"
-
-#: templates/torneo/clasificacion.html:25
-#: templates/torneo/clasificacion.html:55
-msgid "Anotación en contra"
-msgstr "Scoring received"
-
 #: templates/torneo/enfrentamientos.html:11
 msgid "Seleccionar:"
 msgstr "Select:"
 
-#: templates/torneo/enfrentamientos.html:37
-#: templates/torneo/enfrentamientos.html:72
+#: templates/torneo/enfrentamientos.html:22
+msgid "Enfrentamientos personalizados"
+msgstr "Customized matches"
+
+#: templates/torneo/enfrentamientos.html:28
+msgid "Enfrentamientos aleatorios"
+msgstr "Random matches"
+
+#: templates/torneo/enfrentamientos.html:50
+#: templates/torneo/enfrentamientos.html:85
 msgid "Por Determinar"
 msgstr "To Be Determined"
 
-#: templates/torneo/enfrentamientos.html:95
+#: templates/torneo/enfrentamientos.html:108
 msgid "No existen enfrentamientos todavía"
 msgstr "There are still no matches"
 
-#: templates/torneo/enfrentamientos.html:99
+#: templates/torneo/enfrentamientos.html:112
 msgid "Generar enfrentamientos personalizados"
 msgstr "Generate customized matches"
 
-#: templates/torneo/enfrentamientos.html:105
+#: templates/torneo/enfrentamientos.html:118
 msgid "Generar enfrentamientos aleatorios"
 msgstr "Generate random matches"
 
 #: templates/torneo/equipos_torneo.html:15
 msgid "Buscar equipo..."
 msgstr "Search team..."
-
-#: templates/torneo/equipos_torneo.html:20 usuario/forms.py:91
-#: usuario/forms.py:100 usuario/forms.py:109 usuario/forms.py:118
-msgid "Nombre"
-msgstr "Name"
 
 #: templates/torneo/estadisticas_torneo.html:71
 msgid "Goles en contra"
@@ -480,17 +516,14 @@ msgstr "Create a new tournament"
 msgid "Crear Torneo"
 msgstr "Create tournament"
 
-#: templates/torneo/organizador_dashboard.html:9
-msgid "Listado de torneos"
-msgstr "Tournament list"
-
 #: templates/torneo/organizador_dashboard.html:14
 msgid "Crear torneo"
 msgstr "Create tournament"
 
-#: templates/torneo/organizador_dashboard.html:24
-msgid "Buscar torneo..."
-msgstr "Search tournament..."
+#: templates/torneo/organizador_dashboard.html:32 torneo/forms.py:52
+#: usuario/forms.py:101
+msgid "Deporte"
+msgstr "Sport"
 
 #: templates/usuario/login.html:10 templates/usuario/login.html:42
 msgid "Inicio de sesión"
@@ -575,10 +608,6 @@ msgstr "Description"
 #: torneo/forms.py:51
 msgid "Número máximo de equipos"
 msgstr "Maximum number of teams"
-
-#: torneo/forms.py:52 usuario/forms.py:101
-msgid "Deporte"
-msgstr "Sport"
 
 #: torneo/forms.py:53
 msgid "Tipo de Torneo"
@@ -721,6 +750,17 @@ msgstr "Is goalkeeper"
 #: usuario/models.py:25
 msgid "El DNI debe tener 8 dígitos seguidos de una letra mayúscula."
 msgstr "Spanish ID must have 8 digits followed by a capital letter."
+
+
+#~ msgid "Anotacion a favor"
+#~ msgstr "Scoring made"
+
+
+#~ msgid "Anotacion en contra"
+#~ msgstr "Scoring received"
+
+#~ msgid "Ya existen enfrentamientos para este torneo."
+#~ msgstr "There are already matches for this tournament."
 
 #~ msgid "Playoffs - %(r)s"
 #~ msgstr "Playoffs - %(r)s"
