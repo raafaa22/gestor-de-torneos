@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Rafael Serano Algar <rafaelserranoalgar@gmail.com>, 2026.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-03 20:30+0100\n"
+"POT-Creation-Date: 2026-03-06 13:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -411,8 +411,8 @@ msgstr "Generate random matches"
 msgid "Buscar equipo..."
 msgstr "Search team..."
 
-#: templates/torneo/equipos_torneo.html:20 usuario/forms.py:61
-#: usuario/forms.py:70
+#: templates/torneo/equipos_torneo.html:20 usuario/forms.py:91
+#: usuario/forms.py:100 usuario/forms.py:109 usuario/forms.py:118
 msgid "Nombre"
 msgstr "Name"
 
@@ -504,9 +504,21 @@ msgstr "Sing up"
 msgid "Iniciar sesión"
 msgstr "Log in"
 
-#: templates/usuario/perfil.html:12
+#: templates/usuario/perfil.html:7
 msgid "Perfil de usuario"
 msgstr "User profile"
+
+#: templates/usuario/perfil.html:19
+msgid "Datos del perfil"
+msgstr "Profile information"
+
+#: templates/usuario/perfil.html:29
+msgid "Guardar cambios"
+msgstr "Save changes"
+
+#: templates/usuario/perfil.html:37 templates/usuario/perfil.html:46
+msgid "Cambiar contraseña"
+msgstr "Change password"
 
 #: templates/usuario/registro.html:10
 msgid "Registro"
@@ -520,11 +532,11 @@ msgstr "Return"
 msgid "Registro de usuario"
 msgstr "User sign up"
 
-#: templates/usuario/registro.html:60
+#: templates/usuario/registro.html:50
 msgid "Rol de usuario:"
 msgstr "User role:"
 
-#: templates/usuario/registro.html:68
+#: templates/usuario/registro.html:69
 msgid "Registrarse"
 msgstr "Sign up"
 
@@ -564,7 +576,7 @@ msgstr "Description"
 msgid "Número máximo de equipos"
 msgstr "Maximum number of teams"
 
-#: torneo/forms.py:52 usuario/forms.py:71
+#: torneo/forms.py:52 usuario/forms.py:101
 msgid "Deporte"
 msgstr "Sport"
 
@@ -669,12 +681,12 @@ msgstr ""
 "Total number of teams qualified cannot be bigger than 32 (maximum of 5 "
 "rounds)."
 
-#: usuario/forms.py:16 usuario/forms.py:28 usuario/forms.py:78
-#: usuario/forms.py:80
+#: usuario/forms.py:16 usuario/forms.py:28 usuario/forms.py:140
+#: usuario/forms.py:142
 msgid "Correo Electrónico"
 msgstr "Email"
 
-#: usuario/forms.py:29 usuario/forms.py:81
+#: usuario/forms.py:29 usuario/forms.py:143
 msgid "Contraseña"
 msgstr "Password"
 
@@ -686,9 +698,25 @@ msgstr "Repeat the password"
 msgid "Debe coincidir con la contraseña anterior."
 msgstr "Must meet the previous one."
 
-#: usuario/forms.py:38
+#: usuario/forms.py:38 usuario/forms.py:69
 msgid "Ya existe una cuenta con este correo electrónico."
 msgstr "An account already exists with this email."
+
+#: usuario/forms.py:62
+msgid "El correo es obligatorio."
+msgstr "The email is mandatory"
+
+#: usuario/forms.py:117
+msgid "DNI"
+msgstr "ID"
+
+#: usuario/forms.py:119
+msgid "Apellidos"
+msgstr "Surnames"
+
+#: usuario/forms.py:120
+msgid "Es portero"
+msgstr "Is goalkeeper"
 
 #: usuario/models.py:25
 msgid "El DNI debe tener 8 dígitos seguidos de una letra mayúscula."

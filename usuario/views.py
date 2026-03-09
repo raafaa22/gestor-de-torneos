@@ -3,10 +3,14 @@ from django.utils.translation import gettext as _
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from gestor.choices import RolUsuario
-from usuario.forms import UserRegisterForm, OrganizadorForm, EquipoForm, EmailAuthenticationForm
-from usuario.models import Organizador, Administrador, Jugador
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
+from gestor.choices import RolUsuario, TipoUsuario
+from .forms import UserRegisterForm, OrganizadorForm, EquipoForm, EmailAuthenticationForm, AdministradorForm, JugadorForm, UserUpdateForm
+from .models import Organizador, Administrador, Jugador
 from equipo.models import Equipo
+from torneo.views import tipo_usuario
 
 
 ROL_CHOICES = [
@@ -99,7 +103,54 @@ def home(request):
 
 @login_required
 def perfil(request):
-    return render(request, 'usuario/perfil.html')
+    usuario = request.user
+    tipo = tipo_usuario(usuario)
+
+    if tipo == TipoUsuario.ADMINISTRADOR:
+        rol_instance = Administrador.objects.get(user=usuario)
+        RolForm = AdministradorForm
+    elif tipo == TipoUsuario.ORGANIZADOR:
+        rol_instance = Organizador.objects.get(user=usuario)
+        RolForm = OrganizadorForm
+    elif tipo == TipoUsuario.JUGADOR:
+        rol_instance = Jugador.objects.get(user=usuario)
+        RolForm = JugadorForm
+    elif tipo == TipoUsuario.EQUIPO:
+        rol_instance = Equipo.objects.get(user=usuario)
+        RolForm = EquipoForm
+    else:
+        rol_instance = None
+        RolForm = None
+
+    user_form = UserUpdateForm(instance=usuario)
+    rol_form = RolForm(instance=rol_instance) if RolForm else None
+    clave_form = PasswordChangeForm(user=usuario)
+
+    if request.method == 'POST':
+        accion = request.POST.get('accion')
+
+        if accion == 'datos':
+            user_form = UserUpdateForm(request.POST, instance=usuario)
+            rol_form = RolForm(request.POST, instance=rol_instance) if RolForm else None
+            forms_validos = user_form.is_valid() and (rol_form is None or rol_form.is_valid())
+            if forms_validos:
+                user_form.save()
+                if rol_form:
+                    rol_form.save()
+                return redirect('usuario:home')
+
+        elif accion == 'clave':
+            clave_form = PasswordChangeForm(user=usuario, data=request.POST)
+            if clave_form.is_valid():
+                clave_form.save()
+                update_session_auth_hash(request, usuario)
+                return redirect('usuario:home')
+
+    return render(request, 'usuario/perfil.html', {
+        'user_form': user_form,
+        'rol_form': rol_form,
+        'clave_form': clave_form,
+    })
 
 
 @login_required

@@ -1,17 +1,62 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% load static %}
-{% get_current_language as LANGUAGE_CODE %}
-{% get_available_languages as LANGUAGES %}
-{% get_language_info_list for LANGUAGES as languages %}
-<!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans 'Perfil de usuario' %}</title>
-</head>
-<body>
-    
-</body>
-</html>
+
+
+{% block content %}
+<div class="perfil-container">
+    <h2 class="mb-4">{% trans "Perfil de usuario" %}</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="container-form">
+        <h3>{% trans "Datos del perfil" %}</h3>
+        <div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="accion" value="datos">
+
+                {{ user_form.as_p }}
+                {{ rol_form.as_p }}   
+
+                <div class="form-btn">
+                    <button type="submit" class="btn">{% trans "Guardar cambios" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="container-form">
+        <h3>{% trans "Cambiar contraseña" %}</h3>
+        <div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="accion" value="clave">
+
+                {{ clave_form.as_p }}
+
+                <div class="form-btn">
+                    <button type="submit" class="btn">{% trans "Cambiar contraseña" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deporte = document.getElementById('id_deporte');
+        if (deporte) deporte.disabled = true;
+        const esPortero = document.getElementById('id_es_portero');
+        if (esPortero) esPortero.disabled = true;
+    });
+</script>
+{% endblock %}
