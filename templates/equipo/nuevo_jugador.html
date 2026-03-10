@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block extra_head %}
+    <title>{% trans 'Jugadores' %}</title>
+    <link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}" />
+    <link rel="stylesheet" href="{% static 'equipo/css/equipo.css' %}" />
+{% endblock %}
