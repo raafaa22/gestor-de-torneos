@@ -22,6 +22,117 @@ RONDAS = [
     TipoRonda.FINAL
 ]
 
+
+@transaction.atomic
+def baja_equipo_torneo(torneo: Torneo, equipo: Equipo):
+    torneo_equipo = TorneoEquipo.objects.filter(torneo=torneo, equipo=equipo).first()
+    if not torneo_equipo:
+        return
+
+    jugadores = Jugador.objects.filter(equipo=equipo)
+    equipos_afectados = set()
+
+    grupo_equipo = None
+    if torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
+        clasif = Clasificacion.objects.filter(torneo_equipo=torneo_equipo).first()
+        if clasif:
+            grupo_equipo = clasif.grupo
+
+    if torneo.tipo in (TipoTorneo.LIGA, TipoTorneo.ELIMINATORIA_GRUPOS):
+        enfrentamientos_jornada = Enfrentamiento.objects.filter(
+            jornada__torneo=torneo
+        ).filter(Q(equipo_local=equipo) | Q(equipo_visitante=equipo))
+
+        for enf in enfrentamientos_jornada:
+            if enf.equipo_local == equipo and enf.equipo_visitante:
+                equipos_afectados.add(enf.equipo_visitante)
+            elif enf.equipo_visitante == equipo and enf.equipo_local:
+                equipos_afectados.add(enf.equipo_local)
+
+        enfrentamientos_jornada.delete()
+
+    if torneo.tipo in (TipoTorneo.ELIMINATORIA, TipoTorneo.ELIMINATORIA_GRUPOS):
+        eliminatoria = Eliminatoria.objects.filter(torneo=torneo).first()
+        if eliminatoria:
+            enfrentamientos_elim = list(Enfrentamiento.objects.filter(
+                eliminatoria=eliminatoria
+            ).filter(Q(equipo_local=equipo) | Q(equipo_visitante=equipo)))
+
+            for enf in enfrentamientos_elim:
+                oponente = enf.equipo_visitante if enf.equipo_local == equipo else enf.equipo_local
+
+                if oponente:
+                    sig = Enfrentamiento.objects.filter(eliminatoria=eliminatoria, prev_local=enf).first()
+                    if sig:
+                        sig.equipo_local = oponente
+                        sig.prev_local = None
+                        sig.save()
+                    else:
+                        sig = Enfrentamiento.objects.filter(eliminatoria=eliminatoria, prev_visitante=enf).first()
+                        if sig:
+                            sig.equipo_visitante = oponente
+                            sig.prev_visitante = None
+                            sig.save()
+
+                enf.delete()
+
+
+    if torneo.deporte == Deporte.FUTBOL:
+        EstadisticasFutbol.objects.filter(torneo=torneo, jugador__in=jugadores).delete()
+    elif torneo.deporte == Deporte.BALONCESTO:
+        EstadisticasBaloncesto.objects.filter(torneo=torneo, jugador__in=jugadores).delete()
+
+    torneo_equipo.delete()
+
+    if torneo.tipo in (TipoTorneo.LIGA, TipoTorneo.ELIMINATORIA_GRUPOS):
+        for eq in equipos_afectados:
+            recalcular_clasificacion_equipo(torneo, eq)
+
+        if torneo.tipo == TipoTorneo.LIGA:
+            clasificaciones = Clasificacion.objects.filter(
+                torneo_equipo__torneo=torneo
+            ).annotate(
+                dif=ExpressionWrapper(F('anotacion_favor') - F('anotacion_contra'), output_field=IntegerField())
+            ).order_by('-puntos', '-victorias', '-dif', 'derrotas', '-anotacion_favor', 'anotacion_contra')
+
+            for i, c in enumerate(clasificaciones):
+                c.posicion = i + 1
+                c.save()
+
+        elif torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS and grupo_equipo:
+            clasificaciones = Clasificacion.objects.filter(
+                torneo_equipo__torneo=torneo, grupo=grupo_equipo
+            ).annotate(
+                dif=ExpressionWrapper(F('anotacion_favor') - F('anotacion_contra'), output_field=IntegerField())
+            ).order_by('-puntos', '-victorias', '-dif', 'derrotas', '-anotacion_favor', 'anotacion_contra')
+
+            for i, c in enumerate(clasificaciones):
+                c.posicion = i + 1
+                c.save()
+
+
+@transaction.atomic
+def limpiar_datos_torneo(torneo: Torneo):
+    Enfrentamiento.objects.filter(
+        Q(jornada__torneo=torneo) | Q(eliminatoria__torneo=torneo)
+    ).delete()
+    Jornada.objects.filter(torneo=torneo).delete()
+    Eliminatoria.objects.filter(torneo=torneo).delete()
+
+    EstadisticasFutbol.objects.filter(torneo=torneo).delete()
+    EstadisticasBaloncesto.objects.filter(torneo=torneo).delete()
+
+    if torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
+        Clasificacion.objects.filter(torneo_equipo__torneo=torneo).delete()
+    else:
+        Clasificacion.objects.filter(torneo_equipo__torneo=torneo).update(
+            puntos=0, victorias=0, empates=0, derrotas=0,
+            anotacion_favor=0, anotacion_contra=0
+        )
+
+    torneo.ganador = None
+    torneo.save()
+
 @transaction.atomic
 def actualizar_clasificacion(torneo: Torneo, enfrentamiento: Enfrentamiento):
     eq_local = TorneoEquipo.objects.filter(torneo=torneo, equipo=enfrentamiento.equipo_local).first()
@@ -197,6 +308,95 @@ def actualizar_clasificacion(torneo: Torneo, enfrentamiento: Enfrentamiento):
         for i, equipo in enumerate(equipos):
             equipo.posicion = i + 1
             equipo.save()
+
+
+@transaction.atomic
+def recalcular_clasificacion_equipo(torneo: Torneo, equipo: Equipo):
+    te = TorneoEquipo.objects.filter(torneo=torneo, equipo=equipo).first()
+    if not te:
+        return
+
+    clasif = Clasificacion.objects.filter(torneo_equipo=te).first()
+    if not clasif:
+        return
+
+    puntos_ganador = 0
+    puntos_perdedor = 0
+
+    if torneo.deporte == Deporte.FUTBOL:
+        puntos_ganador = 3
+    elif torneo.deporte == Deporte.BALONCESTO:
+        puntos_ganador = 2
+        puntos_perdedor = 1
+    else:
+        puntos_ganador = 1
+
+    qs = Enfrentamiento.objects.filter(
+        Q(equipo_local=equipo) | Q(equipo_visitante=equipo),
+        jornada__torneo=torneo
+    )
+
+    if torneo.deporte == Deporte.PADEL:
+        qs_jugados = qs.filter(ganador__isnull=False)
+
+        datos = qs_jugados.aggregate(
+            juegos_local_1=Sum('juegos_local_1', filter=Q(equipo_local=equipo)),
+            juegos_local_2=Sum('juegos_local_2', filter=Q(equipo_local=equipo)),
+            juegos_local_3=Sum('juegos_local_3', filter=Q(equipo_local=equipo)),
+            juegos_visitante_1=Sum('juegos_visitante_1', filter=Q(equipo_visitante=equipo)),
+            juegos_visitante_2=Sum('juegos_visitante_2', filter=Q(equipo_visitante=equipo)),
+            juegos_visitante_3=Sum('juegos_visitante_3', filter=Q(equipo_visitante=equipo)),
+            contra_local_1=Sum('juegos_visitante_1', filter=Q(equipo_local=equipo)),
+            contra_local_2=Sum('juegos_visitante_2', filter=Q(equipo_local=equipo)),
+            contra_local_3=Sum('juegos_visitante_3', filter=Q(equipo_local=equipo)),
+            contra_visitante_1=Sum('juegos_local_1', filter=Q(equipo_visitante=equipo)),
+            contra_visitante_2=Sum('juegos_local_2', filter=Q(equipo_visitante=equipo)),
+            contra_visitante_3=Sum('juegos_local_3', filter=Q(equipo_visitante=equipo))
+        )
+
+        anotacion_favor = sum(datos[k] or 0 for k in [
+            'juegos_local_1', 'juegos_local_2', 'juegos_local_3',
+            'juegos_visitante_1', 'juegos_visitante_2', 'juegos_visitante_3'
+        ])
+        anotacion_contra = sum(datos[k] or 0 for k in [
+            'contra_local_1', 'contra_local_2', 'contra_local_3',
+            'contra_visitante_1', 'contra_visitante_2', 'contra_visitante_3'
+        ])
+    else:
+        qs_jugados = qs.filter(anotacion_local__isnull=False, anotacion_visitante__isnull=False)
+
+        datos = qs_jugados.aggregate(
+            total_local=Sum('anotacion_local', filter=Q(equipo_local=equipo)),
+            total_visitante=Sum('anotacion_visitante', filter=Q(equipo_visitante=equipo)),
+            contra_local=Sum('anotacion_visitante', filter=Q(equipo_local=equipo)),
+            contra_visitante=Sum('anotacion_local', filter=Q(equipo_visitante=equipo))
+        )
+        anotacion_favor = (datos['total_local'] or 0) + (datos['total_visitante'] or 0)
+        anotacion_contra = (datos['contra_local'] or 0) + (datos['contra_visitante'] or 0)
+
+    victorias = qs_jugados.filter(ganador=equipo).count()
+    derrotas = qs_jugados.exclude(ganador__isnull=True).exclude(ganador=equipo).count()
+
+    if torneo.deporte == Deporte.FUTBOL:
+        empates = qs_jugados.filter(ganador__isnull=True).count()
+        portero = Jugador.objects.filter(equipo=equipo, es_portero=True).first()
+        if portero:
+            est = EstadisticasFutbol.objects.filter(torneo=torneo, jugador=portero).first()
+            if est:
+                est.goles_contra = anotacion_contra
+                est.save()
+    else:
+        empates = 0
+
+    puntos = victorias * puntos_ganador + derrotas * puntos_perdedor + empates
+
+    clasif.puntos = puntos
+    clasif.victorias = victorias
+    clasif.empates = empates
+    clasif.derrotas = derrotas
+    clasif.anotacion_favor = anotacion_favor
+    clasif.anotacion_contra = anotacion_contra
+    clasif.save()
 
     
 @transaction.atomic

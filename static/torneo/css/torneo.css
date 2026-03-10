@@ -327,6 +327,8 @@ th {
 .selector-ronda {
   margin-left: 10px;
   margin-bottom: 30px;
+  display: flex;
+  align-items: center;
 }
 
 .selector-ronda select {
@@ -336,9 +338,28 @@ th {
 }
 
 .selector-ronda label {
-  display: block;
-  margin-bottom: 5px;
+  margin-bottom: 0;
+  margin-right: 8px;
   font-size: 18px;
+  white-space: nowrap;
+}
+
+.selector-ronda .float-end {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.selector-ronda .float-end form {
+  display: contents;
+}
+
+.selector-ronda .btn-enf,
+.selector-ronda .btn-enf-2 {
+  font-size: 12px;
+  width: auto;
+  padding: 4px 10px;
 }
 
 .btn-nav-enf {

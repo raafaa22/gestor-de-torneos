@@ -604,9 +604,7 @@ def generar_enfrentamientos_personalizados(request, torneo_id: int):
         if (torneo.tipo == TipoTorneo.LIGA or torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS) and request.POST.get("ida-vuelta") == "on":
             ida_vuelta = True
 
-        if Enfrentamiento.objects.filter(Q(jornada__torneo=torneo) | Q(eliminatoria__torneo=torneo)).exists():
-            return HttpResponse(_("Ya existen enfrentamientos para este torneo."), status=400)
-        
+        limpiar_datos_torneo(torneo)
 
         if torneo.tipo == TipoTorneo.LIGA:
             if iguales:
@@ -642,9 +640,8 @@ def generar_enfrentamientos_aleatorios(request, torneo_id: int):
     if not tiene_permiso(usuario, torneo):
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
 
-    if Enfrentamiento.objects.filter(Q(jornada__torneo=torneo) | Q(eliminatoria__torneo=torneo)).exists():
-        return HttpResponse(_("Ya existen enfrentamientos para este torneo."), status=400)
-    
+    limpiar_datos_torneo(torneo)
+
     if torneo.tipo == TipoTorneo.LIGA:
         generar_liga_aleatorio(torneo)
     elif torneo.tipo == TipoTorneo.ELIMINATORIA:
