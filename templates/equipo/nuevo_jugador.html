@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block extra_head %}
+    <title>{% trans 'Jugadores' %}</title>
+    <link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}" />
+    <link rel="stylesheet" href="{% static 'equipo/css/equipo.css' %}" />
+{% endblock %}
+{% block content %}
+    <div class="torneo-header">
+        <div class="navbar-brand float-start nuevo d-flex align-items-center">
+            <a href="javascript:history.back()">
+                <img src="{% static 'torneo/img/atras.png' %}" alt="nuevo" width="33" height="33" />
+            </a>
+            <h3 class="mt-0">
+                <strong>{% trans "Nuevo jugador del equipo" %} {{ equipo.nombre }}</strong>
+            </h3>
+        </div>
+    </div>
+
+    <form method="post">
+        <div class="container-form">
+            {% csrf_token %}
+            {{ jugador_form.as_p }}
+            {{ user_form.as_p }}
+        </div>
+        <div class="form-btn">
+            <button type="submit" class="btn float-end">{% trans "Crear Jugador" %}</button>
+        </div>
+    </form>
+{% endblock %}

@@ -5,6 +5,8 @@ from django.http import HttpResponseForbidden
 from django.db import transaction
 
 from .models import Equipo
+from usuario.models import Jugador
+from usuario.forms import JugadorForm, UserUpdateForm, UserRegisterForm
 from enfrentamiento.models import Enfrentamiento
 from torneo.models import Torneo, TorneoEquipo, Clasificacion, Eliminatoria
 from gestor.choices import TipoTorneo, TipoUsuario, Deporte
@@ -99,9 +101,112 @@ def dar_baja_torneo(request, torneo_id):
 
     return redirect('equipo:dashboard')
 
-
+@login_required
 def listado_torneos_inscribir(request, equipo_id):
     return render(request, 'equipo/listado_torneos.html')
 
+@login_required
 def listado_jugadores(request, equipo_id):
-    return render(request, 'equipo/listado_jugadores.html')
+    usuario = request.user
+    equipo = get_object_or_404(Equipo, id=equipo_id)
+    tipo = tipo_usuario(usuario)
+
+    if tipo != TipoUsuario.EQUIPO and tipo != TipoUsuario.ADMINISTRADOR:
+        return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
+    
+    if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
+        return HttpResponseForbidden("No puedes modificar jugadores de otros equipos.")
+    
+    jugadores = Jugador.objects.filter(equipo=equipo)
+
+    return render(request, 'equipo/listado_jugadores.html', {'jugadores': jugadores, 'equipo': equipo})
+
+
+@login_required
+def crear_jugador(request, equipo_id):
+    usuario = request.user
+    equipo = get_object_or_404(Equipo, id=equipo_id)
+    tipo = tipo_usuario(usuario)
+
+    if tipo != TipoUsuario.EQUIPO and tipo != TipoUsuario.ADMINISTRADOR:
+        return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
+    
+    if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
+        return HttpResponseForbidden("No puedes modificar jugadores de otros equipos.")
+    
+    if request.method == 'POST':
+        user_form = UserRegisterForm(request.POST)
+        jugador_form = JugadorForm(request.POST, equipo=equipo)
+
+        if user_form.is_valid() and jugador_form.is_valid():
+            user = user_form.save()
+
+            if equipo.deporte == Deporte.FUTBOL and jugador_form.cleaned_data.get("es_portero"):
+                Jugador.objects.filter(equipo=equipo, es_portero=True).update(es_portero=False)
+            
+            jugador = jugador_form.save(commit=False)
+            jugador.user = user
+            jugador.equipo = equipo
+            jugador.save()
+
+            return redirect('equipo:listado_jugadores', equipo_id=equipo.id)
+    else:
+        user_form = UserRegisterForm()
+        jugador_form = JugadorForm(equipo=equipo)
+
+    return render(request, 'equipo/nuevo_jugador.html', {'user_form': user_form, 'jugador_form': jugador_form, 'equipo': equipo})
+
+
+@login_required
+def editar_jugador(request, equipo_id, jugador_id):
+    usuario = request.user
+    equipo = get_object_or_404(Equipo, id=equipo_id)
+    tipo = tipo_usuario(usuario)
+
+    if tipo != TipoUsuario.EQUIPO and tipo != TipoUsuario.ADMINISTRADOR:
+        return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
+    
+    if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
+        return HttpResponseForbidden("No puedes modificar jugadores de otros equipos.")
+    
+    jugador = get_object_or_404(Jugador, dni=jugador_id, equipo=equipo)
+
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=jugador.user)
+        jugador_form = JugadorForm(request.POST, instance=jugador, equipo=equipo)
+
+        if user_form.is_valid() and jugador_form.is_valid():
+            user_form.save()
+
+            if equipo.deporte == Deporte.FUTBOL and jugador_form.cleaned_data.get("es_portero"):
+                Jugador.objects.filter(equipo=equipo, es_portero=True).exclude(dni=jugador.dni).update(es_portero=False)
+            
+            jugador_form.save()
+
+            return redirect('equipo:listado_jugadores', equipo_id=equipo.id)
+    else:
+        user_form = UserUpdateForm(instance=jugador.user)
+        jugador_form = JugadorForm(instance=jugador, equipo=equipo)
+    
+
+    return render(request, 'equipo/editar_jugador.html', {'user_form': user_form, 'jugador_form': jugador_form, 'equipo': equipo, 'jugador': jugador})
+
+
+@login_required
+@require_POST
+def borrar_jugador(request, equipo_id, jugador_id):
+    usuario = request.user
+    equipo = get_object_or_404(Equipo, id=equipo_id)
+    tipo = tipo_usuario(usuario)
+
+    if tipo != TipoUsuario.EQUIPO and tipo != TipoUsuario.ADMINISTRADOR:
+        return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
+    
+    if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
+        return HttpResponseForbidden("No puedes modificar jugadores de otros equipos.")
+    
+    jugador = get_object_or_404(Jugador, dni=jugador_id, equipo=equipo)
+
+    jugador.user.delete()
+
+    return redirect('equipo:listado_jugadores', equipo_id=equipo.id)
