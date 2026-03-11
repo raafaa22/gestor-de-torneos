@@ -166,7 +166,7 @@
   margin: 0 !important;
 }
 
-.container-form .helptext {
+.container-form input[type="checkbox"] ~ .helptext {
   grid-column: 3;
   font-size: 12px;
   justify-self: start;
@@ -175,6 +175,7 @@
   align-self: start;
   display: inline;
 }
+
 
 .container-form p {
   margin: 18px 18px;
