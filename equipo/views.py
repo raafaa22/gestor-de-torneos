@@ -189,7 +189,7 @@ def editar_jugador(request, equipo_id, jugador_id):
         jugador_form = JugadorForm(instance=jugador, equipo=equipo)
     
 
-    return render(request, 'equipo/editar_jugador.html')
+    return render(request, 'equipo/editar_jugador.html', {'user_form': user_form, 'jugador_form': jugador_form, 'equipo': equipo, 'jugador': jugador})
 
 
 @login_required

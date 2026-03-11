@@ -19,6 +19,11 @@
                 <strong>{% trans "Jugadores del equipo" %} {{ equipo.nombre }}</strong>
             </h3>
         </div>
+
+        <a href="{% url 'equipo:crear_jugador' equipo.id %}" class="navbar-brand float-end nuevo d-flex align-items-center">
+            <img src="{% static 'torneo/img/nuevo.png' %}" alt="nuevo" width="25" height="25" class="align-middle me-1"/>
+            <strong class="align-middle">{% trans 'Nuevo jugador' %}</strong>
+        </a>
     </div>
 
     <div class="container-table">
