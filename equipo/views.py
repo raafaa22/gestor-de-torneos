@@ -150,6 +150,7 @@ def listado_jugadores(request, equipo_id):
 
 
 @login_required
+@transaction.atomic
 def crear_jugador(request, equipo_id):
     usuario = request.user
     equipo = get_object_or_404(Equipo, id=equipo_id)
@@ -157,13 +158,13 @@ def crear_jugador(request, equipo_id):
 
     if tipo != TipoUsuario.EQUIPO and tipo != TipoUsuario.ADMINISTRADOR:
         return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
-    
+
     if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
         return HttpResponseForbidden(_("No puedes crear jugadores en otros equipos."))
-    
+
     if equipo.deporte == Deporte.PADEL:
         return HttpResponseForbidden(_("En pádel los propios jugadores son el equipo, por lo que tu equipo no tiene jugadores."))
-    
+
     if request.method == 'POST':
         user_form = UserRegisterForm(request.POST)
         jugador_form = JugadorForm(request.POST, equipo=equipo)
@@ -171,13 +172,28 @@ def crear_jugador(request, equipo_id):
         if user_form.is_valid() and jugador_form.is_valid():
             user = user_form.save()
 
-            if equipo.deporte == Deporte.FUTBOL and jugador_form.cleaned_data.get("es_portero"):
+            es_portero_nuevo = equipo.deporte == Deporte.FUTBOL and jugador_form.cleaned_data.get("es_portero")
+
+            antiguo_portero = None
+            if es_portero_nuevo:
+                antiguo_portero = Jugador.objects.filter(equipo=equipo, es_portero=True).first()
                 Jugador.objects.filter(equipo=equipo, es_portero=True).update(es_portero=False)
-            
+
             jugador = jugador_form.save(commit=False)
             jugador.user = user
             jugador.equipo = equipo
             jugador.save()
+
+            for te in TorneoEquipo.objects.filter(equipo=equipo):
+                if te.torneo.deporte == Deporte.FUTBOL:
+                    EstadisticasFutbol.objects.create(jugador=jugador, torneo=te.torneo, goles=0, asistencias=0)
+                elif te.torneo.deporte == Deporte.BALONCESTO:
+                    EstadisticasBaloncesto.objects.create(jugador=jugador, torneo=te.torneo, puntos=0, rebotes=0, asistencias=0)
+
+            if es_portero_nuevo and antiguo_portero:
+                for est in EstadisticasFutbol.objects.filter(jugador=antiguo_portero):
+                    EstadisticasFutbol.objects.filter(jugador=jugador, torneo=est.torneo).update(goles_contra=est.goles_contra)
+                EstadisticasFutbol.objects.filter(jugador=antiguo_portero).update(goles_contra=None)
 
             return redirect('equipo:listado_jugadores', equipo_id=equipo.id)
     else:
@@ -188,6 +204,7 @@ def crear_jugador(request, equipo_id):
 
 
 @login_required
+@transaction.atomic
 def editar_jugador(request, equipo_id, jugador_id):
     usuario = request.user
     equipo = get_object_or_404(Equipo, id=equipo_id)
@@ -205,6 +222,7 @@ def editar_jugador(request, equipo_id, jugador_id):
     jugador = get_object_or_404(Jugador, dni=jugador_id, equipo=equipo)
 
     if request.method == 'POST':
+        era_portero = jugador.es_portero
         user_form = UserUpdateForm(request.POST, instance=jugador.user)
         jugador_form = JugadorForm(request.POST, instance=jugador, equipo=equipo)
 
@@ -212,7 +230,16 @@ def editar_jugador(request, equipo_id, jugador_id):
             user_form.save()
 
             if equipo.deporte == Deporte.FUTBOL and jugador_form.cleaned_data.get("es_portero"):
+                if not era_portero:
+                    antiguo_portero = Jugador.objects.filter(equipo=equipo, es_portero=True).first()
+                    if antiguo_portero:
+                        for est in EstadisticasFutbol.objects.filter(jugador=antiguo_portero):
+                            EstadisticasFutbol.objects.filter(jugador=jugador, torneo=est.torneo).update(goles_contra=est.goles_contra)
+                        EstadisticasFutbol.objects.filter(jugador=antiguo_portero).update(goles_contra=None)
                 Jugador.objects.filter(equipo=equipo, es_portero=True).exclude(dni=jugador.dni).update(es_portero=False)
+
+            elif equipo.deporte == Deporte.FUTBOL and era_portero and not jugador_form.cleaned_data.get("es_portero"):
+                EstadisticasFutbol.objects.filter(jugador=jugador).update(goles_contra=None)
             
             jugador_form.save()
 
