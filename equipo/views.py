@@ -20,8 +20,9 @@ from estadisticas.models import EstadisticasFutbol, EstadisticasBaloncesto
 def dashboard(request):
     usuario = request.user
     equipo = Equipo.objects.filter(user=usuario).first()
+    tipo = tipo_usuario(usuario)
 
-    if equipo is None or tipo_usuario(usuario) != TipoUsuario.EQUIPO:
+    if equipo is None:
         return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
     
     datos = []
@@ -91,7 +92,7 @@ def dar_baja_torneo(request, torneo_id):
     usuario = request.user
     equipo = Equipo.objects.filter(user=usuario).first()
 
-    if equipo is None or tipo_usuario(usuario) != TipoUsuario.EQUIPO:
+    if equipo is None:
         return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
 
     torneo = get_object_or_404(Torneo, id=torneo_id)
@@ -140,6 +141,9 @@ def listado_jugadores(request, equipo_id):
     if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
         return HttpResponseForbidden(_("Estos no son tus jugadores."))
     
+    if equipo.deporte == Deporte.PADEL:
+        return HttpResponseForbidden(_("En pádel los propios jugadores son el equipo, por lo que tu equipo no tiene jugadores."))
+    
     jugadores = Jugador.objects.filter(equipo=equipo)
 
     return render(request, 'equipo/listado_jugadores.html', {'jugadores': jugadores, 'equipo': equipo})
@@ -156,6 +160,9 @@ def crear_jugador(request, equipo_id):
     
     if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
         return HttpResponseForbidden(_("No puedes crear jugadores en otros equipos."))
+    
+    if equipo.deporte == Deporte.PADEL:
+        return HttpResponseForbidden(_("En pádel los propios jugadores son el equipo, por lo que tu equipo no tiene jugadores."))
     
     if request.method == 'POST':
         user_form = UserRegisterForm(request.POST)
@@ -191,6 +198,9 @@ def editar_jugador(request, equipo_id, jugador_id):
     
     if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
         return HttpResponseForbidden(_("No puedes modificar jugadores de otros equipos."))
+    
+    if equipo.deporte == Deporte.PADEL:
+        return HttpResponseForbidden(_("En pádel los propios jugadores son el equipo, por lo que tu equipo no tiene jugadores."))
     
     jugador = get_object_or_404(Jugador, dni=jugador_id, equipo=equipo)
 
@@ -228,6 +238,9 @@ def borrar_jugador(request, equipo_id, jugador_id):
     if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
         return HttpResponseForbidden(_("No puedes borrar jugadores de otros equipos."))
     
+    if equipo.deporte == Deporte.PADEL:
+        return HttpResponseForbidden(_("En pádel los propios jugadores son el equipo, por lo que tu equipo no tiene jugadores."))
+    
     jugador = get_object_or_404(Jugador, dni=jugador_id, equipo=equipo)
 
     jugador.user.delete()
@@ -244,8 +257,7 @@ def inscribir_equipo_torneo(request, torneo_id, equipo_id):
 
     if tipo != TipoUsuario.EQUIPO and tipo != TipoUsuario.ADMINISTRADOR:
         return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
-    
-    breakpoint()
+
     
     if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
         return HttpResponseForbidden(_("No puedes inscribir otros equipos en torneos."))
