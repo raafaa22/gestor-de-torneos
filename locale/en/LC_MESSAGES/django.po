@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Rafael Serano Algar <rafaelserranoalgar@gmail.com>, 2026.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-11 20:01+0100\n"
+"POT-Creation-Date: 2026-03-12 14:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,11 +59,11 @@ msgstr ""
 "Total number of assists cannot be bigger than the number of field goals "
 "scored by the team."
 
-#: enfrentamiento/libs.py:415
+#: enfrentamiento/libs.py:416
 msgid "No se encontró el siguiente enfrentamiento para actualizar."
 msgstr "Next match to update was not found."
 
-#: enfrentamiento/libs.py:417
+#: enfrentamiento/libs.py:418
 msgid "No se puede actualizar la eliminatoria sin un ganador definido."
 msgstr "Knockout cannot be updated if there is no winner for the match."
 
@@ -83,42 +83,82 @@ msgid "Fase de grupos - Jornada %(n)s"
 msgstr "Groups phase - Match day %(n)s"
 
 #: enfrentamiento/views.py:224 enfrentamiento/views.py:259
-#: enfrentamiento/views.py:281 enfrentamiento/views.py:344
-#: enfrentamiento/views.py:375 enfrentamiento/views.py:574
-#: enfrentamiento/views.py:588 enfrentamiento/views.py:641
-#: estadisticas/views.py:39 torneo/views.py:45 torneo/views.py:86
-#: torneo/views.py:129 torneo/views.py:170 torneo/views.py:194
-#: torneo/views.py:207
+#: enfrentamiento/views.py:284 enfrentamiento/views.py:347
+#: enfrentamiento/views.py:378 enfrentamiento/views.py:583
+#: enfrentamiento/views.py:597 enfrentamiento/views.py:650 equipo/views.py:25
+#: equipo/views.py:95 equipo/views.py:112 equipo/views.py:138
+#: equipo/views.py:155 equipo/views.py:190 equipo/views.py:226
+#: equipo/views.py:246 estadisticas/views.py:39 torneo/views.py:45
+#: torneo/views.py:86 torneo/views.py:129 torneo/views.py:170
+#: torneo/views.py:194 torneo/views.py:207
 msgid "No tienes permiso para acceder a esta página."
 msgstr "You don't have permission to access to this page."
 
-#: enfrentamiento/views.py:297
+#: enfrentamiento/views.py:269
+msgid ""
+"No se pueden editar las estadísticas de un enfrentamiento sin ambos equipos "
+"asignados."
+msgstr ""
+
+#: enfrentamiento/views.py:300
 msgid "El equipo no participa en este enfrentamiento."
 msgstr "The team is not part of this match."
 
-#: enfrentamiento/views.py:430
+#: enfrentamiento/views.py:433
 msgid "El tercer set no puede terminar en empate."
 msgstr "Third set cannot finish in draw."
 
-#: enfrentamiento/views.py:432
+#: enfrentamiento/views.py:435
 msgid "Debe introducir el resultado del tercer set."
 msgstr "You must introduce a result in third set."
 
-#: enfrentamiento/views.py:434 enfrentamiento/views.py:438
+#: enfrentamiento/views.py:437 enfrentamiento/views.py:441
 msgid "En pádel no puede haber empates."
 msgstr "In paddle, draws cannot happen."
 
-#: enfrentamiento/views.py:436
+#: enfrentamiento/views.py:439
 msgid "Debe introducir el resultado del segundo set."
 msgstr "You must introduce a result in second set."
 
-#: enfrentamiento/views.py:440
+#: enfrentamiento/views.py:443
 msgid "Debe introducir el resultado del primer set."
 msgstr "You must introduce a result in first set."
 
 #: enfrentamiento/views.py:454
+msgid "Debes introducir los dos resultados o dejarlos ambos en blanco."
+msgstr "You must introduce both results or leave both empty."
+
+#: enfrentamiento/views.py:465
 msgid "En baloncesto no puede haber empates."
 msgstr "In basketball, draws cannot happen."
+
+#: equipo/views.py:99
+msgid "No estás inscrito en este torneo."
+msgstr "You are not registered for this tournament."
+
+#: equipo/views.py:115
+msgid "Esta página no es de tu equipo"
+msgstr "This page doesn't belong to your team"
+
+#: equipo/views.py:141
+msgid "Estos no son tus jugadores."
+msgstr "These are not your players."
+
+#: equipo/views.py:158
+msgid "No puedes crear jugadores en otros equipos."
+msgstr "You cannot create players in other teams."
+
+#: equipo/views.py:193
+msgid "No puedes modificar jugadores de otros equipos."
+msgstr "You cannot modify players from other teams."
+
+#: equipo/views.py:229
+msgid "No puedes borrar jugadores de otros equipos."
+msgstr "You cannot delete players from other teams."
+
+#: equipo/views.py:251
+msgid "No puedes inscribir otros equipos en torneos."
+msgstr "You cannot register teams in other tournaments."
 
 #: gestor/choices.py:5
 msgid "Fútbol"
@@ -339,20 +379,21 @@ msgstr "Register for a tournament"
 msgid "Ver jugadores"
 msgstr "See players"
 
-#: templates/equipo/dashboard.html:30
+#: templates/equipo/dashboard.html:30 templates/equipo/listado_torneos.html:21
 #: templates/torneo/organizador_dashboard.html:24
 msgid "Buscar torneo..."
 msgstr "Search tournament..."
 
 #: templates/equipo/dashboard.html:36
 #: templates/equipo/listado_jugadores.html:37
+#: templates/equipo/listado_torneos.html:27
 #: templates/torneo/equipos_torneo.html:20
 #: templates/torneo/organizador_dashboard.html:31 usuario/forms.py:92
 #: usuario/forms.py:101 usuario/forms.py:110 usuario/forms.py:119
 msgid "Nombre"
 msgstr "Name"
 
-#: templates/equipo/dashboard.html:37
+#: templates/equipo/dashboard.html:37 templates/equipo/listado_torneos.html:28
 #: templates/torneo/organizador_dashboard.html:33
 msgid "Tipo"
 msgstr "Type"
@@ -380,7 +421,6 @@ msgid "Guardar cambios"
 msgstr "Save changes"
 
 #: templates/equipo/listado_jugadores.html:19
-
 msgid "Jugadores del equipo"
 msgstr "Players from the team"
 
@@ -417,6 +457,10 @@ msgstr "No"
 #: templates/equipo/listado_torneos.html:6
 msgid "Inscribirse"
 msgstr "Register"
+
+#: templates/equipo/listado_torneos.html:15
+msgid "Listado de torneos disponibles para inscribirse"
+msgstr "List of available tournaments for registration"
 
 #: templates/equipo/nuevo_jugador.html:17
 msgid "Nuevo jugador del equipo"
@@ -781,4 +825,3 @@ msgstr "The email is mandatory"
 #: usuario/models.py:26
 msgid "El DNI debe tener 8 dígitos seguidos de una letra mayúscula."
 msgstr "Spanish ID must have 8 digits followed by a capital letter."
-
