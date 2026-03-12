@@ -16,6 +16,20 @@
                     </option>
                     {% endfor %}
                 </select>
+                {% if editor %}
+                <div class="float-end">
+                    <button onclick="window.location.href='{% url 'enfrentamientos:generar_personalizados' torneo.id %}'" class="btn btn-enf">
+                        {% trans 'Enfrentamientos personalizados' %}
+                    </button>
+
+                    <form method="post" action="{% url 'enfrentamientos:generar_aleatorios' torneo.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-enf-2">
+                            {% trans 'Enfrentamientos aleatorios' %}
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
             </div>
             <div class="navegacion-enf">
             <form method="get" action="{% url 'enfrentamientos:enfrentamientos_torneo' torneo.id n_ronda|add:'-1' %}">

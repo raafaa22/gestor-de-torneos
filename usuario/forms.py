@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, Pass
 
 from usuario.models import Administrador, Organizador, Jugador
 from equipo.models import Equipo
+from gestor.choices import Deporte
 
 
 
@@ -120,11 +121,23 @@ class JugadorForm(forms.ModelForm):
             "es_portero": _("Es portero"),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, equipo=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self.equipo = equipo
 
         if self.instance and self.instance.pk:
             self.fields["dni"].disabled = True
+
+        if not self.equipo or self.equipo.deporte != Deporte.FUTBOL:
+            self.fields.pop("es_portero", None)
+
+    def clean(self):
+        cleaned = super().clean()
+
+        if self.equipo and self.equipo.deporte != Deporte.FUTBOL:
+            cleaned["es_portero"] = False
+
+        return cleaned
 
     def clean_dni(self):
         if self.instance and self.instance.pk:

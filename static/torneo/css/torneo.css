@@ -119,8 +119,10 @@
 }
 
 .container-form input[type="text"],
-.container-form input[type="number"] {
-  width: 80%;
+.container-form input[type="number"],
+.container-form input[type="email"],
+.container-form input[type="password"] {
+  width: 60%;
   height: 25px;
   font-size: 14px;
   padding: 5px 7px;
@@ -138,7 +140,7 @@
 }
 
 .container-form select {
-  width: 80%;
+  width: 60%;
   height: 27px;
   font-size: 14px;
   padding: 2px 7px;
@@ -148,7 +150,7 @@
 }
 
 .container-form textarea {
-  width: 80%;
+  width: 60%;
   font-size: 14px;
   padding: 5px 7px;
   border: black 1px solid;
@@ -164,7 +166,7 @@
   margin: 0 !important;
 }
 
-.container-form .helptext {
+.container-form input[type="checkbox"] ~ .helptext {
   grid-column: 3;
   font-size: 12px;
   justify-self: start;
@@ -173,6 +175,7 @@
   align-self: start;
   display: inline;
 }
+
 
 .container-form p {
   margin: 18px 18px;
@@ -327,6 +330,8 @@ th {
 .selector-ronda {
   margin-left: 10px;
   margin-bottom: 30px;
+  display: flex;
+  align-items: center;
 }
 
 .selector-ronda select {
@@ -336,9 +341,28 @@ th {
 }
 
 .selector-ronda label {
-  display: block;
-  margin-bottom: 5px;
+  margin-bottom: 0;
+  margin-right: 8px;
   font-size: 18px;
+  white-space: nowrap;
+}
+
+.selector-ronda .float-end {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.selector-ronda .float-end form {
+  display: contents;
+}
+
+.selector-ronda .btn-enf,
+.selector-ronda .btn-enf-2 {
+  font-size: 12px;
+  width: auto;
+  padding: 4px 10px;
 }
 
 .btn-nav-enf {

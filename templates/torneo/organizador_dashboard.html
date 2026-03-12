@@ -28,9 +28,9 @@
     <table id="torneosTable" class="table table-hover">
       <thead>
         <tr>
-          <th>Nombre</th>
-          <th>Deporte</th>
-          <th>Tipo</th>
+          <th>{% trans 'Nombre' %}</th>
+          <th>{% trans 'Deporte' %}</th>
+          <th>{% trans 'Tipo' %}</th>
           <th class="acciones"></th>
         </tr>
       </thead>
@@ -41,18 +41,10 @@
           <td class="align-middle">{{ torneo.get_deporte_display }}</td>
           <td class="align-middle">{{ torneo.get_tipo_display }}</td>
           <td class="align-middle">
-            <form
-              action="{% url 'torneo:borrar_torneo' torneo.id %}"
-              method="post"
-            >
+            <form action="{% url 'torneo:borrar_torneo' torneo.id %}" method="post">
               {% csrf_token %}
               <button id="borrar" type="submit" class="borrar">
-                <img
-                  src="{% static 'torneo/img/eliminar.png' %}"
-                  alt="borrar"
-                  width="20"
-                  height="20"
-                />
+                <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="20" height="20"/>
               </button>
             </form>
           </td>

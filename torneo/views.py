@@ -12,6 +12,7 @@ from estadisticas.models import EstadisticasBaloncesto, EstadisticasFutbol
 from .models import Torneo, TorneoEquipo, Clasificacion, EliminatoriaGrupos
 from .forms import CrearTorneoForm
 from gestor.choices import TipoTorneo, TipoUsuario
+from enfrentamiento.libs import baja_equipo_torneo
 
 
 def tipo_usuario(usuario):
@@ -218,8 +219,8 @@ def borrar_equipo_torneo(request, torneo_id: int, equipo_id: int):
         equipo = get_object_or_404(Equipo, id=equipo_id)
         torneo_equipo = TorneoEquipo.objects.filter(torneo=torneo, equipo=equipo).first()
         if torneo_equipo:
-            torneo_equipo.delete()
-            
+            baja_equipo_torneo(torneo, equipo)
+
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({"ok": True})
             

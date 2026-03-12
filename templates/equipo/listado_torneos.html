@@ -3,26 +3,17 @@
 {% load static %}
 
 {% block extra_head %}
-    <title>{% trans 'Principal' %}</title>
+    <title>{% trans 'Inscribirse' %}</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}" />
-    <link rel="stylesheet" href="{% static 'equipo/css/equipo.css' %}" />
 {% endblock %}
 
 {% block content %}
 
     <div class="torneo-header">
         <h3 class="float-start">
-            <strong>{% trans 'Listado de torneos' %}</strong>
+            <strong>{% trans 'Listado de torneos disponibles para inscribirse' %}</strong>
         </h3>
-        <div class="float-end">
-            <a href="{% url 'equipo:listado_torneos_inscribir' equipo.id %}" class="btn btn-torneos">
-                {% trans 'Inscribirse en torneo' %}
-            </a>
-            <a href="{% url 'equipo:listado_jugadores' equipo.id %}" class="btn btn-jugadores">
-                {% trans 'Ver jugadores' %}
-            </a>
-        </div>
     </div>
     
     <div class="container-table">
@@ -35,9 +26,6 @@
                 <tr>
                     <th>{% trans 'Nombre' %}</th>
                     <th>{% trans 'Tipo' %}</th>
-                    <th>{% trans 'Estado' %}</th>
-                    <th>{% trans 'Anotación a favor' %}</th>
-                    <th>{% trans 'Anotación en contra' %}</th>
                     <th class="acciones"></th>
                 </tr>
             </thead>
@@ -45,15 +33,12 @@
                 {% for torneo in torneos %}
                 <tr data-id="{{ torneo.id }}">
                     <td class="align-middle">{{ torneo.nombre }}</td>
-                    <td class="align-middle">{{ torneo.tipo }}</td>
-                    <td class="align-middle">{{ torneo.estado }}</td>
-                    <td class="align-middle">{{ torneo.anotacion_favor }}</td>
-                    <td class="align-middle">{{ torneo.anotacion_contra }}</td>
+                    <td class="align-middle">{{ torneo.get_tipo_display }}</td>
                     <td class="align-middle">
-                        <form action="{% url 'equipo:dar_baja_torneo' torneo.id %}" method="post">
+                        <form action="{% url 'equipo:inscribirse' equipo.id torneo.id %}" method="post">
                             {% csrf_token %}
                             <button id="dar-baja" type="submit" class="borrar">
-                                <img src="{% static 'equipo/img/salida.png' %}" alt="dar-de-baja" width="20" height="20"/>
+                                <img src="{% static 'equipo/img/inscribirse.png' %}" alt="dar-de-baja" width="20" height="20"/>
                             </button>
                         </form>
                     </td>
@@ -87,14 +72,6 @@
             columnDefs: [
                 { orderable: false, searchable: false, targets: -1 }
             ]
-        });
-
-        $('#torneosTable tbody').on('click', 'tr', function(e){
-            if (e.target.closest('#dar-baja'))
-                return;
-
-            const torneoId = this.getAttribute('data-id');
-            window.location.href = "{% url 'torneo:principal_torneo' 0 %}".replace('0', torneoId);
         });
 
         $('#buscar-torneo').on('input', function() {

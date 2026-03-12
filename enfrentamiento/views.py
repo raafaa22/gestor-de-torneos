@@ -265,6 +265,9 @@ def editar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento_
     enfrentamiento = get_object_or_404(Enfrentamiento, id=enfrentamiento_id)
     tipo = tipo_usuario(usuario)
 
+    if enfrentamiento.equipo_local is None or enfrentamiento.equipo_visitante is None:
+        return HttpResponse( _("No se pueden editar las estadísticas de un enfrentamiento sin ambos equipos asignados."), status=400 )
+
     if tiene_permiso(usuario, torneo) and (tipo == TipoUsuario.ORGANIZADOR or tipo == TipoUsuario.ADMINISTRADOR):
         estadisticas_local = None
         estadisticas_visitante = None
@@ -440,11 +443,19 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
                 return HttpResponse( _("Debe introducir el resultado del primer set."), status=400 )
             
         else:
-            enfrentamiento.anotacion_local = int(request.POST.get('anotacion_local'))
-            enfrentamiento.anotacion_visitante = int(request.POST.get('anotacion_visitante'))
+            anotacion_local_raw = request.POST.get('anotacion_local', '').strip()
+            anotacion_visitante_raw = request.POST.get('anotacion_visitante', '').strip()
 
+            if anotacion_local_raw == '' and anotacion_visitante_raw == '':
+                enfrentamiento.anotacion_local = None
+                enfrentamiento.anotacion_visitante = None
+                enfrentamiento.ganador = None
+            elif anotacion_local_raw == '' or anotacion_visitante_raw == '':
+                return HttpResponse( _("Debes introducir los dos resultados o dejarlos ambos en blanco."), status=400 )
+            else:
+                enfrentamiento.anotacion_local = int(anotacion_local_raw)
+                enfrentamiento.anotacion_visitante = int(anotacion_visitante_raw)
 
-            if enfrentamiento.anotacion_local is not None and enfrentamiento.anotacion_visitante is not None:
                 if enfrentamiento.anotacion_local > enfrentamiento.anotacion_visitante:
                     enfrentamiento.ganador = enfrentamiento.equipo_local
                 elif enfrentamiento.anotacion_visitante > enfrentamiento.anotacion_local:
@@ -453,8 +464,6 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
                     if torneo.deporte == Deporte.BALONCESTO:
                         return HttpResponse( _("En baloncesto no puede haber empates."), status=400 )
                     enfrentamiento.ganador = None
-            else:
-                enfrentamiento.ganador = None
 
         enfrentamiento.save()
         
@@ -604,9 +613,7 @@ def generar_enfrentamientos_personalizados(request, torneo_id: int):
         if (torneo.tipo == TipoTorneo.LIGA or torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS) and request.POST.get("ida-vuelta") == "on":
             ida_vuelta = True
 
-        if Enfrentamiento.objects.filter(Q(jornada__torneo=torneo) | Q(eliminatoria__torneo=torneo)).exists():
-            return HttpResponse(_("Ya existen enfrentamientos para este torneo."), status=400)
-        
+        limpiar_datos_torneo(torneo)
 
         if torneo.tipo == TipoTorneo.LIGA:
             if iguales:
@@ -642,9 +649,8 @@ def generar_enfrentamientos_aleatorios(request, torneo_id: int):
     if not tiene_permiso(usuario, torneo):
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
 
-    if Enfrentamiento.objects.filter(Q(jornada__torneo=torneo) | Q(eliminatoria__torneo=torneo)).exists():
-        return HttpResponse(_("Ya existen enfrentamientos para este torneo."), status=400)
-    
+    limpiar_datos_torneo(torneo)
+
     if torneo.tipo == TipoTorneo.LIGA:
         generar_liga_aleatorio(torneo)
     elif torneo.tipo == TipoTorneo.ELIMINATORIA:
