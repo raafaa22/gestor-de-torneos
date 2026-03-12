@@ -19,9 +19,12 @@
             <a href="{% url 'equipo:listado_torneos_inscribir' equipo.id %}" class="btn btn-torneos">
                 {% trans 'Inscribirse en torneo' %}
             </a>
+
+            {% if equipo.deporte != 'PAD' %}
             <a href="{% url 'equipo:listado_jugadores' equipo.id %}" class="btn btn-jugadores">
                 {% trans 'Ver jugadores' %}
             </a>
+            {% endif %}
         </div>
     </div>
     

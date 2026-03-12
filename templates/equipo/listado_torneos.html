@@ -11,9 +11,14 @@
 {% block content %}
 
     <div class="torneo-header">
-        <h3 class="float-start">
-            <strong>{% trans 'Listado de torneos disponibles para inscribirse' %}</strong>
-        </h3>
+        <div class="navbar-brand float-start nuevo d-flex align-items-center">
+            <a href="{% url 'usuario:home' %}">
+                <img src="{% static 'torneo/img/atras.png' %}" alt="nuevo" width="33" height="33" />
+            </a>
+            <h3 class="mt-0">
+                <strong>{% trans "Listado de torneos disponibles para inscribirse" %}</strong>
+            </h3>
+        </div>
     </div>
     
     <div class="container-table">

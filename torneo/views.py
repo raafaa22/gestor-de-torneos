@@ -11,7 +11,7 @@ from equipo.models import Equipo
 from estadisticas.models import EstadisticasBaloncesto, EstadisticasFutbol
 from .models import Torneo, TorneoEquipo, Clasificacion, EliminatoriaGrupos
 from .forms import CrearTorneoForm
-from gestor.choices import TipoTorneo, TipoUsuario
+from gestor.choices import TipoTorneo, TipoUsuario, Deporte
 from enfrentamiento.libs import baja_equipo_torneo
 
 
@@ -27,7 +27,30 @@ def tipo_usuario(usuario):
 
 @login_required
 def jugador_dashboard(request):
-    return render(request, 'torneo/jugador_dashboard.html')
+    usuario = request.user
+    jugador = Jugador.objects.filter(user=usuario).first()
+
+    if jugador is None:
+        return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
+    
+    equipo = jugador.equipo
+    torneos_equipo = Torneo.objects.filter(torneo_equipos__equipo=equipo)
+
+
+    if equipo.deporte == Deporte.BALONCESTO:
+        Estadisticas = EstadisticasBaloncesto
+    elif equipo.deporte == Deporte.FUTBOL:
+        Estadisticas = EstadisticasFutbol
+
+    datos = []
+    for torneo in torneos_equipo:
+        estadisticas = Estadisticas.objects.filter(jugador=jugador, torneo=torneo).first()
+        datos.append({
+            'torneo': torneo,
+            'estadisticas': estadisticas
+        })
+
+    return render(request, 'torneo/jugador_dashboard.html', {'datos': datos, 'equipo': equipo, "jugador": jugador})
 
 @login_required
 def organizador_dashboard(request):
@@ -51,8 +74,8 @@ def borrar_torneo(request, torneo_id : int):
     usuario = request.user
 
     tipo = tipo_usuario(usuario)
-    if tipo == TipoUsuario.ORGANIZADOR or tipo == TipoUsuario.ADMINISTRADOR:
-        torneo = get_object_or_404(Torneo, id=torneo_id)
+    torneo = get_object_or_404(Torneo, id=torneo_id)
+    if (tipo == TipoUsuario.ORGANIZADOR and torneo.organizador.user == usuario) or tipo == TipoUsuario.ADMINISTRADOR:
         torneo.delete()
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
