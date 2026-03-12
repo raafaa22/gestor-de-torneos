@@ -119,8 +119,9 @@ def limpiar_datos_torneo(torneo: Torneo):
     Jornada.objects.filter(torneo=torneo).delete()
     Eliminatoria.objects.filter(torneo=torneo).delete()
 
-    EstadisticasFutbol.objects.filter(torneo=torneo).delete()
-    EstadisticasBaloncesto.objects.filter(torneo=torneo).delete()
+    EstadisticasFutbol.objects.filter(torneo=torneo).update(goles=0, asistencias=0)
+    EstadisticasFutbol.objects.filter(torneo=torneo, goles_contra__isnull=False).update(goles_contra=0)
+    EstadisticasBaloncesto.objects.filter(torneo=torneo).update(puntos=0, rebotes=0, asistencias=0)
 
     if torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
         Clasificacion.objects.filter(torneo_equipo__torneo=torneo).delete()
