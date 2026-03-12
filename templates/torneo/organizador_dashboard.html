@@ -1,8 +1,11 @@
 {% extends "base.html" %} {% load i18n %} {% load static %} 
+
 {% block extra_head %}
 <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
 <link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}" />
+<title>{% trans 'Principal' %}</title>
 {% endblock %} 
+
 {% block content %}
 <div class="torneo-header">
   <h3 class="float-start">

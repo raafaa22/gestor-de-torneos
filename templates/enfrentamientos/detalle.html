@@ -2,6 +2,10 @@
 {% load i18n %}
 {% load static %}
 
+{% block head_torneo %}
+    <title>{{ torneo.nombre }} · {% trans 'Detalle' %}</title>
+{% endblock %}
+
 {% block titulo %}{% trans 'Enfrentamiento:' %} {{ enfrentamiento }}{% endblock %}
 
 {% block torneo_content %}

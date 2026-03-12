@@ -3,6 +3,10 @@
 {% load static %}
 
 
+{% block head_torneo %}
+    <title>{{ torneo.nombre }} · {% trans 'Información' %}</title>
+{% endblock %}
+
 {% block titulo %}{% trans 'Información del torneo' %}{% endblock %}
 
 {% block torneo_content %}

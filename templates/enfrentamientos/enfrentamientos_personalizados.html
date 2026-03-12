@@ -2,6 +2,10 @@
 {% load i18n %}
 {% load static %}
 
+{% block head_torneo %}
+    <title>{{ torneo.nombre }} · {% trans 'Personalizado' %}</title>
+{% endblock %}
+
 {% block titulo %}{% trans 'Generar enfrentamientos personalizados:' %}{% endblock %}
 
 {% block torneo_content %}

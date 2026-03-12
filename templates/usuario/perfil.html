@@ -2,6 +2,10 @@
 {% load i18n %}
 
 
+{% block extra_head %}
+    <title>{% trans 'Perfil de usuario' %}</title>
+{% endblock %}
+
 {% block content %}
 <div class="perfil-container">
     <h2 class="mb-4">{% trans "Perfil de usuario" %}</h2>
