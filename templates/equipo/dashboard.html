@@ -84,6 +84,9 @@
             language: {
                 url: langUrl,
             },
+            columnDefs: [
+                { orderable: false, searchable: false, targets: -1 }
+            ]
         });
 
         $('#torneosTable tbody').on('click', 'tr', function(e){

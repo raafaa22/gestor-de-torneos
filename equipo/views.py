@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils.translation import gettext as _
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseForbidden
@@ -12,6 +13,7 @@ from torneo.models import Torneo, TorneoEquipo, Clasificacion, Eliminatoria
 from gestor.choices import TipoTorneo, TipoUsuario, Deporte
 from torneo.views import tipo_usuario
 from enfrentamiento.libs import RONDAS, baja_equipo_torneo
+from estadisticas.models import EstadisticasFutbol, EstadisticasBaloncesto
 
 
 @login_required
@@ -20,7 +22,7 @@ def dashboard(request):
     equipo = Equipo.objects.filter(user=usuario).first()
 
     if equipo is None or tipo_usuario(usuario) != TipoUsuario.EQUIPO:
-        return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
+        return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
     
     datos = []
 
@@ -82,7 +84,6 @@ def dashboard(request):
     return render(request, 'equipo/dashboard.html', {'torneos': datos, 'equipo': equipo})
 
 
-
 @login_required
 @require_POST
 @transaction.atomic
@@ -91,11 +92,11 @@ def dar_baja_torneo(request, torneo_id):
     equipo = Equipo.objects.filter(user=usuario).first()
 
     if equipo is None or tipo_usuario(usuario) != TipoUsuario.EQUIPO:
-        return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
+        return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
 
     torneo = get_object_or_404(Torneo, id=torneo_id)
     if not TorneoEquipo.objects.filter(torneo=torneo, equipo=equipo).exists():
-        return HttpResponseForbidden("No estás inscrito en este torneo.")
+        return HttpResponseForbidden(_("No estás inscrito en este torneo."))
 
     baja_equipo_torneo(torneo, equipo)
 
@@ -103,7 +104,29 @@ def dar_baja_torneo(request, torneo_id):
 
 @login_required
 def listado_torneos_inscribir(request, equipo_id):
-    return render(request, 'equipo/listado_torneos.html')
+    usuario = request.user
+    equipo = get_object_or_404(Equipo, id=equipo_id)
+    tipo = tipo_usuario(usuario)
+
+    if tipo != TipoUsuario.EQUIPO and tipo != TipoUsuario.ADMINISTRADOR:
+        return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
+    
+    if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
+        return HttpResponseForbidden(_("Esta página no es de tu equipo"))
+    
+    torneos_disp = Torneo.objects.filter(deporte=equipo.deporte).exclude(torneo_equipos__equipo=equipo)
+    torneos = []
+    for torneo in torneos_disp:
+        empezado = False
+        if torneo.tipo == TipoTorneo.LIGA or torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
+            empezado = Clasificacion.objects.filter(torneo_equipo__torneo=torneo, puntos__gt=0).exists()
+        elif torneo.tipo == TipoTorneo.ELIMINATORIA:
+            empezado = Enfrentamiento.objects.filter(eliminatoria__torneo=torneo, anotacion_local__isnull=False, anotacion_visitante__isnull=False).exists()
+        
+        if not empezado:
+            torneos.append(torneo)
+    
+    return render(request, 'equipo/listado_torneos.html', {'torneos': torneos, 'equipo': equipo})
 
 @login_required
 def listado_jugadores(request, equipo_id):
@@ -112,10 +135,10 @@ def listado_jugadores(request, equipo_id):
     tipo = tipo_usuario(usuario)
 
     if tipo != TipoUsuario.EQUIPO and tipo != TipoUsuario.ADMINISTRADOR:
-        return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
+        return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
     
     if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
-        return HttpResponseForbidden("No puedes modificar jugadores de otros equipos.")
+        return HttpResponseForbidden(_("Estos no son tus jugadores."))
     
     jugadores = Jugador.objects.filter(equipo=equipo)
 
@@ -129,10 +152,10 @@ def crear_jugador(request, equipo_id):
     tipo = tipo_usuario(usuario)
 
     if tipo != TipoUsuario.EQUIPO and tipo != TipoUsuario.ADMINISTRADOR:
-        return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
+        return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
     
     if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
-        return HttpResponseForbidden("No puedes modificar jugadores de otros equipos.")
+        return HttpResponseForbidden(_("No puedes crear jugadores en otros equipos."))
     
     if request.method == 'POST':
         user_form = UserRegisterForm(request.POST)
@@ -164,10 +187,10 @@ def editar_jugador(request, equipo_id, jugador_id):
     tipo = tipo_usuario(usuario)
 
     if tipo != TipoUsuario.EQUIPO and tipo != TipoUsuario.ADMINISTRADOR:
-        return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
+        return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
     
     if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
-        return HttpResponseForbidden("No puedes modificar jugadores de otros equipos.")
+        return HttpResponseForbidden(_("No puedes modificar jugadores de otros equipos."))
     
     jugador = get_object_or_404(Jugador, dni=jugador_id, equipo=equipo)
 
@@ -200,13 +223,62 @@ def borrar_jugador(request, equipo_id, jugador_id):
     tipo = tipo_usuario(usuario)
 
     if tipo != TipoUsuario.EQUIPO and tipo != TipoUsuario.ADMINISTRADOR:
-        return HttpResponseForbidden("No tienes permiso para acceder a esta página.")
+        return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
     
     if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
-        return HttpResponseForbidden("No puedes modificar jugadores de otros equipos.")
+        return HttpResponseForbidden(_("No puedes borrar jugadores de otros equipos."))
     
     jugador = get_object_or_404(Jugador, dni=jugador_id, equipo=equipo)
 
     jugador.user.delete()
 
     return redirect('equipo:listado_jugadores', equipo_id=equipo.id)
+
+
+
+@login_required
+def inscribir_equipo_torneo(request, torneo_id, equipo_id):
+    usuario = request.user
+    equipo = get_object_or_404(Equipo, id=equipo_id)
+    tipo = tipo_usuario(usuario)
+
+    if tipo != TipoUsuario.EQUIPO and tipo != TipoUsuario.ADMINISTRADOR:
+        return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
+    
+    breakpoint()
+    
+    if tipo == TipoUsuario.EQUIPO and equipo.user != usuario:
+        return HttpResponseForbidden(_("No puedes inscribir otros equipos en torneos."))
+
+    torneo = get_object_or_404(Torneo, id=torneo_id)
+    torneo_equipo = TorneoEquipo.objects.create(torneo=torneo, equipo=equipo)
+
+    if torneo.tipo == TipoTorneo.LIGA:
+        posicion_max = Clasificacion.objects.order_by('-posicion').values_list('posicion', flat=True).first()
+        if posicion_max is None:
+            posicion_max = 0
+        
+        Clasificacion.objects.create(
+            torneo_equipo=torneo_equipo, 
+            grupo="GENERAL", 
+            posicion=posicion_max + 1,
+            puntos=0,
+            victorias=0,
+            empates=0,
+            derrotas=0,
+            anotacion_favor=0,
+            anotacion_contra=0
+        )
+    
+    if torneo.deporte != Deporte.PADEL:
+        jugadores = Jugador.objects.filter(equipo=equipo)
+        
+        for jugador in jugadores:
+            if torneo.deporte == Deporte.FUTBOL:
+                estadisticas = EstadisticasFutbol.objects.create(jugador=jugador, torneo=torneo, goles=0, asistencias=0)
+                if jugador.es_portero:
+                    estadisticas.goles_contra = 0
+            elif torneo.deporte == Deporte.BALONCESTO:
+                EstadisticasBaloncesto.objects.create(jugador=jugador, torneo=torneo, puntos=0, rebotes=0, asistencias=0)
+
+    return redirect('equipo:dashboard')
