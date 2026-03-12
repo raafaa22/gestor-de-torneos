@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-12 14:06+0100\n"
+"POT-Creation-Date: 2026-03-12 20:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -85,12 +85,12 @@ msgstr "Groups phase - Match day %(n)s"
 #: enfrentamiento/views.py:224 enfrentamiento/views.py:259
 #: enfrentamiento/views.py:284 enfrentamiento/views.py:347
 #: enfrentamiento/views.py:378 enfrentamiento/views.py:583
-#: enfrentamiento/views.py:597 enfrentamiento/views.py:650 equipo/views.py:25
-#: equipo/views.py:95 equipo/views.py:112 equipo/views.py:138
-#: equipo/views.py:155 equipo/views.py:190 equipo/views.py:226
-#: equipo/views.py:246 estadisticas/views.py:39 torneo/views.py:45
-#: torneo/views.py:86 torneo/views.py:129 torneo/views.py:170
-#: torneo/views.py:194 torneo/views.py:207
+#: enfrentamiento/views.py:597 enfrentamiento/views.py:650 equipo/views.py:26
+#: equipo/views.py:96 equipo/views.py:113 equipo/views.py:139
+#: equipo/views.py:160 equipo/views.py:214 equipo/views.py:263
+#: equipo/views.py:286 estadisticas/views.py:39 torneo/views.py:34
+#: torneo/views.py:68 torneo/views.py:109 torneo/views.py:152
+#: torneo/views.py:193 torneo/views.py:217 torneo/views.py:230
 msgid "No tienes permiso para acceder a esta página."
 msgstr "You don't have permission to access to this page."
 
@@ -132,31 +132,38 @@ msgstr "You must introduce both results or leave both empty."
 msgid "En baloncesto no puede haber empates."
 msgstr "In basketball, draws cannot happen."
 
-#: equipo/views.py:99
+#: equipo/views.py:100
 msgid "No estás inscrito en este torneo."
 msgstr "You are not registered for this tournament."
 
-#: equipo/views.py:115
+#: equipo/views.py:116
 msgid "Esta página no es de tu equipo"
 msgstr "This page doesn't belong to your team"
 
-#: equipo/views.py:141
+#: equipo/views.py:142
 msgid "Estos no son tus jugadores."
 msgstr "These are not your players."
 
-#: equipo/views.py:158
+#: equipo/views.py:145 equipo/views.py:166 equipo/views.py:220
+#: equipo/views.py:269
+msgid ""
+"En pádel los propios jugadores son el equipo, por lo que tu equipo no tiene "
+"jugadores."
+msgstr "Players are themselves the team in paddle tennis, so your team does not have players."
+
+#: equipo/views.py:163
 msgid "No puedes crear jugadores en otros equipos."
 msgstr "You cannot create players in other teams."
 
-#: equipo/views.py:193
+#: equipo/views.py:217
 msgid "No puedes modificar jugadores de otros equipos."
 msgstr "You cannot modify players from other teams."
 
-#: equipo/views.py:229
+#: equipo/views.py:266
 msgid "No puedes borrar jugadores de otros equipos."
 msgstr "You cannot delete players from other teams."
 
-#: equipo/views.py:251
+#: equipo/views.py:290
 msgid "No puedes inscribir otros equipos en torneos."
 msgstr "You cannot register teams in other tournaments."
 
@@ -226,18 +233,21 @@ msgid "Jugador"
 msgstr "Player"
 
 #: gestor/choices.py:31 templates/torneo/estadisticas_torneo.html:16
+#: templates/torneo/jugador_dashboard.html:28
 msgid "Goles"
 msgstr "Goals"
 
 #: gestor/choices.py:32 gestor/choices.py:37
 #: templates/torneo/estadisticas_torneo.html:48
 #: templates/torneo/estadisticas_torneo.html:53
+#: templates/torneo/jugador_dashboard.html:29
 msgid "Asistencias"
 msgstr "Assists"
 
 #: gestor/choices.py:35 templates/torneo/clasificacion.html:26
 #: templates/torneo/clasificacion.html:56
 #: templates/torneo/estadisticas_torneo.html:18
+#: templates/torneo/jugador_dashboard.html:28
 msgid "Puntos"
 msgstr "Points"
 
@@ -361,12 +371,13 @@ msgstr "Home and away"
 msgid "Generar"
 msgstr "Generate"
 
-#: templates/equipo/dashboard.html:6 templates/torneo/jugador_dashboard.html:12
+#: templates/equipo/dashboard.html:6 templates/torneo/jugador_dashboard.html:6
 #: templates/usuario/admin_dashboard.html:12
 msgid "Principal"
 msgstr "Main"
 
 #: templates/equipo/dashboard.html:16
+#: templates/torneo/jugador_dashboard.html:13
 #: templates/torneo/organizador_dashboard.html:9
 msgid "Listado de torneos"
 msgstr "Tournament list"
@@ -375,39 +386,42 @@ msgstr "Tournament list"
 msgid "Inscribirse en torneo"
 msgstr "Register for a tournament"
 
-#: templates/equipo/dashboard.html:23
+#: templates/equipo/dashboard.html:25
 msgid "Ver jugadores"
 msgstr "See players"
 
-#: templates/equipo/dashboard.html:30 templates/equipo/listado_torneos.html:21
+#: templates/equipo/dashboard.html:33 templates/equipo/listado_torneos.html:26
+#: templates/torneo/jugador_dashboard.html:20
 #: templates/torneo/organizador_dashboard.html:24
 msgid "Buscar torneo..."
 msgstr "Search tournament..."
 
-#: templates/equipo/dashboard.html:36
+#: templates/equipo/dashboard.html:39
 #: templates/equipo/listado_jugadores.html:37
-#: templates/equipo/listado_torneos.html:27
+#: templates/equipo/listado_torneos.html:32
 #: templates/torneo/equipos_torneo.html:20
+#: templates/torneo/jugador_dashboard.html:26
 #: templates/torneo/organizador_dashboard.html:31 usuario/forms.py:92
 #: usuario/forms.py:101 usuario/forms.py:110 usuario/forms.py:119
 msgid "Nombre"
 msgstr "Name"
 
-#: templates/equipo/dashboard.html:37 templates/equipo/listado_torneos.html:28
+#: templates/equipo/dashboard.html:40 templates/equipo/listado_torneos.html:33
+#: templates/torneo/jugador_dashboard.html:27
 #: templates/torneo/organizador_dashboard.html:33
 msgid "Tipo"
 msgstr "Type"
 
-#: templates/equipo/dashboard.html:38
+#: templates/equipo/dashboard.html:41
 msgid "Estado"
 msgstr "Status"
 
-#: templates/equipo/dashboard.html:39 templates/torneo/clasificacion.html:24
+#: templates/equipo/dashboard.html:42 templates/torneo/clasificacion.html:24
 #: templates/torneo/clasificacion.html:54
 msgid "Anotación a favor"
 msgstr "Scoring made"
 
-#: templates/equipo/dashboard.html:40 templates/torneo/clasificacion.html:25
+#: templates/equipo/dashboard.html:43 templates/torneo/clasificacion.html:25
 #: templates/torneo/clasificacion.html:55
 msgid "Anotación en contra"
 msgstr "Scoring received"
@@ -458,7 +472,7 @@ msgstr "No"
 msgid "Inscribirse"
 msgstr "Register"
 
-#: templates/equipo/listado_torneos.html:15
+#: templates/equipo/listado_torneos.html:19
 msgid "Listado de torneos disponibles para inscribirse"
 msgstr "List of available tournaments for registration"
 
@@ -552,6 +566,7 @@ msgid "Buscar equipo..."
 msgstr "Search team..."
 
 #: templates/torneo/estadisticas_torneo.html:71
+#: templates/torneo/jugador_dashboard.html:31
 msgid "Goles en contra"
 msgstr "Goals received"
 
@@ -598,6 +613,10 @@ msgstr "Relegation:"
 #: templates/torneo/info_torneo.html:37
 msgid "Número de equipos en descenso:"
 msgstr "Number of teams relegated:"
+
+#: templates/torneo/jugador_dashboard.html:15
+msgid "Equipo:"
+msgstr "Team:"
 
 #: templates/torneo/nuevo_torneo.html:16
 msgid "Crear nuevo torneo"
