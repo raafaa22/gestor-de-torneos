@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.utils.translation import gettext as _
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.views.decorators.http import require_POST
@@ -7,6 +8,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 
 from gestor.choices import RolUsuario, TipoUsuario
+from torneo.models import Torneo
 from .forms import UserRegisterForm, OrganizadorForm, EquipoForm, EmailAuthenticationForm, AdministradorForm, JugadorForm, UserUpdateForm
 from .models import Organizador, Administrador, Jugador
 from equipo.models import Equipo
@@ -155,4 +157,43 @@ def perfil(request):
 
 @login_required
 def admin_dashboard(request):
-    return render(request, 'usuario/admin_dashboard.html')
+    usuario = request.user
+    if not Administrador.objects.filter(user=usuario).exists():
+        return HttpResponseBadRequest(_("No tienes permiso para acceder a esta página."))
+    
+    torneos = Torneo.objects.all()
+    return render(request, 'usuario/admin_dashboard.html', {'torneos': torneos})
+
+
+@login_required
+def usuarios(request):
+    usuario = request.user
+    if not Administrador.objects.filter(user=usuario).exists():
+        return HttpResponseBadRequest(_("No tienes permiso para acceder a esta página."))
+    
+    organizadores = list(Organizador.objects.all())
+    equipos = list(Equipo.objects.all())
+    jugadores = list(Jugador.objects.all())
+
+    for o in organizadores:
+        o.tipo = TipoUsuario.ORGANIZADOR.label
+    for e in equipos:
+        e.tipo = TipoUsuario.EQUIPO.label
+    for j in jugadores:
+        j.tipo = TipoUsuario.JUGADOR.label
+
+    usuarios_listado = organizadores + equipos + jugadores
+    return render(request, 'usuario/listado_usuarios.html', {'usuarios': usuarios_listado})
+
+
+@login_required
+@require_POST
+def borrar_usuario(request, usuario_id : int):
+    pass
+
+@login_required
+def editar_usuario(request, usuario_id : int):
+    return render(request, 'usuario/editar_usuario.html')
+
+def crear_usuario(request):
+    return render(request, 'usuario/crear_usuario.html')

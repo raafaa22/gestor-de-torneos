@@ -1,3 +1,4 @@
+from gestor.choices import TipoUsuario
 from .models import Organizador, Jugador, Administrador
 from equipo.models import Equipo
 
@@ -22,3 +23,4 @@ def nombre_usuario(request):
         
     else:
         return {}
+    

@@ -3,60 +3,51 @@
 {% load static %}
 
 
-
 {% block extra_head %}
 <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
 <link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}" />
 <link rel="stylesheet" href="{% static 'usuario/css/admin.css' %}" />
-<title>{% trans 'Principal' %}</title>
+<title>{% trans 'Usuarios' %}</title>
 {% endblock %} 
 
 {% block content %}
 <div class="torneo-header">
     <h3 class="float-start">
-        <strong>{% trans 'Listado de torneos' %}</strong>
+        <strong>{% trans 'Listado de usuarios' %}</strong>
     </h3>
 
-    <div class="float-end">
-        <a href="{% url 'torneo:crear_torneo' %}" class="btn btn-nuevo-torneo">
-            {% trans 'Crear torneo' %}
-        </a>
-
-        <a href="{% url 'usuario:listado_usuarios' %}" class="btn btn-usuarios">
-            {% trans 'Ver usuarios' %}
-        </a>
-    </div>
+    <a href="{% url 'usuario:crear_usuario' %}" class="btn btn-nuevo-torneo float-end">
+        {% trans 'Crear usuario' %}
+    </a>
 </div>
 
 <div class="container-table">
   <div class="buscador">
     <input
-      id="buscar-torneo"
+      id="buscar-usuario"
       type="text"
       class="form-control"
-      placeholder="{% trans 'Buscar torneo...' %}"
+      placeholder="{% trans 'Buscar usuario...' %}"
     />
   </div>
 
-    <table id="torneosTable" class="table table-hover">
+    <table id="usuariosTable" class="table table-hover">
       <thead>
         <tr>
           <th>{% trans 'Nombre' %}</th>
-          <th>{% trans 'Organizador' %}</th>
-          <th>{% trans 'Deporte' %}</th>
-          <th>{% trans 'Tipo' %}</th>
+          <th>{% trans 'Email' %}</th>
+          <th>{% trans 'Tipo de usuario' %}</th>
           <th class="acciones"></th>
         </tr>
       </thead>
       <tbody>
-        {% for torneo in torneos %}
-        <tr data-id="{{ torneo.id }}">
-          <td class="align-middle">{{ torneo.nombre }}</td>
-          <td class="align-middle">{{ torneo.organizador }}</td>
-          <td class="align-middle">{{ torneo.get_deporte_display }}</td>
-          <td class="align-middle">{{ torneo.get_tipo_display }}</td>
+        {% for usuario in usuarios %}
+        <tr data-id="{{ usuario.user.id }}">
+          <td class="align-middle">{{ usuario.nombre }}</td>
+          <td class="align-middle">{{ usuario.user.email }}</td>
+          <td class="align-middle">{{ usuario.tipo }}</td>
           <td class="align-middle">
-            <form action="{% url 'torneo:borrar_torneo' torneo.id %}" method="post">
+            <form action="{% url 'usuario:borrar_usuario' usuario.user.id %}" method="post">
               {% csrf_token %}
               <button id="borrar" type="submit" class="borrar">
                 <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="20" height="20"/>
@@ -83,7 +74,7 @@
         } else {
           langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/en-GB.json"
         }
-        var table = $('#torneosTable').DataTable({
+        var table = $('#usuariosTable').DataTable({
             pageLength: 10,
             lengthMenu: [10, 25, 50, 100 ],
             dom: 't<"paginacion"<"paginacion-info"i><"paginacion-button"p>>',
@@ -96,15 +87,15 @@
         });
 
 
-        $('#torneosTable tbody').on('click', 'tr', function(e){
+        $('#usuariosTable tbody').on('click', 'tr', function(e){
           if (e.target.closest('#borrar'))
             return;
 
-          const torneoId = this.getAttribute('data-id');
-          window.location.href = "{% url 'torneo:principal_torneo' 0 %}".replace('0', torneoId);
+          const usuarioId = this.getAttribute('data-id');
+          window.location.href = "{% url 'usuario:editar_usuario' 0 %}".replace('0', usuarioId);
         });
 
-        $('#buscar-torneo').on('input', function() {
+        $('#buscar-usuario').on('input', function() {
             table.search(this.value).draw();
         });
   });

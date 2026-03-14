@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+<link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}" />
+<link rel="stylesheet" href="{% static 'usuario/css/admin.css' %}" />
+<title>{% trans 'Crear usuario' %}</title>
+{% endblock %} 
