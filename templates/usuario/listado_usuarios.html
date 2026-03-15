@@ -12,13 +12,19 @@
 
 {% block content %}
 <div class="torneo-header">
-    <h3 class="float-start">
-        <strong>{% trans 'Listado de usuarios' %}</strong>
-    </h3>
-
-    <a href="{% url 'usuario:crear_usuario' %}" class="btn btn-nuevo-torneo float-end">
-        {% trans 'Crear usuario' %}
+  <div class="navbar-brand float-start nuevo d-flex align-items-center">
+    <a href="{% url 'usuario:home' %}">
+      <img src="{% static 'torneo/img/atras.png' %}" alt="nuevo" width="33" height="33" />
     </a>
+    
+    <h3 class="mt-0">
+      <strong>{% trans "Listado de usuarios" %}</strong>
+    </h3>
+  </div>
+
+  <a href="{% url 'usuario:crear_usuario' %}" class="btn btn-nuevo-torneo float-end">
+    {% trans 'Crear usuario' %}
+  </a>
 </div>
 
 <div class="container-table">

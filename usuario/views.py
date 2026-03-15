@@ -6,6 +6,8 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 
 from gestor.choices import RolUsuario, TipoUsuario
 from torneo.models import Torneo
@@ -193,7 +195,46 @@ def borrar_usuario(request, usuario_id : int):
 
 @login_required
 def editar_usuario(request, usuario_id : int):
-    return render(request, 'usuario/editar_usuario.html')
+    admin = request.user
+    if not Administrador.objects.filter(user=admin).exists():
+        return HttpResponseBadRequest(_("No tienes permiso para acceder a esta página."))
+    
+    usuario = get_object_or_404(User, id=usuario_id)
+    organizador = Organizador.objects.filter(user=usuario).first()
+    if organizador:
+        RolForm = AdministradorForm
+        rol_instance = organizador
+        rol_form = RolForm(instance=rol_instance)
+        user_form = UserUpdateForm(instance=usuario)
+    else:
+        equipo = Equipo.objects.filter(user=usuario).first()
+        if equipo:
+            RolForm = EquipoForm
+            rol_instance = equipo
+            rol_form = RolForm(instance=rol_instance)
+            user_form = UserUpdateForm(instance=usuario)
+        else:
+            jugador = Jugador.objects.filter(user=usuario).first()
+            if jugador:
+                RolForm = JugadorForm
+                rol_instance = jugador
+                rol_form = RolForm(instance=rol_instance)
+                user_form = UserUpdateForm(instance=usuario)
+            else:
+                return HttpResponseBadRequest(_("Usuario no encontrado o sin rol asignado."))
+            
+
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=usuario)
+        rol_form = RolForm(request.POST, instance=rol_instance) if RolForm else None
+        forms_validos = user_form.is_valid() and (rol_form is None or rol_form.is_valid())
+        if forms_validos:
+            user_form.save()
+            if rol_form:
+                rol_form.save()
+            return redirect('usuario:listado_usuarios')
+
+    return render(request, 'usuario/editar_usuario.html', {'user_form': user_form, 'rol_form': rol_form, 'usuario': rol_instance})
 
 def crear_usuario(request):
     return render(request, 'usuario/crear_usuario.html')

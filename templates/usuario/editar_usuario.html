@@ -8,4 +8,55 @@
 <link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}" />
 <link rel="stylesheet" href="{% static 'usuario/css/admin.css' %}" />
 <title>{% trans 'Editar usuario' %}</title>
-{% endblock %} 
+{% endblock %}
+
+{% block content %}
+    <div class="perfil-container">
+        <div class="torneo-header">
+            <div class="navbar-brand float-start nuevo d-flex align-items-center">
+                <a href="{% url 'usuario:listado_usuarios' %}">
+                    <img src="{% static 'torneo/img/atras.png' %}" alt="nuevo" width="33" height="33" />
+                </a>
+                
+                <h3 class="mt-0">
+                    <strong>{% trans "Editar usuario" %}: {{ usuario.nombre }}</strong>
+                </h3>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="container-form">
+
+            <div>
+                <form method="post">
+                    {% csrf_token %}
+
+                    {{ user_form.as_p }}
+                    {{ rol_form.as_p }}   
+
+                    <div class="form-btn">
+                        <button type="submit" class="btn">{% trans "Guardar cambios" %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deporte = document.getElementById('id_deporte');
+        if (deporte) deporte.disabled = true;
+        const esPortero = document.getElementById('id_es_portero');
+        if (esPortero) esPortero.disabled = true;
+    });
+</script>
+{% endblock %}
