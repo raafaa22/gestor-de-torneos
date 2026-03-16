@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.db.models import ProtectedError
+from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.views.decorators.http import require_POST
@@ -9,8 +11,11 @@ from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 
-from gestor.choices import RolUsuario, TipoUsuario
-from torneo.models import Torneo
+from django.db import transaction
+
+from gestor.choices import RolUsuario, TipoUsuario, Deporte
+from torneo.models import Torneo, TorneoEquipo
+from estadisticas.models import EstadisticasFutbol, EstadisticasBaloncesto
 from .forms import UserRegisterForm, OrganizadorForm, EquipoForm, EmailAuthenticationForm, AdministradorForm, JugadorForm, UserUpdateForm
 from .models import Organizador, Administrador, Jugador
 from equipo.models import Equipo
@@ -190,8 +195,26 @@ def usuarios(request):
 
 @login_required
 @require_POST
-def borrar_usuario(request, usuario_id : int):
-    pass
+def borrar_usuario(request, usuario_id: int):
+    admin = request.user
+    if not Administrador.objects.filter(user=admin).exists():
+        return HttpResponseBadRequest(_("No tienes permiso para acceder a esta página."))
+
+    usuario = get_object_or_404(User, id=usuario_id)
+
+    if usuario == admin:
+        messages.error(request, _("No puedes eliminar tu propio usuario."))
+        return redirect('usuario:listado_usuarios')
+
+    try:
+        organizador = Organizador.objects.filter(user=usuario).first()
+        if organizador:
+            Torneo.objects.filter(organizador=organizador).delete()
+        usuario.delete()
+    except ProtectedError:
+        messages.error(request, _("No se puede eliminar este organizador porque tiene torneos asociados."))
+
+    return redirect('usuario:listado_usuarios')
 
 @login_required
 def editar_usuario(request, usuario_id : int):
@@ -236,5 +259,85 @@ def editar_usuario(request, usuario_id : int):
 
     return render(request, 'usuario/editar_usuario.html', {'user_form': user_form, 'rol_form': rol_form, 'usuario': rol_instance})
 
+@login_required
+@transaction.atomic
 def crear_usuario(request):
-    return render(request, 'usuario/crear_usuario.html')
+    admin = request.user
+    if not Administrador.objects.filter(user=admin).exists():
+        return HttpResponseBadRequest(_("No tienes permiso para acceder a esta página."))
+
+    rol_choices = [TipoUsuario.ORGANIZADOR, TipoUsuario.EQUIPO, TipoUsuario.JUGADOR]
+    equipos = Equipo.objects.exclude(deporte=Deporte.PADEL)
+
+    rol = TipoUsuario.ORGANIZADOR
+    user_form = UserRegisterForm()
+    org_form = OrganizadorForm(prefix='org')
+    eq_form = EquipoForm(prefix='eq')
+    jugador_form = JugadorForm(equipo=None)
+    selected_equipo_id = None
+
+    if request.method == 'POST':
+        rol = request.POST.get('rol', TipoUsuario.ORGANIZADOR)
+        user_form = UserRegisterForm(request.POST)
+
+        if rol == TipoUsuario.ORGANIZADOR:
+            org_form = OrganizadorForm(request.POST, prefix='org')
+            if user_form.is_valid() and org_form.is_valid():
+                user = user_form.save()
+                organizador = org_form.save(commit=False)
+                organizador.user = user
+                organizador.save()
+                return redirect('usuario:listado_usuarios')
+
+        elif rol == TipoUsuario.EQUIPO:
+            eq_form = EquipoForm(request.POST, prefix='eq')
+            if user_form.is_valid() and eq_form.is_valid():
+                user = user_form.save()
+                equipo = eq_form.save(commit=False)
+                equipo.user = user
+                equipo.save()
+                return redirect('usuario:listado_usuarios')
+
+        elif rol == TipoUsuario.JUGADOR:
+            selected_equipo_id = request.POST.get('equipo_jugador')
+            equipo = get_object_or_404(Equipo, id=selected_equipo_id)
+            jugador_form = JugadorForm(request.POST, equipo=equipo)
+
+            if user_form.is_valid() and jugador_form.is_valid():
+                user = user_form.save()
+
+                es_portero_nuevo = equipo.deporte == Deporte.FUTBOL and jugador_form.cleaned_data.get("es_portero")
+
+                antiguo_portero = None
+                if es_portero_nuevo:
+                    antiguo_portero = Jugador.objects.filter(equipo=equipo, es_portero=True).first()
+                    Jugador.objects.filter(equipo=equipo, es_portero=True).update(es_portero=False)
+
+                jugador = jugador_form.save(commit=False)
+                jugador.user = user
+                jugador.equipo = equipo
+                jugador.save()
+
+                for te in TorneoEquipo.objects.filter(equipo=equipo):
+                    if te.torneo.deporte == Deporte.FUTBOL:
+                        EstadisticasFutbol.objects.create(jugador=jugador, torneo=te.torneo, goles=0, asistencias=0)
+                    elif te.torneo.deporte == Deporte.BALONCESTO:
+                        EstadisticasBaloncesto.objects.create(jugador=jugador, torneo=te.torneo, puntos=0, rebotes=0, asistencias=0)
+
+                if es_portero_nuevo and antiguo_portero:
+                    for est in EstadisticasFutbol.objects.filter(jugador=antiguo_portero):
+                        EstadisticasFutbol.objects.filter(jugador=jugador, torneo=est.torneo).update(goles_contra=est.goles_contra)
+                    EstadisticasFutbol.objects.filter(jugador=antiguo_portero).update(goles_contra=None)
+
+                return redirect('usuario:listado_usuarios')
+
+    return render(request, 'usuario/crear_usuario.html', {
+        'user_form': user_form,
+        'org_form': org_form,
+        'eq_form': eq_form,
+        'jugador_form': jugador_form,
+        'rol': rol,
+        'rol_choices': rol_choices,
+        'equipos': equipos,
+        'selected_equipo_id': selected_equipo_id,
+    })
