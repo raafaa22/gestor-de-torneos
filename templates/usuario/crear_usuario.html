@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+<link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}" />
+<link rel="stylesheet" href="{% static 'usuario/css/admin.css' %}" />
+<title>{% trans 'Crear usuario' %}</title>
+{% endblock %}
+
+{% block content %}
+<div class="perfil-container">
+    <div class="torneo-header">
+        <div class="navbar-brand float-start nuevo d-flex align-items-center">
+            <a href="{% url 'usuario:listado_usuarios' %}">
+                <img src="{% static 'torneo/img/atras.png' %}" alt="nuevo" width="33" height="33" />
+            </a>
+            <h3 class="mt-0">
+                <strong>{% trans "Crear usuario" %}</strong>
+            </h3>
+        </div>
+    </div>
+
+    <div class="container-form">
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <p>
+                <label for="id_rol">{% trans "Tipo de usuario" %}</label>
+                <select id="id_rol" name="rol">
+                    {% for choice in rol_choices %}
+                        <option value="{{ choice.value }}" {% if choice.value == rol %}selected{% endif %}>
+                            {{ choice.label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <div id="org_form">
+                {{ org_form.as_p }}
+            </div>
+
+            <div id="eq_form" class="d-none">
+                {{ eq_form.as_p }}
+            </div>
+
+            <div id="jug_form" class="d-none">
+                <p>
+                    <label for="id_equipo_jugador">{% trans "Equipo" %}</label>
+                    <select id="id_equipo_jugador" name="equipo_jugador">
+                        {% for equipo in equipos %}
+                            <option value="{{ equipo.id }}"
+                                    data-deporte="{{ equipo.deporte }}"
+                                    {% if equipo.id|stringformat:"s" == selected_equipo_id %}selected{% endif %}>
+                                {{ equipo.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </p>
+                {{ jugador_form.as_p }}
+                <p id="es_portero_field" class="d-none">
+                    <label for="id_es_portero">{% trans "Es portero" %}</label>
+                    <input type="checkbox" name="es_portero" id="id_es_portero"
+                        {% if jugador_form.es_portero.value %}checked{% endif %}>
+                </p>
+            </div>
+
+            {{ user_form.as_p }}
+
+            <div class="form-btn">
+                <button type="submit" class="btn">{% trans "Crear usuario" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const ROL_ORG = '{{ rol_choices.0.value }}';
+    const ROL_EQ  = '{{ rol_choices.1.value }}';
+    const ROL_JUG = '{{ rol_choices.2.value }}';
+    const DEPORTE_FUTBOL = 'FUT';
+
+    const rolSelect       = document.getElementById('id_rol');
+    const orgDiv          = document.getElementById('org_form');
+    const eqDiv           = document.getElementById('eq_form');
+    const jugDiv          = document.getElementById('jug_form');
+    const equipoSelect    = document.getElementById('id_equipo_jugador');
+    const esPorteroField  = document.getElementById('es_portero_field');
+    const esPorteroInput  = document.getElementById('id_es_portero');
+
+    function updateRol(rol) {
+        orgDiv.classList.toggle('d-none', rol !== ROL_ORG);
+        eqDiv.classList.toggle('d-none',  rol !== ROL_EQ);
+        jugDiv.classList.toggle('d-none', rol !== ROL_JUG);
+        if (rol === ROL_JUG) updateEsPortero();
+    }
+
+    function updateEsPortero() {
+        const opt = equipoSelect.options[equipoSelect.selectedIndex];
+        const esFutbol = opt && opt.dataset.deporte === DEPORTE_FUTBOL;
+        esPorteroField.classList.toggle('d-none', !esFutbol);
+        if (!esFutbol) esPorteroInput.checked = false;
+    }
+
+    rolSelect.addEventListener('change', () => updateRol(rolSelect.value));
+    equipoSelect.addEventListener('change', updateEsPortero);
+
+    updateRol('{{ rol }}');
+</script>
+{% endblock %}

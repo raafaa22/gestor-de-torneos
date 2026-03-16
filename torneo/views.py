@@ -100,7 +100,7 @@ def crear_torneo(request):
             if form.is_valid():
                 form.save()
                 if tipo == TipoUsuario.ADMINISTRADOR:
-                    return redirect('usuario:admin_dashboard')
+                    return redirect('usuario:administrador')
                 else:
                     return redirect('torneo:organizador')
         else:
