@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Rafael Serano Algar <rafaelserranoalgar@gmail.com>, 2026.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-12 21:05+0100\n"
+"POT-Creation-Date: 2026-03-17 12:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,6 +91,8 @@ msgstr "Groups phase - Match day %(n)s"
 #: equipo/views.py:286 estadisticas/views.py:39 torneo/views.py:34
 #: torneo/views.py:68 torneo/views.py:109 torneo/views.py:152
 #: torneo/views.py:193 torneo/views.py:217 torneo/views.py:230
+#: usuario/views.py:169 usuario/views.py:179 usuario/views.py:201
+#: usuario/views.py:223 usuario/views.py:267
 msgid "No tienes permiso para acceder a esta página."
 msgstr "You don't have permission to access to this page."
 
@@ -214,13 +216,15 @@ msgstr "Semifinal"
 msgid "Final"
 msgstr "Final"
 
-#: gestor/choices.py:21 gestor/choices.py:26 torneo/forms.py:17
+#: gestor/choices.py:21 gestor/choices.py:26
+#: templates/usuario/admin_dashboard.html:45 torneo/forms.py:17
 msgid "Organizador"
 msgstr "Organiser"
 
 #: gestor/choices.py:22 gestor/choices.py:27
 #: templates/torneo/clasificacion.html:21
 #: templates/torneo/clasificacion.html:51
+#: templates/usuario/crear_usuario.html:51
 msgid "Equipo"
 msgstr "Team"
 
@@ -387,13 +391,14 @@ msgstr "Generate"
 
 #: templates/equipo/dashboard.html:6 templates/torneo/jugador_dashboard.html:6
 #: templates/torneo/organizador_dashboard.html:6
-#: templates/usuario/admin_dashboard.html:12
+#: templates/usuario/admin_dashboard.html:11
 msgid "Principal"
 msgstr "Main"
 
 #: templates/equipo/dashboard.html:16
 #: templates/torneo/jugador_dashboard.html:13
 #: templates/torneo/organizador_dashboard.html:12
+#: templates/usuario/admin_dashboard.html:17
 msgid "Listado de torneos"
 msgstr "Tournament list"
 
@@ -408,6 +413,7 @@ msgstr "See players"
 #: templates/equipo/dashboard.html:33 templates/equipo/listado_torneos.html:26
 #: templates/torneo/jugador_dashboard.html:20
 #: templates/torneo/organizador_dashboard.html:27
+#: templates/usuario/admin_dashboard.html:37
 msgid "Buscar torneo..."
 msgstr "Search tournament..."
 
@@ -416,7 +422,9 @@ msgstr "Search tournament..."
 #: templates/equipo/listado_torneos.html:32
 #: templates/torneo/equipos_torneo.html:21
 #: templates/torneo/jugador_dashboard.html:26
-#: templates/torneo/organizador_dashboard.html:34 usuario/forms.py:92
+#: templates/torneo/organizador_dashboard.html:34
+#: templates/usuario/admin_dashboard.html:44
+#: templates/usuario/listado_usuarios.html:43 usuario/forms.py:92
 #: usuario/forms.py:101 usuario/forms.py:110 usuario/forms.py:119
 msgid "Nombre"
 msgstr "Name"
@@ -424,6 +432,7 @@ msgstr "Name"
 #: templates/equipo/dashboard.html:40 templates/equipo/listado_torneos.html:33
 #: templates/torneo/jugador_dashboard.html:27
 #: templates/torneo/organizador_dashboard.html:36
+#: templates/usuario/admin_dashboard.html:47
 msgid "Tipo"
 msgstr "Type"
 
@@ -445,7 +454,8 @@ msgstr "Scoring received"
 msgid "Editar el jugador:"
 msgstr "Edit the player:"
 
-#: templates/equipo/editar_jugador.html:30 templates/usuario/perfil.html:33
+#: templates/equipo/editar_jugador.html:30
+#: templates/usuario/editar_usuario.html:46 templates/usuario/perfil.html:33
 msgid "Guardar cambios"
 msgstr "Save changes"
 
@@ -469,7 +479,8 @@ msgstr "ID"
 msgid "Apellidos"
 msgstr "Surnames"
 
-#: templates/equipo/listado_jugadores.html:40 usuario/forms.py:121
+#: templates/equipo/listado_jugadores.html:40
+#: templates/usuario/crear_usuario.html:64 usuario/forms.py:121
 msgid "Es portero"
 msgstr "Is goalkeeper"
 
@@ -654,13 +665,52 @@ msgid "Crear Torneo"
 msgstr "Create tournament"
 
 #: templates/torneo/organizador_dashboard.html:17
+#: templates/usuario/admin_dashboard.html:22
 msgid "Crear torneo"
 msgstr "Create tournament"
 
-#: templates/torneo/organizador_dashboard.html:35 torneo/forms.py:52
+#: templates/torneo/organizador_dashboard.html:35
+#: templates/usuario/admin_dashboard.html:46 torneo/forms.py:52
 #: usuario/forms.py:102
 msgid "Deporte"
 msgstr "Sport"
+
+#: templates/usuario/admin_dashboard.html:26
+msgid "Ver usuarios"
+msgstr "See users"
+
+#: templates/usuario/crear_usuario.html:10
+#: templates/usuario/crear_usuario.html:21
+#: templates/usuario/crear_usuario.html:73
+#: templates/usuario/listado_usuarios.html:26
+msgid "Crear usuario"
+msgstr "Create user"
+
+#: templates/usuario/crear_usuario.html:31
+#: templates/usuario/listado_usuarios.html:45
+msgid "Tipo de usuario"
+msgstr "User type:"
+
+#: templates/usuario/editar_usuario.html:10
+#: templates/usuario/editar_usuario.html:22
+msgid "Editar usuario"
+msgstr "Edit user"
+
+#: templates/usuario/listado_usuarios.html:10
+msgid "Usuarios"
+msgstr "Users"
+
+#: templates/usuario/listado_usuarios.html:21
+msgid "Listado de usuarios"
+msgstr "User list"
+
+#: templates/usuario/listado_usuarios.html:36
+msgid "Buscar usuario..."
+msgstr "Search user..."
+
+#: templates/usuario/listado_usuarios.html:44
+msgid "Email"
+msgstr "Email"
 
 #: templates/usuario/login.html:10 templates/usuario/login.html:42
 msgid "Inicio de sesión"
@@ -871,3 +921,15 @@ msgstr "The email is mandatory"
 #: usuario/models.py:26
 msgid "El DNI debe tener 8 dígitos seguidos de una letra mayúscula."
 msgstr "Spanish ID must have 8 digits followed by a capital letter."
+
+#: usuario/views.py:206
+msgid "No puedes eliminar tu propio usuario."
+msgstr "You cannot delete your own user."
+
+#: usuario/views.py:215
+msgid "No se puede eliminar este organizador porque tiene torneos asociados."
+msgstr "You cannot delete this organiser because it has associated tournaments."
+
+#: usuario/views.py:247
+msgid "Usuario no encontrado o sin rol asignado."
+msgstr "Not found user or user without rol."

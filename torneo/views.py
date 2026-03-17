@@ -59,7 +59,7 @@ def organizador_dashboard(request):
 
     if tipo == TipoUsuario.ORGANIZADOR or tipo == TipoUsuario.ADMINISTRADOR:
         if tipo == TipoUsuario.ADMINISTRADOR:
-            return redirect('usuario:admin_dashboard')
+            return redirect('usuario:administrador')
         
         organizador = get_object_or_404(Organizador, user=usuario)
         torneos = Torneo.objects.filter(organizador=organizador)
