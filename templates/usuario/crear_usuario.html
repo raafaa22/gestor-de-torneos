@@ -11,69 +11,67 @@
 {% endblock %}
 
 {% block content %}
-<div class="perfil-container">
-    <div class="torneo-header">
-        <div class="navbar-brand float-start nuevo d-flex align-items-center">
-            <a href="{% url 'usuario:listado_usuarios' %}">
-                <img src="{% static 'torneo/img/atras.png' %}" alt="nuevo" width="33" height="33" />
-            </a>
-            <h3 class="mt-0">
-                <strong>{% trans "Crear usuario" %}</strong>
-            </h3>
-        </div>
+<div class="torneo-header">
+    <div class="navbar-brand float-start nuevo d-flex align-items-center">
+        <a href="{% url 'usuario:listado_usuarios' %}">
+            <img src="{% static 'torneo/img/atras.png' %}" alt="nuevo" width="33" height="33" />
+        </a>
+        <h3 class="mt-0">
+            <strong>{% trans "Crear usuario" %}</strong>
+        </h3>
     </div>
+</div>
 
-    <div class="container-form">
-        <form method="post" novalidate>
-            {% csrf_token %}
+<div class="container-form">
+    <form method="post" novalidate>
+        {% csrf_token %}
 
+        <p>
+            <label for="id_rol">{% trans "Tipo de usuario" %}</label>
+            <select id="id_rol" name="rol">
+                {% for choice in rol_choices %}
+                    <option value="{{ choice.value }}" {% if choice.value == rol %}selected{% endif %}>
+                        {{ choice.label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <div id="org_form">
+            {{ org_form.as_p }}
+        </div>
+
+        <div id="eq_form" class="d-none">
+            {{ eq_form.as_p }}
+        </div>
+
+        <div id="jug_form" class="d-none">
             <p>
-                <label for="id_rol">{% trans "Tipo de usuario" %}</label>
-                <select id="id_rol" name="rol">
-                    {% for choice in rol_choices %}
-                        <option value="{{ choice.value }}" {% if choice.value == rol %}selected{% endif %}>
-                            {{ choice.label }}
+                <label for="id_equipo_jugador">{% trans "Equipo" %}</label>
+                <select id="id_equipo_jugador" name="equipo_jugador">
+                    {% for equipo in equipos %}
+                        <option value="{{ equipo.id }}"
+                                data-deporte="{{ equipo.deporte }}"
+                                {% if equipo.id|stringformat:"s" == selected_equipo_id %}selected{% endif %}>
+                            {{ equipo.nombre }}
                         </option>
                     {% endfor %}
                 </select>
             </p>
+            {{ jugador_form.as_p }}
+            <p id="es_portero_field" class="d-none">
+                <label for="id_es_portero">{% trans "Es portero" %}</label>
+                <input type="checkbox" name="es_portero" id="id_es_portero"
+                    {% if jugador_form.es_portero.value %}checked{% endif %}>
+            </p>
+        </div>
 
-            <div id="org_form">
-                {{ org_form.as_p }}
-            </div>
+        {{ user_form.as_p }}
 
-            <div id="eq_form" class="d-none">
-                {{ eq_form.as_p }}
-            </div>
-
-            <div id="jug_form" class="d-none">
-                <p>
-                    <label for="id_equipo_jugador">{% trans "Equipo" %}</label>
-                    <select id="id_equipo_jugador" name="equipo_jugador">
-                        {% for equipo in equipos %}
-                            <option value="{{ equipo.id }}"
-                                    data-deporte="{{ equipo.deporte }}"
-                                    {% if equipo.id|stringformat:"s" == selected_equipo_id %}selected{% endif %}>
-                                {{ equipo.nombre }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </p>
-                {{ jugador_form.as_p }}
-                <p id="es_portero_field" class="d-none">
-                    <label for="id_es_portero">{% trans "Es portero" %}</label>
-                    <input type="checkbox" name="es_portero" id="id_es_portero"
-                        {% if jugador_form.es_portero.value %}checked{% endif %}>
-                </p>
-            </div>
-
-            {{ user_form.as_p }}
-
-            <div class="form-btn">
-                <button type="submit" class="btn">{% trans "Crear usuario" %}</button>
-            </div>
-        </form>
-    </div>
+        <div class="form-btn">
+            <button type="submit" class="btn">{% trans "Crear usuario" %}</button>
+        </div>
+    </form>
 </div>
 {% endblock %}
 
