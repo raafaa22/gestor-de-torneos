@@ -1,14 +1,13 @@
-html,
-body {
+html, body {
   height: 100%;
-}
-
-body {
   margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* Fuente moderna por defecto */
   background: #e1ebfa;
+  color: #333333;
 }
 
-.volver{
+
+.volver {
   position: absolute;
   top: 20px;
   left: 20px;
@@ -20,142 +19,162 @@ body {
   right: 20px;
 }
 
-.topimg {
-  width: 100px;
-  height: 100px;
-  display: block;
-  margin: 0 auto 18px;
-}
 
 .auth-user {
-  max-width: 900px;
-  margin: 28px auto 60px;
-  padding: 10px 16px;
+  max-width: 500px; /* Reducido un poco para que parezca una tarjeta de login clásica */
+  margin: 60px auto;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); /* Sombra suave para dar profundidad */
 }
 
+.topimg {
+  width: 90px;
+  height: 90px;
+  display: block;
+  margin: 0 auto 16px;
+}
+
+/* Tipografía de encabezados */
 .auth-user h1 {
   text-align: center;
-  font-size: 50px;
+  font-size: 36px;
   font-weight: 800;
-  margin: 8px 0 6px;
+  color: #1a2b4c; /* Un azul muy oscuro para el título */
+  margin: 0 0 8px;
+  letter-spacing: -0.5px;
 }
 
 .auth-user h2 {
   text-align: center;
-  font-size: 25px;
-  margin: 0 0 34px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #6c757d; /* Gris para el subtítulo */
+  margin: 0 0 30px;
 }
 
+/* =========================================
+   Formularios e Inputs
+   ========================================= */
 .auth-user form {
-  max-width: 580px;
-  margin: 0 auto;
+  width: 100%;
 }
 
-.auth-user form p {
-  margin: 0 0 26px;
-}
-
+.auth-user form p,
 .auth-user form > div {
-  margin: 0 0 26px;
+  margin: 0 0 20px;
 }
 
-/* Labels */
+/* Etiquetas (Labels) */
 .auth-user label {
   display: block;
-  font-size: 15px;
-  margin: 0 0 7px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a5568;
+  margin: 0 0 6px;
 }
 
-/* Inputs / selects */
+/* Inputs y Selects */
 .auth-user input[type="text"],
 .auth-user input[type="email"],
-.auth-user input[type="password"] {
+.auth-user input[type="password"],
+.auth-user select {
   width: 100%;
-  height: 25px;
-  padding: 5px 7px;
-  border: black 1px solid;
-  border-radius: 3px;
-  background: #fff;
-  font-size: 14px;
+  height: 45px; /* Altura más cómoda para click/táctil */
+  padding: 10px 14px;
+  border: 1px solid #ced4da; /* Borde gris suave en lugar de negro */
+  border-radius: 6px;
+  background: #f8f9fa; /* Fondo muy ligeramente gris */
+  font-size: 15px;
+  color: #333;
   box-sizing: border-box;
+  transition: all 0.2s ease-in-out; /* Animación suave */
 }
 
-.auth-user select{
-  width: 100%;
-  height: 30px;
-  padding: 5px 7px;
-  border: black 1px solid;
-  border-radius: 3px;
-  background: #fff;
-  font-size: 13px;
-  box-sizing: border-box;
-}
-
-/* Focus suave */
+/* Efecto Focus (Cuando el usuario hace click en el input) */
 .auth-user input:focus,
 .auth-user select:focus {
   outline: none;
-  border-color: black;
-  box-shadow: 0 0 0 2px black;
+  background: #ffffff;
+  border-color: #4784E0;
+  box-shadow: 0 0 0 3px rgba(71, 132, 224, 0.2); /* Resplandor azul */
 }
 
-/* Help text de Django */
+/* Textos de ayuda de Django */
 .auth-user .helptext {
   display: block;
   font-size: 12px;
-  color: grey;
-}
-
-.auth-user ul {
-  display: block;
+  color: #888;
   margin-top: 4px;
-  font-size: 12px;
-  color: grey;
 }
 
-/* Errores (si aparecen) */
+/* Errores de Django */
 .auth-user ul.errorlist {
   list-style: none;
-  padding: 0;
-  margin: 8px 0 0;
-  color: #b00020;
+  padding: 8px 12px;
+  margin: 6px 0 0;
+  background-color: #fde8e8;
+  border-left: 4px solid #e02424;
+  color: #c81e1e;
   font-size: 13px;
+  border-radius: 4px;
 }
 
+/* =========================================
+   Botones y Enlaces
+   ========================================= */
 .auth-user a {
   text-align: center;
-  display: block;
-  color: grey;
+  display: inline-block;
+  width: 100%;
+  color: #4784E0;
   font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  margin-bottom: 20px;
+  transition: color 0.2s;
+}
+
+.auth-user a:hover {
+  color: #2b5fab;
+  text-decoration: underline;
 }
 
 .auth-user .btn.btn-primary {
   display: block;
-  margin: 34px auto 0;
-  min-width: 180px;
-  padding: 10px 22px;
-
+  width: 100%; /* El botón ocupa todo el ancho de la tarjeta */
+  height: 45px;
+  margin: 10px auto 0;
+  font-size: 16px;
+  font-weight: 600;
   background: #4784E0 !important;
+  border: none;
   color: white !important;
-
-  border-radius: 3px;
-  box-shadow: none !important;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
-/* Hover ligero */
 .auth-user .btn.btn-primary:hover {
-  background: #6d9ee6 !important;
+  background: #3567b5 !important;
+  transform: translateY(-1px); /* Pequeño efecto de elevación al pasar el ratón */
+  box-shadow: 0 4px 12px rgba(71, 132, 224, 0.3);
 }
 
-/* Ajuste responsive */
-@media (max-width: 640px) {
+/* =========================================
+   Responsive (Móviles)
+   ========================================= */
+@media (max-width: 600px) {
+  .auth-user {
+    margin: 80px 15px 30px; /* Deja espacio para el botón Volver/Idioma */
+    padding: 30px 20px;
+  }
+  
   .auth-user h1 {
-    font-size: 52px;
+    font-size: 28px;
   }
+  
   .auth-user h2 {
-    font-size: 30px;
-  }
-  .auth-user label {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
