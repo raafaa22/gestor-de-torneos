@@ -26,7 +26,7 @@
         </li>
         {% endif %}
         <li class="nav-item">
-            <a class="nav-link {% if actual == 'enfrentamientos_torneo' %}active{% endif %}" href="{% url 'enfrentamientos:enfrentamientos_torneo' torneo.id 1 %}">
+            <a class="nav-link {% if '/enfrentamientos/' in request.path %}active{% endif %}" href="{% url 'enfrentamientos:enfrentamientos_torneo' torneo.id 1 %}">
                 <strong>
                     {% trans 'Enfrentamientos' %}
                 </strong>
