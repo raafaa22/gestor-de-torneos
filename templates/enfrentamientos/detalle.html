@@ -53,13 +53,17 @@
             {% else %}
                 {% if enfrentamiento.anotacion_local is not None and enfrentamiento.anotacion_visitante is not None %}
                     <h4><strong>{{ enfrentamiento.anotacion_local }} - {{ enfrentamiento.anotacion_visitante }}</strong></h4>
-                    <div class="estadisticas-enfrentamiento">
-                        {% for estadistica in contexto.estadisticas_local %}
-                            <span class="est_local">{{ estadistica }}</span>
-                        {% endfor %}
-                        {% for estadistica in contexto.estadisticas_visitante %}
-                            <span class="est_visitante">{{ estadistica }}</span>
-                        {% endfor %}
+                    <div class="estadisticas-dos-columnas">
+                        <div class="col-est-local">
+                            {% for estadistica in contexto.estadisticas_local %}
+                                <span class="est_local">{{ estadistica }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="col-est-visitante">
+                            {% for estadistica in contexto.estadisticas_visitante %}
+                                <span class="est_visitante">{{ estadistica }}</span>
+                            {% endfor %}
+                        </div>
                     </div>
                 {% else %}
                     <h4><strong> - </strong></h4>

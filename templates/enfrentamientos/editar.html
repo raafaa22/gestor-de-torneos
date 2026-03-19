@@ -42,23 +42,27 @@
                         -
                     <input type="number" name="anotacion_visitante" value="{{ enfrentamiento.anotacion_visitante }}" form="guardar-enf" class="input-anotacion">
                 </strong></h4>
-                <div class="estadisticas-enfrentamiento">
-                    {% for estadistica in estadisticas_local %}
-                        <span class="est_local">
-                            {{ estadistica }}
-                            <a href="{% url 'enfrentamientos:borrar_estadistica' torneo.id n_ronda enfrentamiento.id estadistica.id %}">
-                                <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="15" height="15"/>
-                            </a>
-                        </span>
-                    {% endfor %}
-                    {% for estadistica in estadisticas_visitante %}
-                        <span class="est_visitante">
-                            {{ estadistica }}
-                            <a href="{% url 'enfrentamientos:borrar_estadistica' torneo.id n_ronda enfrentamiento.id estadistica.id %}">
-                                <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="15" height="15"/>
-                            </a>
-                        </span>
-                    {% endfor %}
+                <div class="estadisticas-dos-columnas">
+                    <div class="col-est-local">
+                        {% for estadistica in estadisticas_local %}
+                            <span class="est_local">
+                                {{ estadistica }}
+                                <a href="{% url 'enfrentamientos:borrar_estadistica' torneo.id n_ronda enfrentamiento.id estadistica.id %}">
+                                    <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="15" height="15"/>
+                                </a>
+                            </span>
+                        {% endfor %}
+                    </div>
+                    <div class="col-est-visitante">
+                        {% for estadistica in estadisticas_visitante %}
+                            <span class="est_visitante">
+                                {{ estadistica }}
+                                <a href="{% url 'enfrentamientos:borrar_estadistica' torneo.id n_ronda enfrentamiento.id estadistica.id %}">
+                                    <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="15" height="15"/>
+                                </a>
+                            </span>
+                        {% endfor %}
+                    </div>
                 </div>
             {% endif %}
         </div>

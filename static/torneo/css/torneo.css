@@ -665,6 +665,39 @@
   opacity: 1;
 }
 
+/* --- Estadísticas en dos columnas (debajo del marcador) --- */
+.estadisticas-dos-columnas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 30px;
+  margin: 0 35px 30px;
+  padding: 20px 40px;
+  background-color: #ffffff;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.col-est-local {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.col-est-visitante {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.col-est-visitante .est_visitante {
+  flex-direction: row-reverse;
+}
+
+.col-est-visitante .est_visitante img {
+  margin-left: 0;
+  margin-right: 10px;
+}
+
 /* --- Botón Guardar Enfrentamiento Principal --- */
 #guardar-enf {
   margin-right: 35px;
