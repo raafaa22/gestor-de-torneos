@@ -34,13 +34,24 @@ def dashboard(request):
         tipo = te.torneo.tipo
         if tipo == TipoTorneo.LIGA or tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
             clasificacion = Clasificacion.objects.filter(torneo_equipo=te).first()
+            pos = None
+            favor = None
+            contra = None
+            if clasificacion is None:
+                pos = "N/D"
+                favor = "N/D"
+                contra = "N/D"
+            else:
+                pos = "%(n)sº" % {'n': clasificacion.posicion}
+                favor = clasificacion.anotacion_favor
+                contra = clasificacion.anotacion_contra
             datos.append({
                 'id': id,
                 'nombre': nombre,
                 'tipo': TipoTorneo(tipo).label,
-                'estado': "%(n)sº" % {'n': clasificacion.posicion},
-                'anotacion_favor': clasificacion.anotacion_favor,
-                'anotacion_contra': clasificacion.anotacion_contra
+                'estado': pos,
+                'anotacion_favor': favor,
+                'anotacion_contra': contra
             })
 
         elif tipo == TipoTorneo.ELIMINATORIA:
@@ -277,6 +288,8 @@ def borrar_jugador(request, equipo_id, jugador_id):
 
 
 @login_required
+@require_POST
+@transaction.atomic
 def inscribir_equipo_torneo(request, torneo_id, equipo_id):
     usuario = request.user
     equipo = get_object_or_404(Equipo, id=equipo_id)
@@ -290,7 +303,10 @@ def inscribir_equipo_torneo(request, torneo_id, equipo_id):
         return HttpResponseForbidden(_("No puedes inscribir otros equipos en torneos."))
 
     torneo = get_object_or_404(Torneo, id=torneo_id)
-    torneo_equipo = TorneoEquipo.objects.create(torneo=torneo, equipo=equipo)
+    torneo_equipo, created = TorneoEquipo.objects.get_or_create(torneo=torneo, equipo=equipo)
+
+    if not created:
+        return redirect('equipo:dashboard')
 
     if torneo.tipo == TipoTorneo.LIGA:
         posicion_max = Clasificacion.objects.order_by('-posicion').values_list('posicion', flat=True).first()
