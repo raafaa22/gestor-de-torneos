@@ -34,10 +34,12 @@
                     <strong>{{ contexto.clasificacion_local.victorias }}/{{ contexto.clasificacion_local.derrotas }}</strong>
                 </span>
             {% endif %}
+            {% if torneo.deporte != 'PAD' %}
             <span><strong><u>{% trans 'Jugadores' %}</u></strong></span>
             {% for jug in contexto.jugadores_local %}
                 <span>{{ jug }}</span>
             {% endfor %}
+            {% endif %}
         </div>
         <div class="resultado">
             {% if torneo.deporte == 'PAD' %}
@@ -81,10 +83,12 @@
                     <strong>{{ contexto.clasificacion_visitante.victorias }}/{{ contexto.clasificacion_visitante.derrotas }}</strong>
                 </span>
             {% endif %}
+            {% if torneo.deporte != 'PAD' %}
             <span><strong><u>{% trans 'Jugadores' %}</u></strong></span>
             {% for jug in contexto.jugadores_visitante %}
                 <span>{{ jug }}</span>
             {% endfor %}
+            {% endif %}
         </div>
     </div>
 {% endblock %}

@@ -42,7 +42,7 @@
                     <td class="align-middle">
                         <form action="{% url 'equipo:inscribirse' equipo.id torneo.id %}" method="post">
                             {% csrf_token %}
-                            <button id="dar-baja" type="submit" class="borrar">
+                            <button id="dar-baja" type="submit" class="borrar inscribirse">
                                 <img src="{% static 'equipo/img/inscribirse.png' %}" alt="dar-de-baja" width="20" height="20"/>
                             </button>
                         </form>
