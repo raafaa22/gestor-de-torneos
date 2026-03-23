@@ -20,7 +20,7 @@ class EstadisticasEnfrentamientoForm(forms.ModelForm):
         self.torneo = torneo
         self.equipo = equipo
         self.enfrentamiento = enfrentamiento
-        
+
         if equipo is not None:
             self.fields['jugador'].queryset = Jugador.objects.filter(equipo=equipo)
         else:
@@ -37,6 +37,10 @@ class EstadisticasEnfrentamientoForm(forms.ModelForm):
             self.fields['tipo'].choices = []
 
         self.fields['cantidad'].min_value = 1
+
+        # Reordenar campos: Jugador, Tipo, Cantidad
+        new_order = ['jugador', 'tipo', 'cantidad']
+        self.fields = {k: self.fields[k] for k in new_order}
 
     def clean_cantidad(self):
         cantidad = self.cleaned_data.get('cantidad')
