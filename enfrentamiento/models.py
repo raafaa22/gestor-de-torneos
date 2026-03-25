@@ -26,18 +26,18 @@ class Enfrentamiento(models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=(
+                condition=(
                     models.Q(eliminatoria__isnull=False, jornada__isnull=True) |
                     models.Q(eliminatoria__isnull=True, jornada__isnull=False)
                 ),
                 name='enfrentamiento_eliminatoria_o_jornada'
             ),
             models.CheckConstraint(
-                check=~models.Q(equipo_local=models.F('equipo_visitante')),
+                condition=~models.Q(equipo_local=models.F('equipo_visitante')),
                 name='enfrentamiento_equipo_local_distinto_visitante'
             ),
             models.CheckConstraint(
-                check=(
+                condition=(
                     models.Q(ganador__isnull=True) |
                     models.Q(ganador=models.F('equipo_local')) |
                     models.Q(ganador=models.F('equipo_visitante'))

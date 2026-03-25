@@ -21,11 +21,11 @@ class Torneo(models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=(models.Q(playoffs=True, n_equipos_playoffs__isnull=False) | models.Q(playoffs=False, n_equipos_playoffs__isnull=True)),
+                condition=(models.Q(playoffs=True, n_equipos_playoffs__isnull=False) | models.Q(playoffs=False, n_equipos_playoffs__isnull=True)),
                 name='torneo_n_equipos_playoffs_solo_si_playoffs_true'
             ),
             models.CheckConstraint(
-                check=(models.Q(descenso=True, n_equipos_descenso__isnull=False) | models.Q(descenso=False, n_equipos_descenso__isnull=True)),
+                condition=(models.Q(descenso=True, n_equipos_descenso__isnull=False) | models.Q(descenso=False, n_equipos_descenso__isnull=True)),
                 name='torneo_n_equipos_descenso_solo_si_descenso_true'
             ),
         ]
