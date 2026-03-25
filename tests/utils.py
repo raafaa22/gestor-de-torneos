@@ -55,7 +55,7 @@ def create_torneo(
         nombre="Torneo Test",
         organizador=None,
         deporte=Deporte.FUTBOL,
-        tipo_torneo=TipoTorneo.LIGA,
+        tipo=TipoTorneo.LIGA,
         max_equipos=8,
         playoffs=False,
         n_equipos_playoffs=None,
@@ -70,7 +70,7 @@ def create_torneo(
         descripcion="Descripción del torneo de prueba",
         organizador=organizador,
         deporte=deporte,
-        tipo_torneo=tipo_torneo,
+        tipo=tipo,
         max_equipos=max_equipos,
         playoffs=playoffs,
         n_equipos_playoffs=n_equipos_playoffs,
@@ -89,7 +89,7 @@ def create_inscripcion_torneo(
 ):
     te = TorneoEquipo.objects.create(torneo=torneo, equipo=equipo)
 
-    if torneo.tipo_torneo == TipoTorneo.LIGA:
+    if torneo.tipo == TipoTorneo.LIGA:
         Clasificacion.objects.create(
             torneo_equipo=te,
             grupo=grupo,
@@ -101,7 +101,7 @@ def create_inscripcion_torneo(
             anotacion_favor=0,
             anotacion_contra=0
         )
-    elif torneo.tipo_torneo == TipoTorneo.ELIMINATORIA_GRUPOS:
+    elif torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
         EliminatoriaGrupos.objects.create(
             torneo=torneo,
             elminatoria=None,
