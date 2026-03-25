@@ -14,8 +14,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Instalar requirements primero (mejor cache)
-COPY requirements.txt /app/
-RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY requirements.txt requirements-dev.txt /app/
+RUN pip install --upgrade pip && pip install -r requirements.txt -r requirements-dev.txt
 
 # Copiamos el resto del código (aunque durante desarrollo montaremos un volumen)
 COPY . /app/
