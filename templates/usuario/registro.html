@@ -1,0 +1,91 @@
+{% load i18n %}{% load static %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+{% get_language_info_list for LANGUAGES as languages %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% trans "Registro" %}</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="{% static 'usuario/css/style.css' %}" />
+    <link rel="icon" href="{% static 'usuario/img/logo.png' %}">
+  </head>
+  
+  <body>
+    <div class="volver">
+      <a href="{% url 'usuario:login' %}" class="btn btn-secondary">{% trans "Volver" %}</a>
+    </div>
+
+    <div class="selector-idioma">
+      <form action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <select name="language" onchange="this.form.submit()" class="form-select form-select-sm">
+          {% for language in languages %}
+            <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
+              {{ language.name_local|title }}
+            </option>
+          {% endfor %}
+        </select>
+      </form>
+    </div>
+
+    <div class="auth-user">
+      <img src="{% static 'usuario/img/logo.png' %}" alt="Logo de TorneoPro" class="topimg" />
+      <h1>TorneoPro</h1>
+      <h2>{% trans "Registro de usuario" %}</h2>
+
+      <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div>
+            <label for="id_rol">{% trans "Rol de usuario:" %}</label>
+            <select id="id_rol" name="rol">
+              {% for choice in rol_choices %}
+                  <option value="{{ choice.value }}" {% if choice.value == rol %}selected{% endif %}>{{ choice.label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div id="org_form">
+            {{ org_form.as_p }}
+          </div>
+
+          <div id="eq_form" class="d-none">
+            {{ eq_form.as_p }}
+          </div>
+
+          {{ user_form.as_p }}
+
+          
+          <button type="submit" class="btn btn-primary">{% trans "Registrarse" %}</button>
+      </form>
+    </div>
+  </body>
+  <script>
+    const organizador = document.getElementById('org_form')
+    const equipo = document.getElementById('eq_form')
+
+    document.getElementById('id_rol').addEventListener('change', function() {
+      const rolSeleccionado = this.value;
+      if (rolSeleccionado === 'ORG') {
+        organizador.classList.remove('d-none');
+        equipo.classList.add('d-none');
+      } else if (rolSeleccionado === 'EQ') {
+        equipo.classList.remove('d-none');
+        organizador.classList.add('d-none');
+      }
+    });
+
+
+    
+  </script>
+</html>

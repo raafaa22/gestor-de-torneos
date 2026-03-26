@@ -1,0 +1,52 @@
+{% extends "torneo/base_torneo.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head_torneo %}
+    <title>{{ torneo.nombre }} · {% trans 'Personalizado' %}</title>
+{% endblock %}
+
+{% block titulo %}{% trans 'Generar enfrentamientos personalizados:' %}{% endblock %}
+
+{% block torneo_content %}
+    <div class="container-form">
+        <div class="txt-enf-pers">
+            <h4>{% trans 'Selección de niveles de los equipos del torneo' %}</h4>
+            <p>{% trans 'Los niveles se escogen del 1 al 4, siendo 1 el mejor y 4 el peor.' %}</p>
+            <p>
+                {% trans 'Para los torneos eliminatoria, los niveles se utilizarán para generar enfrentamientos como en el formato de play-offs (mejores niveles contra peores, dejando una hipotética final entre niveles 1).' %}
+            </p>
+            <p>
+                {% trans 'Para los torneos de liga, los niveles se utilizarán para generar un calendario de enfrentamientos justo y con emoción. Además se podrá escoger si se quiere que haya ida y vuelta o solo una vuelta.' %}
+            </p>
+            <p>
+                {% trans 'Para los torneos con eliminatorias y fase de grupos, los niveles se utilizarán para generar grupos de niveles equilibrados. Como en liga, también se podrá elegir generar enfrentamientos con ida y vuelta o solo una vuelta en la fase de grupos, no en eliminatorias.' %}
+            </p>
+        </div>
+        <form method="post" style="margin: 10px 5px;">
+            {% csrf_token %}
+            {% if torneo.tipo != 'ELI' %}
+                <div class="form-check form-switch ida-vuelta">
+                    <input type="checkbox" id="ida-vuelta" name="ida-vuelta" role="switch" class="form-check-input" {% if not equipos %} disabled{% endif %}>
+                    <label for="ida-vuelta" class="form-check-label">{% trans 'Ida y vuelta' %}</label>
+                </div>
+            {% endif %}
+
+            <div>
+                {% for equipo in equipos %}
+                    <div class="equipo-nivel">
+                        <label for="nivel-{{ equipo.equipo.id }}">{{ equipo.equipo.nombre }}</label>
+                        <select class="form-select" name="nivel-{{ equipo.equipo.id }}">
+                            {% for nivel in niveles %}
+                                <option value="{{ nivel.0 }}">{{ nivel.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="form-btn generar">
+                <button type="submit" class="btn"{% if not equipos %} disabled{% endif %}>{% trans 'Generar' %}</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

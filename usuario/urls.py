@@ -1,0 +1,19 @@
+from django.urls import path
+from .views import registro, login, admin_dashboard, home, logout, perfil, usuarios, borrar_usuario,\
+    editar_usuario, crear_usuario
+
+app_name = 'usuario'
+
+
+urlpatterns = [
+    path('registro/', registro, name='registro'),
+    path('login/', login, name='login'),
+    path('logout/', logout, name='logout'),
+    path('', home, name='home'),
+    path('perfil/', perfil, name='perfil'),
+    path('administrador/', admin_dashboard, name='administrador'),
+    path('administrador/usuarios/', usuarios, name='listado_usuarios'),
+    path('administrador/usuarios/borrar/<int:usuario_id>/', borrar_usuario, name='borrar_usuario'),
+    path('administrador/usuarios/editar/<int:usuario_id>/', editar_usuario, name='editar_usuario'),
+    path('administrador/usuarios/crear/', crear_usuario, name='crear_usuario'),
+]

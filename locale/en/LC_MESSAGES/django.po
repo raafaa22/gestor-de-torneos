@@ -1,0 +1,935 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Rafael Serano Algar <rafaelserranoalgar@gmail.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-17 12:53+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: enfrentamiento/forms.py:10
+msgid "Estadística"
+msgstr "Statistic"
+
+#: enfrentamiento/forms.py:44
+msgid "La cantidad debe ser al menos 1."
+msgstr "The amount must be at least 1."
+
+#: enfrentamiento/forms.py:68
+msgid ""
+"Ya existe una estadística de este tipo para el jugador en este "
+"enfrentamiento."
+msgstr ""
+"There is already an existent statistic of this type for this player in this "
+"match."
+
+#: enfrentamiento/forms.py:77
+msgid "No se pueden asignar asistencias si el equipo no ha anotado ningún gol."
+msgstr "Assists cannot be added if there is no goal scored by the team."
+
+#: enfrentamiento/forms.py:86
+msgid ""
+"El número total de asistencias no puede superar el número de goles anotados "
+"por el equipo."
+msgstr ""
+"Total number of assists cannot be bigger than the number of scored goals by "
+"the team."
+
+#: enfrentamiento/forms.py:95
+msgid ""
+"No se pueden asignar asistencias si el equipo no ha anotado ningún tiro de "
+"campo."
+msgstr "Assists cannot be added if the team has not scored any field goal."
+
+#: enfrentamiento/forms.py:104
+msgid ""
+"El número total de asistencias no puede superar el número de tiros de campo "
+"anotados por el equipo."
+msgstr ""
+"Total number of assists cannot be bigger than the number of field goals "
+"scored by the team."
+
+#: enfrentamiento/libs.py:416
+msgid "No se encontró el siguiente enfrentamiento para actualizar."
+msgstr "Next match to update was not found."
+
+#: enfrentamiento/libs.py:418
+msgid "No se puede actualizar la eliminatoria sin un ganador definido."
+msgstr "Knockout cannot be updated if there is no winner for the match."
+
+#: enfrentamiento/views.py:50 enfrentamiento/views.py:55
+#, python-format
+msgid "Jornada %(n)s"
+msgstr "Match day %(n)s"
+
+#: enfrentamiento/views.py:124 enfrentamiento/views.py:188
+#, python-format
+msgid "Grupos - Jornada %(n)s"
+msgstr "Groups - Matchday %(n)s"
+
+#: enfrentamiento/views.py:146 enfrentamiento/views.py:202
+#, python-format
+msgid "Fase de grupos - Jornada %(n)s"
+msgstr "Groups phase - Match day %(n)s"
+
+#: enfrentamiento/views.py:224 enfrentamiento/views.py:259
+#: enfrentamiento/views.py:284 enfrentamiento/views.py:347
+#: enfrentamiento/views.py:378 enfrentamiento/views.py:583
+#: enfrentamiento/views.py:597 enfrentamiento/views.py:650 equipo/views.py:26
+#: equipo/views.py:96 equipo/views.py:113 equipo/views.py:139
+#: equipo/views.py:160 equipo/views.py:214 equipo/views.py:263
+#: equipo/views.py:286 estadisticas/views.py:39 torneo/views.py:34
+#: torneo/views.py:68 torneo/views.py:109 torneo/views.py:152
+#: torneo/views.py:193 torneo/views.py:217 torneo/views.py:230
+#: usuario/views.py:169 usuario/views.py:179 usuario/views.py:201
+#: usuario/views.py:223 usuario/views.py:267
+msgid "No tienes permiso para acceder a esta página."
+msgstr "You don't have permission to access to this page."
+
+#: enfrentamiento/views.py:269
+msgid ""
+"No se pueden editar las estadísticas de un enfrentamiento sin ambos equipos "
+"asignados."
+msgstr ""
+
+#: enfrentamiento/views.py:300
+msgid "El equipo no participa en este enfrentamiento."
+msgstr "The team is not part of this match."
+
+#: enfrentamiento/views.py:433
+msgid "El tercer set no puede terminar en empate."
+msgstr "Third set cannot finish in draw."
+
+#: enfrentamiento/views.py:435
+msgid "Debe introducir el resultado del tercer set."
+msgstr "You must introduce a result in third set."
+
+#: enfrentamiento/views.py:437 enfrentamiento/views.py:441
+msgid "En pádel no puede haber empates."
+msgstr "In paddle, draws cannot happen."
+
+#: enfrentamiento/views.py:439
+msgid "Debe introducir el resultado del segundo set."
+msgstr "You must introduce a result in second set."
+
+#: enfrentamiento/views.py:443
+msgid "Debe introducir el resultado del primer set."
+msgstr "You must introduce a result in first set."
+
+#: enfrentamiento/views.py:454
+msgid "Debes introducir los dos resultados o dejarlos ambos en blanco."
+msgstr "You must introduce both results or leave both empty."
+
+#: enfrentamiento/views.py:465
+msgid "En baloncesto no puede haber empates."
+msgstr "In basketball, draws cannot happen."
+
+#: equipo/views.py:100
+msgid "No estás inscrito en este torneo."
+msgstr "You are not registered for this tournament."
+
+#: equipo/views.py:116
+msgid "Esta página no es de tu equipo"
+msgstr "This page doesn't belong to your team"
+
+#: equipo/views.py:142
+msgid "Estos no son tus jugadores."
+msgstr "These are not your players."
+
+#: equipo/views.py:145 equipo/views.py:166 equipo/views.py:220
+#: equipo/views.py:269
+msgid ""
+"En pádel los propios jugadores son el equipo, por lo que tu equipo no tiene "
+"jugadores."
+msgstr ""
+"Players are themselves the team in paddle tennis, so your team does not have "
+"players."
+
+#: equipo/views.py:163
+msgid "No puedes crear jugadores en otros equipos."
+msgstr "You cannot create players in other teams."
+
+#: equipo/views.py:217
+msgid "No puedes modificar jugadores de otros equipos."
+msgstr "You cannot modify players from other teams."
+
+#: equipo/views.py:266
+msgid "No puedes borrar jugadores de otros equipos."
+msgstr "You cannot delete players from other teams."
+
+#: equipo/views.py:290
+msgid "No puedes inscribir otros equipos en torneos."
+msgstr "You cannot register teams in other tournaments."
+
+#: gestor/choices.py:5
+msgid "Fútbol"
+msgstr "Football"
+
+#: gestor/choices.py:6
+msgid "Baloncesto"
+msgstr "Basketball"
+
+#: gestor/choices.py:7
+msgid "Pádel"
+msgstr "Paddle tennis"
+
+#: gestor/choices.py:10 templates/enfrentamientos/detalle.html:26
+#: templates/enfrentamientos/detalle.html:73
+msgid "Liga"
+msgstr "League"
+
+#: gestor/choices.py:11
+msgid "Eliminatoria"
+msgstr "Knockout round"
+
+#: gestor/choices.py:12
+msgid "Eliminatoria con Fase de Grupos"
+msgstr "Group Phase and Knockout round"
+
+#: gestor/choices.py:15
+msgid "Dieciseisavos de Final"
+msgstr "Round of 32"
+
+#: gestor/choices.py:16
+msgid "Octavos de Final"
+msgstr "Round of 16"
+
+#: gestor/choices.py:17
+msgid "Cuartos de Final"
+msgstr "Quarter finals"
+
+#: gestor/choices.py:18
+msgid "Semifinal"
+msgstr "Semifinal"
+
+#: gestor/choices.py:19
+msgid "Final"
+msgstr "Final"
+
+#: gestor/choices.py:21 gestor/choices.py:26
+#: templates/usuario/admin_dashboard.html:45 torneo/forms.py:17
+msgid "Organizador"
+msgstr "Organiser"
+
+#: gestor/choices.py:22 gestor/choices.py:27
+#: templates/torneo/clasificacion.html:21
+#: templates/torneo/clasificacion.html:51
+#: templates/usuario/crear_usuario.html:51
+msgid "Equipo"
+msgstr "Team"
+
+#: gestor/choices.py:25
+msgid "Administrador"
+msgstr "Administrator"
+
+#: gestor/choices.py:28 templates/torneo/estadisticas_torneo.html:24
+#: templates/torneo/estadisticas_torneo.html:53
+#: templates/torneo/estadisticas_torneo.html:79
+msgid "Jugador"
+msgstr "Player"
+
+#: gestor/choices.py:31 templates/torneo/estadisticas_torneo.html:17
+#: templates/torneo/jugador_dashboard.html:28
+msgid "Goles"
+msgstr "Goals"
+
+#: gestor/choices.py:32 gestor/choices.py:37
+#: templates/torneo/estadisticas_torneo.html:49
+#: templates/torneo/estadisticas_torneo.html:54
+#: templates/torneo/jugador_dashboard.html:29
+msgid "Asistencias"
+msgstr "Assists"
+
+#: gestor/choices.py:35 templates/torneo/clasificacion.html:27
+#: templates/torneo/clasificacion.html:57
+#: templates/torneo/estadisticas_torneo.html:19
+#: templates/torneo/jugador_dashboard.html:28
+msgid "Puntos"
+msgstr "Points"
+
+#: gestor/choices.py:36 templates/torneo/estadisticas_torneo.html:74
+msgid "Rebotes"
+msgstr "Rebounds"
+
+#: gestor/choices.py:40
+msgid "Nivel 1"
+msgstr "Level 1"
+
+#: gestor/choices.py:41
+msgid "Nivel 2"
+msgstr "Level 2"
+
+#: gestor/choices.py:42
+msgid "Nivel 3"
+msgstr "Level 3"
+
+#: gestor/choices.py:43
+msgid "Nivel 4"
+msgstr "Level 4"
+
+#: templates/base.html:52
+msgid "Cerrar Sesión"
+msgstr "Log Out"
+
+#: templates/enfrentamientos/detalle.html:6
+msgid "Detalle"
+msgstr "Detail"
+
+#: templates/enfrentamientos/detalle.html:9
+msgid "Enfrentamiento:"
+msgstr "Match:"
+
+#: templates/enfrentamientos/detalle.html:14
+msgid "Jornada"
+msgstr "Match day"
+
+#: templates/enfrentamientos/detalle.html:24
+#: templates/enfrentamientos/detalle.html:71
+msgid "Posición en"
+msgstr "Position in"
+
+#: templates/enfrentamientos/detalle.html:32
+#: templates/enfrentamientos/detalle.html:79
+msgid "Puntos:"
+msgstr "Points:"
+
+#: templates/enfrentamientos/detalle.html:33
+#: templates/enfrentamientos/detalle.html:80
+msgid "Victorias/Derrotas:"
+msgstr "Victories/Loses"
+
+#: templates/enfrentamientos/detalle.html:37
+#: templates/enfrentamientos/detalle.html:84
+#: templates/equipo/editar_jugador.html:6
+#: templates/equipo/listado_jugadores.html:6
+#: templates/equipo/nuevo_jugador.html:6
+msgid "Jugadores"
+msgstr "Players"
+
+#: templates/enfrentamientos/editar.html:6
+msgid "Editar"
+msgstr "Edit"
+
+#: templates/enfrentamientos/editar.html:9
+msgid "Editar enfrentamiento:"
+msgstr "Edit match:"
+
+#: templates/enfrentamientos/editar.html:24
+#: templates/enfrentamientos/editar.html:76
+msgid "Añadir"
+msgstr "Add"
+
+#: templates/enfrentamientos/editar.html:84
+#: templates/torneo/info_torneo.html:22
+msgid "Guardar"
+msgstr "Save"
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:6
+msgid "Personalizado"
+msgstr "Personalised"
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:9
+msgid "Generar enfrentamientos personalizados:"
+msgstr "Generate customized matches:"
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:14
+msgid "Selección de niveles de los equipos del torneo"
+msgstr "Selection of the tournament team levels"
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:15
+msgid "Los niveles se escogen del 1 al 4, siendo 1 el mejor y 4 el peor."
+msgstr "Levels are chosen from 1 to 4, being 1 the best and 4 the worst."
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:17
+msgid ""
+"Para los torneos eliminatoria, los niveles se utilizarán para generar "
+"enfrentamientos como en el formato de play-offs (mejores niveles contra "
+"peores, dejando una hipotética final entre niveles 1)."
+msgstr ""
+"For knockout tournaments, levels will be used to generate matches in a play-"
+"offs format (best levels against worst, leaving an hypothetical level 1 "
+"final)."
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:20
+msgid ""
+"Para los torneos de liga, los niveles se utilizarán para generar un "
+"calendario de enfrentamientos justo y con emoción. Además se podrá escoger "
+"si se quiere que haya ida y vuelta o solo una vuelta."
+msgstr ""
+"For league tournaments, levels will be used to generate a  fair and exciting "
+"matchup schedule. In addition, home and away or one-way matches can be "
+"chosen."
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:23
+msgid ""
+"Para los torneos con eliminatorias y fase de grupos, los niveles se "
+"utilizarán para generar grupos de niveles equilibrados. Como en liga, "
+"también se podrá elegir generar enfrentamientos con ida y vuelta o solo una "
+"vuelta en la fase de grupos, no en eliminatorias."
+msgstr ""
+"For tournaments with groups and a knockout round, levels will be used to "
+"generate balanced groups. Like in leagues, home and away ore one-wy matches "
+"can be chosen in the group phase only, not in knockout rounds."
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:31
+msgid "Ida y vuelta"
+msgstr "Home and away"
+
+#: templates/enfrentamientos/enfrentamientos_personalizados.html:48
+msgid "Generar"
+msgstr "Generate"
+
+#: templates/equipo/dashboard.html:6 templates/torneo/jugador_dashboard.html:6
+#: templates/torneo/organizador_dashboard.html:6
+#: templates/usuario/admin_dashboard.html:11
+msgid "Principal"
+msgstr "Main"
+
+#: templates/equipo/dashboard.html:16
+#: templates/torneo/jugador_dashboard.html:13
+#: templates/torneo/organizador_dashboard.html:12
+#: templates/usuario/admin_dashboard.html:17
+msgid "Listado de torneos"
+msgstr "Tournament list"
+
+#: templates/equipo/dashboard.html:20
+msgid "Inscribirse en torneo"
+msgstr "Register for a tournament"
+
+#: templates/equipo/dashboard.html:25
+msgid "Ver jugadores"
+msgstr "See players"
+
+#: templates/equipo/dashboard.html:33 templates/equipo/listado_torneos.html:26
+#: templates/torneo/jugador_dashboard.html:20
+#: templates/torneo/organizador_dashboard.html:27
+#: templates/usuario/admin_dashboard.html:37
+msgid "Buscar torneo..."
+msgstr "Search tournament..."
+
+#: templates/equipo/dashboard.html:39
+#: templates/equipo/listado_jugadores.html:37
+#: templates/equipo/listado_torneos.html:32
+#: templates/torneo/equipos_torneo.html:21
+#: templates/torneo/jugador_dashboard.html:26
+#: templates/torneo/organizador_dashboard.html:34
+#: templates/usuario/admin_dashboard.html:44
+#: templates/usuario/listado_usuarios.html:43 usuario/forms.py:92
+#: usuario/forms.py:101 usuario/forms.py:110 usuario/forms.py:119
+msgid "Nombre"
+msgstr "Name"
+
+#: templates/equipo/dashboard.html:40 templates/equipo/listado_torneos.html:33
+#: templates/torneo/jugador_dashboard.html:27
+#: templates/torneo/organizador_dashboard.html:36
+#: templates/usuario/admin_dashboard.html:47
+msgid "Tipo"
+msgstr "Type"
+
+#: templates/equipo/dashboard.html:41
+msgid "Estado"
+msgstr "Status"
+
+#: templates/equipo/dashboard.html:42 templates/torneo/clasificacion.html:25
+#: templates/torneo/clasificacion.html:55
+msgid "Anotación a favor"
+msgstr "Scoring made"
+
+#: templates/equipo/dashboard.html:43 templates/torneo/clasificacion.html:26
+#: templates/torneo/clasificacion.html:56
+msgid "Anotación en contra"
+msgstr "Scoring received"
+
+#: templates/equipo/editar_jugador.html:18
+msgid "Editar el jugador:"
+msgstr "Edit the player:"
+
+#: templates/equipo/editar_jugador.html:30
+#: templates/usuario/editar_usuario.html:46 templates/usuario/perfil.html:33
+msgid "Guardar cambios"
+msgstr "Save changes"
+
+#: templates/equipo/listado_jugadores.html:19
+msgid "Jugadores del equipo"
+msgstr "Players from the team"
+
+#: templates/equipo/listado_jugadores.html:25
+msgid "Nuevo jugador"
+msgstr "New player"
+
+#: templates/equipo/listado_jugadores.html:31
+msgid "Buscar jugador..."
+msgstr "Search player..."
+
+#: templates/equipo/listado_jugadores.html:36 usuario/forms.py:118
+msgid "DNI"
+msgstr "ID"
+
+#: templates/equipo/listado_jugadores.html:38 usuario/forms.py:120
+msgid "Apellidos"
+msgstr "Surnames"
+
+#: templates/equipo/listado_jugadores.html:40
+#: templates/usuario/crear_usuario.html:64 usuario/forms.py:121
+msgid "Es portero"
+msgstr "Is goalkeeper"
+
+#: templates/equipo/listado_jugadores.html:51
+#: templates/torneo/info_torneo.html:35 templates/torneo/info_torneo.html:39
+msgid "Sí"
+msgstr "Yes"
+
+#: templates/equipo/listado_jugadores.html:51
+#: templates/torneo/info_torneo.html:35 templates/torneo/info_torneo.html:39
+msgid "No"
+msgstr "No"
+
+#: templates/equipo/listado_torneos.html:6
+msgid "Inscribirse"
+msgstr "Register"
+
+#: templates/equipo/listado_torneos.html:19
+msgid "Listado de torneos disponibles para inscribirse"
+msgstr "List of available tournaments for registration"
+
+#: templates/equipo/nuevo_jugador.html:17
+msgid "Nuevo jugador del equipo"
+msgstr "New player of the team"
+
+#: templates/equipo/nuevo_jugador.html:29
+msgid "Crear Jugador"
+msgstr "Create Player"
+
+#: templates/torneo/base_torneo.html:15
+msgid "Editar Información"
+msgstr "Edit Information"
+
+#: templates/torneo/base_torneo.html:15
+msgid "Información Torneo"
+msgstr "Tournament Information"
+
+#: templates/torneo/base_torneo.html:23 templates/torneo/clasificacion.html:7
+#: templates/torneo/clasificacion.html:10
+msgid "Clasificación"
+msgstr "Classification"
+
+#: templates/torneo/base_torneo.html:31 templates/torneo/enfrentamientos.html:6
+#: templates/torneo/enfrentamientos.html:9
+msgid "Enfrentamientos"
+msgstr "Matches"
+
+#: templates/torneo/base_torneo.html:38
+msgid "Gestionar Equipos"
+msgstr "Manage Teams"
+
+#: templates/torneo/base_torneo.html:38 templates/torneo/equipos_torneo.html:7
+#: templates/torneo/equipos_torneo.html:11
+msgid "Equipos"
+msgstr "Teams"
+
+#: templates/torneo/base_torneo.html:46
+#: templates/torneo/estadisticas_torneo.html:7
+#: templates/torneo/estadisticas_torneo.html:10
+msgid "Estadísticas"
+msgstr "Statistics"
+
+#: templates/torneo/clasificacion.html:16
+msgid "Grupo"
+msgstr "Group"
+
+#: templates/torneo/clasificacion.html:22
+#: templates/torneo/clasificacion.html:52
+msgid "Victorias"
+msgstr "Victories"
+
+#: templates/torneo/clasificacion.html:23
+#: templates/torneo/clasificacion.html:53
+msgid "Empates"
+msgstr "Draws"
+
+#: templates/torneo/clasificacion.html:24
+#: templates/torneo/clasificacion.html:54
+msgid "Derrotas"
+msgstr "Defeats"
+
+#: templates/torneo/enfrentamientos.html:15
+msgid "Seleccionar:"
+msgstr "Select:"
+
+#: templates/torneo/enfrentamientos.html:26
+msgid "Enfrentamientos personalizados"
+msgstr "Customized matches"
+
+#: templates/torneo/enfrentamientos.html:32
+msgid "Enfrentamientos aleatorios"
+msgstr "Random matches"
+
+#: templates/torneo/enfrentamientos.html:55
+#: templates/torneo/enfrentamientos.html:90
+msgid "Por Determinar"
+msgstr "To Be Determined"
+
+#: templates/torneo/enfrentamientos.html:113
+msgid "No existen enfrentamientos todavía"
+msgstr "There are still no matches"
+
+#: templates/torneo/enfrentamientos.html:117
+msgid "Generar enfrentamientos personalizados"
+msgstr "Generate customized matches"
+
+#: templates/torneo/enfrentamientos.html:123
+msgid "Generar enfrentamientos aleatorios"
+msgstr "Generate random matches"
+
+#: templates/torneo/equipos_torneo.html:16
+msgid "Buscar equipo..."
+msgstr "Search team..."
+
+#: templates/torneo/estadisticas_torneo.html:72
+#: templates/torneo/jugador_dashboard.html:31
+msgid "Goles en contra"
+msgstr "Goals received"
+
+#: templates/torneo/info_torneo.html:7
+msgid "Información"
+msgstr "Information"
+
+#: templates/torneo/info_torneo.html:10
+msgid "Información del torneo"
+msgstr "Tournament information"
+
+#: templates/torneo/info_torneo.html:27
+msgid "Nombre del torneo:"
+msgstr "Tournament name:"
+
+#: templates/torneo/info_torneo.html:28
+msgid "Descripción:"
+msgstr "Description:"
+
+#: templates/torneo/info_torneo.html:29
+msgid "Organizador:"
+msgstr "Organiser:"
+
+#: templates/torneo/info_torneo.html:31
+msgid "Ganador:"
+msgstr "Winner"
+
+#: templates/torneo/info_torneo.html:33
+msgid "Deporte:"
+msgstr "Sport:"
+
+#: templates/torneo/info_torneo.html:34
+msgid "Tipo de torneo:"
+msgstr "Tournament type:"
+
+#: templates/torneo/info_torneo.html:35
+msgid "Play-offs:"
+msgstr "Play-offs:"
+
+#: templates/torneo/info_torneo.html:37
+msgid "Número de equipos en play-offs:"
+msgstr "Number of play-offs teams:"
+
+#: templates/torneo/info_torneo.html:39
+msgid "Descenso:"
+msgstr "Relegation:"
+
+#: templates/torneo/info_torneo.html:41
+msgid "Número de equipos en descenso:"
+msgstr "Number of teams relegated:"
+
+#: templates/torneo/jugador_dashboard.html:15
+msgid "Equipo:"
+msgstr "Team:"
+
+#: templates/torneo/nuevo_torneo.html:7
+msgid "Nuevo torneo"
+msgstr "New tournament"
+
+#: templates/torneo/nuevo_torneo.html:17
+msgid "Crear nuevo torneo"
+msgstr "Create a new tournament"
+
+#: templates/torneo/nuevo_torneo.html:30
+msgid "Crear Torneo"
+msgstr "Create tournament"
+
+#: templates/torneo/organizador_dashboard.html:17
+#: templates/usuario/admin_dashboard.html:22
+msgid "Crear torneo"
+msgstr "Create tournament"
+
+#: templates/torneo/organizador_dashboard.html:35
+#: templates/usuario/admin_dashboard.html:46 torneo/forms.py:52
+#: usuario/forms.py:102
+msgid "Deporte"
+msgstr "Sport"
+
+#: templates/usuario/admin_dashboard.html:26
+msgid "Ver usuarios"
+msgstr "See users"
+
+#: templates/usuario/crear_usuario.html:10
+#: templates/usuario/crear_usuario.html:21
+#: templates/usuario/crear_usuario.html:73
+#: templates/usuario/listado_usuarios.html:26
+msgid "Crear usuario"
+msgstr "Create user"
+
+#: templates/usuario/crear_usuario.html:31
+#: templates/usuario/listado_usuarios.html:45
+msgid "Tipo de usuario"
+msgstr "User type:"
+
+#: templates/usuario/editar_usuario.html:10
+#: templates/usuario/editar_usuario.html:22
+msgid "Editar usuario"
+msgstr "Edit user"
+
+#: templates/usuario/listado_usuarios.html:10
+msgid "Usuarios"
+msgstr "Users"
+
+#: templates/usuario/listado_usuarios.html:21
+msgid "Listado de usuarios"
+msgstr "User list"
+
+#: templates/usuario/listado_usuarios.html:36
+msgid "Buscar usuario..."
+msgstr "Search user..."
+
+#: templates/usuario/listado_usuarios.html:44
+msgid "Email"
+msgstr "Email"
+
+#: templates/usuario/login.html:10 templates/usuario/login.html:42
+msgid "Inicio de sesión"
+msgstr "Log in"
+
+#: templates/usuario/login.html:48
+msgid "Regístrate"
+msgstr "Sing up"
+
+#: templates/usuario/login.html:50
+msgid "Iniciar sesión"
+msgstr "Log in"
+
+#: templates/usuario/perfil.html:6 templates/usuario/perfil.html:11
+msgid "Perfil de usuario"
+msgstr "User profile"
+
+#: templates/usuario/perfil.html:23
+msgid "Datos del perfil"
+msgstr "Profile information"
+
+#: templates/usuario/perfil.html:41 templates/usuario/perfil.html:50
+msgid "Cambiar contraseña"
+msgstr "Change password"
+
+#: templates/usuario/registro.html:10
+msgid "Registro"
+msgstr "Sign up"
+
+#: templates/usuario/registro.html:24
+msgid "Volver"
+msgstr "Return"
+
+#: templates/usuario/registro.html:44
+msgid "Registro de usuario"
+msgstr "User sign up"
+
+#: templates/usuario/registro.html:50
+msgid "Rol de usuario:"
+msgstr "User role:"
+
+#: templates/usuario/registro.html:69
+msgid "Registrarse"
+msgstr "Sign up"
+
+#: torneo/forms.py:22
+msgid "Número de grupos"
+msgstr "Number of groups"
+
+#: torneo/forms.py:29
+msgid "Clasificados por grupo"
+msgstr "Qualified teams by group"
+
+#: torneo/forms.py:40
+msgid ""
+"Marcar si el torneo es una liga y se quiere que haya una fase eliminatoria "
+"que decida al campeón, con el número de equipos especificado abajo."
+msgstr ""
+"Only mark if the tournament is a league and a knockout phase to decide "
+"champion is wanted, select the number of teams taking part below."
+
+#: torneo/forms.py:41
+msgid ""
+"Marcar si el torneo es una liga y se quiere que haya descenso, con el número "
+"de equipos especificado abajo."
+msgstr ""
+"Only mark if tournament is a league and team relegation is wanted, select "
+"the number of relegated teams below."
+
+#: torneo/forms.py:49
+msgid "Nombre del Torneo"
+msgstr "Tournament Name"
+
+#: torneo/forms.py:50
+msgid "Descripción"
+msgstr "Description"
+
+#: torneo/forms.py:51
+msgid "Número máximo de equipos"
+msgstr "Maximum number of teams"
+
+#: torneo/forms.py:53
+msgid "Tipo de Torneo"
+msgstr "Tournament Type"
+
+#: torneo/forms.py:54
+msgid "Play-offs"
+msgstr "Play-offs:"
+
+#: torneo/forms.py:55
+msgid "Número de equipos en play-offs"
+msgstr "Number of teams in play-offs"
+
+#: torneo/forms.py:56
+msgid "Descenso"
+msgstr "Relegation"
+
+#: torneo/forms.py:57
+msgid "Número de equipos en descenso"
+msgstr "Number of teams in relegation"
+
+#: torneo/forms.py:92
+msgid ""
+"Debe especificar el número de equipos en play-offs si ha marcado que hay "
+"play-offs."
+msgstr "You must specify number of teams in play-offs if play-offs is marked."
+
+#: torneo/forms.py:94
+msgid ""
+"El número de equipos en play-offs no puede ser mayor que el número máximo de "
+"equipos del torneo."
+msgstr ""
+"Number of teams in play-offs cannot be bigger than the maximum of the "
+"tournament."
+
+#: torneo/forms.py:96
+msgid ""
+"El número de equipos en play-offs no puede ser mayor que 32 ya que como "
+"máximo puede haber 5 rondas en una eliminatoria."
+msgstr ""
+"Number of teams in play-offs cannot be bigger than 32 due to the maximum "
+"number of rounds in a knockout: 5."
+
+#: torneo/forms.py:98
+msgid "El número de equipos en play-offs no puede ser menor que 2."
+msgstr "Number of temas in play-offs cannot be smaller than 2."
+
+#: torneo/forms.py:106
+msgid ""
+"Debe especificar el número de equipos en descenso si ha marcado que hay "
+"descenso."
+msgstr ""
+"You must specify number of teams in relegation if relegation is marked."
+
+#: torneo/forms.py:108
+msgid ""
+"El número de equipos en descenso no puede ser mayor que el número máximo de "
+"equipos del torneo."
+msgstr ""
+"Number of temas in relegation cannot be bigger than the maximum of the "
+"tournament."
+
+#: torneo/forms.py:116
+msgid ""
+"La suma de equipos en play-offs y en descenso no puede ser mayor que el "
+"número máximo de equipos del torneo."
+msgstr ""
+"The sum of teams in play-offs and relegation cannot be bigger than the "
+"maximum of the tournament."
+
+#: torneo/forms.py:124
+msgid "Se debe indicar el número de grupos."
+msgstr "Number of groups must be filled."
+
+#: torneo/forms.py:127
+msgid "Se debe indicar cuántos equipos se clasifican por grupo."
+msgstr "Number of teams qualified by group must be filled."
+
+#: torneo/forms.py:131
+msgid ""
+"El número máximo de equipos debe ser divisible entre el número de grupos "
+"(para que los grupos tengan el mismo tamaño)."
+msgstr ""
+"The maximum number of teams must be divisible by the number of groups (for "
+"all groups having the same size)."
+
+#: torneo/forms.py:136
+msgid "No pueden clasificarse más equipos de los que hay en cada grupo."
+msgstr "There cannot be more teams qualified than are in each group."
+
+#: torneo/forms.py:140
+msgid "Debe haber al menos 2 clasificados en total para crear eliminatoria."
+msgstr ""
+"In total, there must be at least 2 qualified teams to create a knockout "
+"round."
+
+#: torneo/forms.py:142
+msgid "El total de clasificados no puede superar 32 (máximo 5 rondas)."
+msgstr ""
+"Total number of teams qualified cannot be bigger than 32 (maximum of 5 "
+"rounds)."
+
+#: usuario/forms.py:17 usuario/forms.py:29 usuario/forms.py:153
+#: usuario/forms.py:155
+msgid "Correo Electrónico"
+msgstr "Email"
+
+#: usuario/forms.py:30 usuario/forms.py:156
+msgid "Contraseña"
+msgstr "Password"
+
+#: usuario/forms.py:31
+msgid "Repite la contraseña"
+msgstr "Repeat the password"
+
+#: usuario/forms.py:32
+msgid "Debe coincidir con la contraseña anterior."
+msgstr "Must meet the previous one."
+
+#: usuario/forms.py:39 usuario/forms.py:70
+msgid "Ya existe una cuenta con este correo electrónico."
+msgstr "An account already exists with this email."
+
+#: usuario/forms.py:63
+msgid "El correo es obligatorio."
+msgstr "The email is mandatory"
+
+#: usuario/models.py:26
+msgid "El DNI debe tener 8 dígitos seguidos de una letra mayúscula."
+msgstr "Spanish ID must have 8 digits followed by a capital letter."
+
+#: usuario/views.py:206
+msgid "No puedes eliminar tu propio usuario."
+msgstr "You cannot delete your own user."
+
+#: usuario/views.py:215
+msgid "No se puede eliminar este organizador porque tiene torneos asociados."
+msgstr "You cannot delete this organiser because it has associated tournaments."
+
+#: usuario/views.py:247
+msgid "Usuario no encontrado o sin rol asignado."
+msgstr "Not found user or user without rol."

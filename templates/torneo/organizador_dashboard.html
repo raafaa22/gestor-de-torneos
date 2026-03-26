@@ -1,0 +1,100 @@
+{% extends "base.html" %} {% load i18n %} {% load static %} 
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+<link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}" />
+<title>{% trans 'Principal' %}</title>
+{% endblock %} 
+
+{% block content %}
+<div class="torneo-header">
+  <h3 class="float-start">
+    <strong>{% trans 'Listado de torneos' %}</strong>
+  </h3>
+
+  <a href="{% url 'torneo:crear_torneo' %}" class="navbar-brand float-end nuevo d-flex align-items-center">
+    <img src="{% static 'torneo/img/nuevo.png' %}" alt="nuevo" width="25" height="25" class="align-middle me-1"/>
+    <strong class="align-middle">{% trans 'Crear torneo' %}</strong>
+  </a>
+</div>
+
+<div class="container-table">
+  <div class="buscador">
+    <input
+      id="buscar-torneo"
+      type="text"
+      class="form-control"
+      placeholder="{% trans 'Buscar torneo...' %}"
+    />
+  </div>
+
+    <table id="torneosTable" class="table table-hover">
+      <thead>
+        <tr>
+          <th>{% trans 'Nombre' %}</th>
+          <th>{% trans 'Deporte' %}</th>
+          <th>{% trans 'Tipo' %}</th>
+          <th class="acciones"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for torneo in torneos %}
+        <tr data-id="{{ torneo.id }}">
+          <td class="align-middle">{{ torneo.nombre }}</td>
+          <td class="align-middle">{{ torneo.get_deporte_display }}</td>
+          <td class="align-middle">{{ torneo.get_tipo_display }}</td>
+          <td class="align-middle">
+            <form action="{% url 'torneo:borrar_torneo' torneo.id %}" method="post">
+              {% csrf_token %}
+              <button id="borrar" type="submit" class="borrar">
+                <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="20" height="20"/>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+</div>
+
+{% endblock %} 
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+<script>
+  $(document).ready(function() {
+        const lang = "{{ LANGUAGE_CODE }}";
+        let langUrl = "";
+        if (lang.toLowerCase().startsWith('es')){
+          langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/es-ES.json"
+        } else {
+          langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/en-GB.json"
+        }
+        var table = $('#torneosTable').DataTable({
+            pageLength: 10,
+            lengthMenu: [10, 25, 50, 100 ],
+            dom: 't<"paginacion"<"paginacion-info"i><"paginacion-button"p>>',
+            language: {
+                url: langUrl,
+            },
+            columnDefs: [
+                { orderable: false, searchable: false, targets: 3 }
+            ]
+        });
+
+
+        $('#torneosTable tbody').on('click', 'tr', function(e){
+          if (e.target.closest('#borrar'))
+            return;
+
+          const torneoId = this.getAttribute('data-id');
+          window.location.href = "{% url 'torneo:principal_torneo' 0 %}".replace('0', torneoId);
+        });
+
+        $('#buscar-torneo').on('input', function() {
+            table.search(this.value).draw();
+        });
+  });
+</script>
+{% endblock %}

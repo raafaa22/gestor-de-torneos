@@ -1,0 +1,67 @@
+/* =========================================
+   Estilos de Administración (Usuarios)
+   ========================================= */
+
+.btn-usuarios {
+    margin-right: 12px;
+    background-color: #4784E0 !important;
+    color: white !important;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px; 
+    font-size: 15px !important;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(71, 132, 224, 0.2);
+}
+
+.btn-usuarios:hover {
+    background-color: #3567b5 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(71, 132, 224, 0.3);
+}
+
+.btn-nuevo-torneo {
+    margin-right: 12px;
+    background-color: #E0A347 !important;
+    color: white !important;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 15px !important;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(224, 163, 71, 0.2);
+}
+
+.btn-nuevo-torneo:hover {
+    background-color: #c78d37 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(224, 163, 71, 0.3);
+}
+
+/* =========================================
+   Ajustes Adicionales para Vistas de Edición
+   ========================================= */
+
+.alert {
+    border-radius: 8px;
+    margin: 0 35px 25px 35px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    font-size: 15px;
+}
+
+.perfil-container .form-btn {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.container-form .form-btn {
+    margin-top: 30px;
+    margin-right: 0; 
+    margin-bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+}

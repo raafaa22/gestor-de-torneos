@@ -1,0 +1,1008 @@
+/* =========================================
+   Cabeceras y Contenedores Base
+   ========================================= */
+.torneo-header {
+  margin: 30px 20px 20px 35px;
+  display: flex;
+  align-items: center;         
+  justify-content: space-between;
+  flex-wrap: wrap; /* Por si la pantalla es pequeña */
+  gap: 15px;
+}
+
+.torneo-base {
+  margin-left: 200px !important;
+  margin-top: 20px !important;
+  margin-bottom: 10%;
+  padding: 0 20px;
+}
+
+.torneo-base .torneo-header {
+  margin-left: 0 !important;
+  margin-top: 0 !important;
+}
+
+.torneo-header h3 {
+  margin: 0;
+  color: #1a2b4c;
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: -0.5px;
+}
+
+/* Botón Crear Torneo en la cabecera */
+.torneo-header a.nuevo {
+  background-color: #4784E0;
+  color: #ffffff !important;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(71, 132, 224, 0.2);
+}
+
+.torneo-header a.nuevo:hover {
+  background-color: #3567b5;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(71, 132, 224, 0.3);
+}
+
+/* Margen para las imágenes de la cabecera */
+.torneo-header img {
+  margin-right: 8px !important;
+}
+
+/* Aplicar el filtro blanco SOLO al icono dentro del botón azul "Crear torneo" */
+.torneo-header a.nuevo img {
+  filter: brightness(0) invert(1);
+}
+
+/* =========================================
+   Menú Lateral del Torneo
+   ========================================= */
+.menu-torneo {
+  background-color: #ffffff;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.05); 
+  width: 200px;
+  top: 60px; 
+  height: calc(100vh - 60px); 
+  position: fixed;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  z-index: 10;
+}
+
+
+.menu-torneo li {
+  flex: 1; 
+  display: flex;
+  margin: 0;
+  border-bottom: 1px solid #eef2f9; 
+}
+
+.menu-torneo li:last-child {
+  border-bottom: none;
+}
+
+.menu-torneo a {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  text-decoration: none;
+  color: #4a5568;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-left: 4px solid transparent; 
+}
+
+
+.menu-torneo a.active,
+.menu-torneo a:hover {
+  background-color: #f8fafc; 
+  color: #4784E0;
+  font-weight: 700;
+  border-left: 4px solid #4784E0; 
+}
+/* =========================================
+   Tablas y Buscador (Dashboard)
+   ========================================= */
+.container-table {
+  background-color: #ffffff;
+  border-radius: 12px;
+  margin: 0 20px 30px 35px;
+  padding: 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+.container-tables-torneo {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+/* Buscador */
+.buscador {
+  margin-bottom: 24px;
+}
+
+.buscador input {
+  background: #f8f9fa url("../img/lupa.png") no-repeat 14px center;
+  background-size: 18px 18px;
+  padding: 10px 14px 10px 42px; 
+  width: 100%;
+  max-width: 350px;
+  height: 45px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.buscador input:focus {
+  outline: none;
+  background-color: #ffffff;
+  border-color: #4784E0;
+  box-shadow: 0 0 0 3px rgba(71, 132, 224, 0.2);
+}
+
+/* Estilos nativos de tabla (Sobrescribiendo Bootstrap/DataTables) */
+.table {
+  margin-bottom: 0 !important;
+}
+
+.table th {
+  border-bottom: 2px solid #e1ebfa !important;
+  color: #4a5568;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 16px 12px;
+}
+
+.table td {
+  border-bottom: 1px solid #f0f4f8;
+  padding: 16px 12px;
+  vertical-align: middle;
+  color: #333;
+}
+
+.table-hover tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Botón Borrar en la tabla */
+.borrar {
+  border: none;
+  background: transparent;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.borrar:hover {
+  background: #fee2e2;
+}
+
+.borrar.inscribirse:hover {
+  background: #d1fae5 !important;
+}
+
+
+/* Paginación de DataTables */
+.paginacion {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.paginacion .paginacion-button {
+  display: flex;
+  gap: 4px;
+}
+
+.dt-paging-button.current, 
+.paginate_button.current,
+.paginacion .paginacion-button .current {
+  background: #e1ebfa !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 6px 12px;
+  font-weight: bold;
+}
+
+.dt-paging-button:hover:not(.current),
+.paginate_button:hover:not(.current) {
+  background: #eef2f9 !important; 
+  border: none !important;
+  border-radius: 6px !important;
+}
+
+/* =========================================
+   Enfrentamientos y Estadísticas
+   ========================================= */
+
+/* --- Cabecera: Selector y Botones --- */
+.selector-ronda {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.selector-ronda label {
+  font-weight: 600;
+  color: #4a5568;
+  margin: 0; 
+}
+
+.selector-ronda select {
+  height: 40px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 5px 35px 5px 12px;
+  background-color: #ffffff;
+  font-size: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.selector-ronda select:focus {
+  outline: none;
+  border-color: #4784E0;
+  box-shadow: 0 0 0 3px rgba(71, 132, 224, 0.2);
+}
+
+.selector-ronda select:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
+  padding-right: 12px;
+}
+
+.selector-ronda .float-end {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-left: auto; 
+  float: none !important;
+}
+
+.selector-ronda .float-end form {
+  margin: 0; 
+}
+
+/* --- Título Central y Flechas (Jornada X) --- */
+.navegacion-enf {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.navegacion-enf form {
+  margin: 0;
+}
+
+.navegacion-enf h4 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a2b4c;
+}
+
+.btn-nav-enf {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.btn-nav-enf:hover:not(:disabled) {
+  transform: scale(1.15);
+}
+
+.btn-nav-enf:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* --- Lista de Enfrentamientos --- */
+.enfrentamientos {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  padding: 10px 20px;
+  margin-bottom: 30px;
+}
+
+.enf {
+  display: grid;
+  grid-template-columns: 1fr 60px 30px 60px 1fr; 
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f4f8;
+  text-align: center;
+}
+
+.enf:last-child {
+  border-bottom: none;
+}
+
+/* Estilos de los equipos y puntuaciones */
+.enf > span:first-child {
+  text-align: right;
+  padding-right: 15px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.enf > span:nth-child(3) {
+  color: #a0aec0;
+  font-weight: 700;
+}
+
+.ganador {
+  color: #4784E0 !important; 
+}
+
+/* --- Contenedor Visitante + Botones (.grid-5) --- */
+.grid-5 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-left: 15px;
+}
+
+.grid-5 > span { 
+  text-align: left;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.acciones-enfr {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.acciones-enfr img {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.acciones-enfr img:hover {
+  opacity: 1;
+}
+
+/* --- Botones Genéricos de Enfrentamientos --- */
+.btn-enf {
+  background-color: #4784e0;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-enf:hover {
+  background-color: #3567b5;
+  color: white;
+}
+
+.btn-enf-2 {
+  background-color: #ffffff;
+  color: #4784E0; 
+  border: 1px solid #4784E0; 
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-enf-2:hover {
+  background-color: #eef2f9; 
+  color: #3567b5;
+  border-color: #3567b5;
+}
+
+/* --- Estado Vacío (Sin Enfrentamientos) --- */
+.no-enfrentamientos {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 250px); 
+  text-align: center;
+}
+
+.no-enfrentamientos h3 {
+  color: #4a5568;
+  font-weight: 600;
+  margin-bottom: 25px;
+  font-size: 22px;
+}
+
+.no-enfrentamientos div {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap; 
+}
+.no-enfrentamientos form {
+  margin: 0;
+}
+
+/* Colores de estado en tablas */
+.playoffs td { color: #059669 !important; font-weight: 500; }
+.descenso td { color: #dc2626 !important; font-weight: 500; }
+
+/* =========================================
+   Formularios Internos del Torneo
+   (Sincronizado con base.css)
+   ========================================= */
+.container-form {
+  background-color: #ffffff;
+  border-radius: 12px;
+  margin: 20px 35px 30px;
+  padding: 30px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  border: none;
+}
+
+.container-form input[type="text"],
+.container-form input[type="number"],
+.container-form input[type="email"],
+.container-form input[type="password"],
+.container-form select,
+.container-form textarea {
+  background: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 15px;
+  height: 45px;
+  transition: all 0.2s;
+}
+
+/* Campos deshabilitados */
+.container-form input[type="text"]:disabled,
+.container-form input[type="number"]:disabled,
+.container-form input[type="email"]:disabled,
+.container-form input[type="password"]:disabled,
+.container-form select:disabled,
+.container-form textarea:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Ocultar flecha en selects deshabilitados */
+.container-form select:disabled {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
+  padding-right: 14px;
+}
+
+.container-form textarea {
+  min-height: 100px;
+  max-width: 450px !important;
+}
+
+.container-form input:not(.form-check-input):focus,
+.container-form select:focus,
+.container-form textarea:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: #4784E0;
+  box-shadow: 0 0 0 3px rgba(71, 132, 224, 0.2);
+}
+
+
+.form-btn {
+  margin-right: 35px;
+  margin-bottom: 40px; 
+}
+
+
+/* =========================================
+   Detalle y Edición de Enfrentamientos
+   ========================================= */
+
+/* Título superior (Jornada o Ronda) */
+.d-flex.justify-content-center h3 {
+  color: #1a2b4c;
+  font-weight: 800;
+  font-size: 26px;
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+/* Contenedor principal estilo tarjeta */
+.detalle-enfr {
+  display: flex;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  margin: 20px 35px 30px;
+  padding: 30px 40px;
+  gap: 15px;
+}
+
+/* --- Lado Local --- */
+.local {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding-right: 25px;
+  border-right: 2px dashed #e2e8f0;
+  overflow: hidden;
+}
+
+/* --- Lado Visitante --- */
+.visitante {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  padding-left: 25px;
+  border-left: 2px dashed #e2e8f0;
+  overflow: hidden;
+}
+
+/* --- Sección Central (Resultado o Inputs) --- */
+.resultado {
+  flex: 0 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.resultado h4 {
+  border-bottom: none;
+  margin: 0;
+  font-size: 32px;
+  color: #a0aec0;
+}
+
+.resultado h4 strong {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.estadisticas-form {
+  width: 100%;
+  margin-top: 25px;
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  box-sizing: border-box;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.estadisticas-form p {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.estadisticas-form label {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 14px;
+  margin: 0;
+  text-align: left;
+}
+
+.estadisticas-form input,
+.estadisticas-form select {
+  background: #ffffff;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 15px;
+  height: 40px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Campos deshabilitados en formularios de estadísticas */
+.estadisticas-form input:disabled,
+.estadisticas-form select:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.estadisticas-form select:disabled {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
+  padding-right: 14px;
+}
+
+
+.btn-guardar-est {
+  background-color: #e2e8f0;
+  color: #4a5568;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  display: block;
+  margin: 15px 0 0 auto; 
+  transition: all 0.2s ease;
+}
+
+.btn-guardar-est:hover {
+  background-color: #cbd5e1;
+  color: #1a2b4c;
+}
+
+
+.est_local, 
+.est_visitante {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  width: 100%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.est_local img, 
+.est_visitante img {
+  margin-left: 10px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.est_local img:hover, 
+.est_visitante img:hover {
+  opacity: 1;
+}
+
+/* --- Estadísticas en dos columnas (debajo del marcador) --- */
+.estadisticas-dos-columnas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 30px;
+  margin: 10px 0 30px 0;
+  padding: 20px 0;
+  background-color: #ffffff;
+}
+
+.col-est-local {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.col-est-visitante {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.col-est-visitante .est_visitante {
+  flex-direction: row-reverse;
+}
+
+.col-est-visitante .est_visitante img {
+  margin-left: 0;
+  margin-right: 10px;
+}
+
+/* --- Botón Guardar Enfrentamiento Principal --- */
+#guardar-enf {
+  margin-right: 35px;
+  margin-bottom: 40px;
+}
+
+#guardar-enf button {
+  background-color: #4784E0;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+#guardar-enf button:hover {
+  background-color: #3567b5;
+  box-shadow: 0 4px 12px rgba(71, 132, 224, 0.3);
+}
+
+.input-anotacion {
+  width: 55px !important; 
+  height: 45px !important;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a2b4c;
+  background-color: #f8fafc;
+  padding: 0; 
+  transition: all 0.2s ease;
+}
+
+.input-anotacion:focus {
+  outline: none;
+  background-color: #ffffff;
+  border-color: #4784E0;
+  box-shadow: 0 0 0 3px rgba(71, 132, 224, 0.2);
+}
+
+/* Ocultar las flechas de los inputs numéricos */
+.input-anotacion::-webkit-outer-spin-button,
+.input-anotacion::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+/* Asegurar que si hay varios (como en pádel) se separen bien */
+.resultado h4 strong {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+
+/* =========================================
+   Generar Enfrentamientos Personalizados
+   ========================================= */
+
+/* 1. Textos explicativos superiores (Centrados en la pantalla) */
+.txt-enf-pers {
+  text-align: center;
+}
+
+.txt-enf-pers h4 {
+  color: #1a2b4c;
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.txt-enf-pers p {
+  color: #4a5568;
+  display: block;
+  font-size: 13px;
+  margin: 0 5px;
+}
+
+/* 2. Caja del Switch "Ida y Vuelta" (Alineado a la izquierda y nativo de Bootstrap) */
+.ida-vuelta {
+  margin-bottom: 25px; 
+  padding: 10px 18px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.ida-vuelta label {
+  font-weight: 600;
+  color: #1a2b4c;
+  margin: 0 0 0 10px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+
+.ida-vuelta .form-check-input {
+  width: 45px;
+  height: 22px;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* 3. Lista de Equipos y Niveles (Más juntos y en el centro) */
+.equipo-nivel {
+  max-width: 450px; 
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid #f0f4f8;
+  transition: background-color 0.2s;
+  border-radius: 6px;
+}
+
+.equipo-nivel:hover {
+  background-color: #f8fafc; 
+}
+
+.equipo-nivel:last-child {
+  border-bottom: none;
+}
+
+.equipo-nivel label {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 15px;
+  margin: 0;
+}
+
+/* Selector de nivel */
+.equipo-nivel select {
+  width: 100px;
+  height: 40px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 5px 12px;
+  background-color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a2b4c;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.equipo-nivel select:focus {
+  outline: none;
+  border-color: #4784E0;
+  box-shadow: 0 0 0 3px rgba(71, 132, 224, 0.2);
+}
+
+.equipo-nivel select:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
+  padding-right: 12px;
+}
+
+.form-btn.generar {
+  margin-top: 30px;
+  margin-right: 0; 
+  margin-bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.form-btn.generar button {
+  background-color: #4784E0;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.form-btn.generar button:hover:not(:disabled) {
+  background-color: #3567b5;
+  box-shadow: 0 4px 12px rgba(71, 132, 224, 0.3);
+}
+
+.form-btn.generar button:disabled {
+  background-color: #cbd5e1;
+  color: #f8fafc;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   Estadísticas del Torneo
+   ========================================= */
+
+.container-estadisticas {
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: center; 
+  gap: 30px; 
+  margin: 20px 35px 30px; 
+}
+
+.tabla-estadisticas, 
+.tabla-estadisticas-centro {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  width: calc(50% - 15px); 
+  min-width: 350px; 
+  box-sizing: border-box;
+}
+
+.tabla-estadisticas-centro {
+  margin: 0 auto 50px auto; 
+  display: block; 
+}
+
+.tabla-estadisticas h5, 
+.tabla-estadisticas-centro h5 {
+  color: #1a2b4c;
+  font-weight: 800;
+  font-size: 18px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  border-bottom: 2px dashed #e2e8f0; 
+  padding-bottom: 12px;
+}
+
+.tabla-estadisticas table, 
+.tabla-estadisticas-centro table {
+  width: 100% !important;
+  margin-bottom: 0 !important;
+}
+
+/* Adaptación para teléfonos y tablets */
+@media (max-width: 900px) {
+  .tabla-estadisticas, 
+  .tabla-estadisticas-centro {
+    width: auto;
+    margin-left: 35px;
+    margin-right: 35px;
+  }
+}

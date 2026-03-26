@@ -1,0 +1,79 @@
+{% extends "torneo/base_torneo.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head_torneo %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+<title>{{ torneo.nombre }} · {% trans 'Equipos' %}</title>
+{% endblock %}
+
+
+{% block titulo %}{% trans 'Equipos' %}{% endblock %}
+
+{% block torneo_content %}
+    <div class="container-tables-torneo">
+        <div class="buscador">
+            <input id="buscar-equipo" type="text" class="form-control" placeholder="{% trans 'Buscar equipo...' %}"/>
+        </div>
+        <table id="tablaEquipos" class="table">
+            <thead>
+                <tr>
+                    <th>{% trans 'Nombre' %}</th>
+                    {% if is_admin or is_organizador %}
+                    <th></th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for equipo in equipos %}
+                    <tr>
+                        <td class="align-middle">{{ equipo.nombre }}</td>
+                        {% if is_admin or is_organizador %}
+                        <td class="align-middle">
+                            <form method="post" action="{% url 'torneo:borrar_equipo' torneo.id equipo.id %}">
+                                {% csrf_token %}
+                                <button id="borrar" type="submit" class="borrar">
+                                    <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="20" height="20"/>
+                                </button>
+                            </form>
+                        </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+    <script>
+       $(document).ready(function () {
+            const lang = "{{ LANGUAGE_CODE }}";
+            let langUrl = "";
+            if (lang.toLowerCase().startsWith('es')){
+                langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/es-ES.json";
+            } else {
+                langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/en-GB.json";
+            }
+
+            var table = $('#tablaEquipos').DataTable({
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100 ],
+                dom: 't<"paginacion"<"paginacion-info"i><"paginacion-button"p>>',
+                language: {
+                    url: langUrl,
+                }
+                {% if is_admin or is_organizador %},
+                columnDefs: [
+                    { orderable: false, searchable: false, targets: 1 }
+                ]
+                {% endif %}
+            });
+
+            $('#buscar-equipo').on('input', function() {
+                table.search(this.value).draw();
+            });
+       } );
+    </script>
+{% endblock %}

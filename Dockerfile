@@ -10,12 +10,12 @@ WORKDIR /app
 
 # Dependencias del sistema
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential pkg-config default-libmysqlclient-dev \
+    build-essential pkg-config default-libmysqlclient-dev gettext \
     && rm -rf /var/lib/apt/lists/*
 
 # Instalar requirements primero (mejor cache)
-COPY requirements.txt /app/
-RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY requirements.txt requirements-dev.txt /app/
+RUN pip install --upgrade pip && pip install -r requirements.txt -r requirements-dev.txt
 
 # Copiamos el resto del código (aunque durante desarrollo montaremos un volumen)
 COPY . /app/

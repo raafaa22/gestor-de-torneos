@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block extra_head %}
+    <title>{% trans 'Jugadores' %}</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}" />
+    <link rel="stylesheet" href="{% static 'equipo/css/equipo.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="torneo-header">
+        <div class="navbar-brand float-start nuevo d-flex align-items-center">
+            <a href="{% url 'usuario:home' %}">
+                <img src="{% static 'torneo/img/atras.png' %}" alt="nuevo" width="33" height="33" />
+            </a>
+            <h3 class="mt-0">
+                <strong>{% trans "Jugadores del equipo" %} {{ equipo.nombre }}</strong>
+            </h3>
+        </div>
+
+        <a href="{% url 'equipo:crear_jugador' equipo.id %}" class="navbar-brand float-end nuevo d-flex align-items-center">
+            <img src="{% static 'torneo/img/nuevo.png' %}" alt="nuevo" width="25" height="25" class="align-middle me-1"/>
+            <strong class="align-middle">{% trans 'Nuevo jugador' %}</strong>
+        </a>
+    </div>
+
+    <div class="container-table">
+        <div class="buscador">
+            <input id="buscar-jugador" type="text" class="form-control" placeholder="{% trans 'Buscar jugador...' %}" />
+        </div>
+
+        <table id="jugadoresTable" class="table table-hover">
+            <thead>
+                <th>{% trans 'DNI' %}</th>
+                <th>{% trans 'Nombre' %}</th>
+                <th>{% trans 'Apellidos' %}</th>
+                {% if equipo.deporte == 'FUT' %}
+                <th>{% trans 'Es portero' %}</th>
+                {% endif %}
+                <th class="acciones"></th>
+            </thead>
+            <tbody>
+                {% for jugador in jugadores %}
+                    <tr data-id="{{ jugador.dni }}">
+                        <td>{{ jugador.dni }}</td>
+                        <td>{{ jugador.nombre }}</td>
+                        <td>{{ jugador.apellidos }}</td>
+                        {% if equipo.deporte == 'FUT' %}
+                        <td>{% if jugador.es_portero %}{% trans 'Sí' %}{% else %}{% trans 'No' %}{% endif %}</td>
+                        {% endif %}
+                        <td>
+                            <form method="post" action="{% url 'equipo:borrar_jugador' equipo.id jugador.dni %}">
+                                {% csrf_token %}
+                                <button id="borrar" type="submit" class="borrar">
+                                    <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="20" height="20"/>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+    <script>
+       $(document).ready(function () {
+            const lang = "{{ LANGUAGE_CODE }}";
+            let langUrl = "";
+            if (lang.toLowerCase().startsWith('es')){
+                langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/es-ES.json";
+            } else {
+                langUrl = "https://cdn.datatables.net/plug-ins/2.3.6/i18n/en-GB.json";
+            }
+
+            var table = $('#jugadoresTable').DataTable({
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100 ],
+                dom: 't<"paginacion"<"paginacion-info"i><"paginacion-button"p>>',
+                language: {
+                    url: langUrl,
+                },
+                columnDefs: [
+                    { orderable: false, searchable: false, targets: -1 }
+                ]
+            });
+
+            $('#jugadoresTable tbody').on('click', 'tr', function(e){
+                if (e.target.closest('#borrar'))
+                    return;
+
+                const jugadorId = this.getAttribute('data-id');
+                window.location.href = "{% url 'equipo:editar_jugador' equipo.id 0 %}".replace('0', jugadorId);
+            });
+
+
+            $('#buscar-jugador').on('input', function() {
+                table.search(this.value).draw();
+            });
+       } );
+    </script>
+{% endblock %}

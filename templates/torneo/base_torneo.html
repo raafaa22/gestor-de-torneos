@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %} 
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}" />
+{% block head_torneo %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+{% with actual=request.resolver_match.url_name %}
+    <ul class="nav flex-column menu-torneo">
+        <li class="nav-item">
+            <a class="nav-link {% if actual == 'informacion_torneo' %}active{% endif %}" href="{% url 'torneo:informacion_torneo' torneo.id %}">
+                <strong>
+                    {% if is_organizador or is_admin %}{% trans 'Editar Información' %}{% else %}{% trans 'Información Torneo' %}{% endif %}
+                </strong>
+            </a>
+        </li>
+        {% if torneo.tipo != 'ELI' %}
+        <li class="nav-item">
+            <a class="nav-link {% if actual == 'clasificacion_torneo' %}active{% endif %}" href="{% url 'torneo:clasificacion_torneo' torneo.id %}">
+                <strong>
+                    {% trans 'Clasificación' %}
+                </strong>
+            </a>
+        </li>
+        {% endif %}
+        <li class="nav-item">
+            <a class="nav-link {% if '/enfrentamientos/' in request.path %}active{% endif %}" href="{% url 'enfrentamientos:enfrentamientos_torneo' torneo.id 1 %}">
+                <strong>
+                    {% trans 'Enfrentamientos' %}
+                </strong>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if actual == 'equipos_torneo' %}active{% endif %}" href="{% url 'torneo:equipos_torneo' torneo.id %}">
+                <strong>
+                    {% if is_organizador or is_admin %}{% trans 'Gestionar Equipos' %}{% else %}{% trans 'Equipos' %}{% endif %}
+                </strong>
+            </a>
+        </li>
+        {% if torneo.deporte != 'PAD' %}
+        <li class="nav-item">
+            <a class="nav-link {% if actual == 'estadisticas_torneo' %}active{% endif %}" href="{% url 'estadisticas:estadisticas_torneo' torneo.id %}">
+                <strong>
+                    {% trans 'Estadísticas' %}
+                </strong>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+
+    <div class="torneo-base">
+        <div class="torneo-header mt-1">
+            <div class="navbar-brand float-start d-flex align-items-center">
+                <a href="javascript:history.back()">
+                    <img src="{% static 'torneo/img/atras.png' %}" alt="nuevo" width="35" height="35" />
+                </a>
+                <h3 class="mt-0">
+                    <strong>{{ torneo.nombre }} - {% block titulo %}{% endblock %}</strong>
+                </h3>
+            </div>
+        </div>
+        {% block torneo_content %}{% endblock %}
+    </div>
+{% endwith %}
+{% endblock %}
+
+
