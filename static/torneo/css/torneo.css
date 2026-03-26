@@ -274,6 +274,18 @@
   box-shadow: 0 0 0 3px rgba(71, 132, 224, 0.2);
 }
 
+.selector-ronda select:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
+  padding-right: 12px;
+}
+
 .selector-ronda .float-end {
   display: flex;
   gap: 12px;
@@ -480,8 +492,30 @@
   border-radius: 6px;
   padding: 10px 14px;
   font-size: 15px;
-  height: 45px; 
+  height: 45px;
   transition: all 0.2s;
+}
+
+/* Campos deshabilitados */
+.container-form input[type="text"]:disabled,
+.container-form input[type="number"]:disabled,
+.container-form input[type="email"]:disabled,
+.container-form input[type="password"]:disabled,
+.container-form select:disabled,
+.container-form textarea:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Ocultar flecha en selects deshabilitados */
+.container-form select:disabled {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
+  padding-right: 14px;
 }
 
 .container-form textarea {
@@ -616,6 +650,23 @@
   height: 40px;
   width: 100%;
   box-sizing: border-box;
+}
+
+/* Campos deshabilitados en formularios de estadísticas */
+.estadisticas-form input:disabled,
+.estadisticas-form select:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.estadisticas-form select:disabled {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
+  padding-right: 14px;
 }
 
 
@@ -837,7 +888,7 @@
 
 /* Selector de nivel */
 .equipo-nivel select {
-  width: 100px; 
+  width: 100px;
   height: 40px;
   border: 1px solid #ced4da;
   border-radius: 6px;
@@ -854,6 +905,18 @@
   outline: none;
   border-color: #4784E0;
   box-shadow: 0 0 0 3px rgba(71, 132, 224, 0.2);
+}
+
+.equipo-nivel select:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
+  padding-right: 12px;
 }
 
 .form-btn.generar {
