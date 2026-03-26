@@ -91,6 +91,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 
+db_options = {
+    "charset": "utf8mb4",
+}
+
+db_ssl_ca = os.getenv("DB_SSL_CA")
+if db_ssl_ca:
+    db_options["ssl"] = {"ca": db_ssl_ca}
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -99,9 +107,7 @@ DATABASES = {
         "PASSWORD": os.getenv("DB_PASSWORD", "tfg"),
         "HOST": os.getenv("DB_HOST", "db"),
         "PORT": os.getenv("DB_PORT", "3306"),
-        "OPTIONS": {
-            "charset": "utf8mb4",
-        },
+        "OPTIONS": db_options,
         "CONN_MAX_AGE": 60,
     }
 }
