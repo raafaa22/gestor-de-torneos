@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.db import connection
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.db.models import ProtectedError
 from django.contrib import messages
@@ -27,6 +29,16 @@ ROL_CHOICES = [
     RolUsuario.EQUIPO,
 ]
 
+
+
+def health(request):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            cursor.fetchone()
+        return JsonResponse({"status": "ok"}, status=200)
+    except Exception:
+        return JsonResponse({"status": "error"}, status=503)
 
 def registro(request):
     if request.user.is_authenticated:
