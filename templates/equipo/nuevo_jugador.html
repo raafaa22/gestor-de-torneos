@@ -22,11 +22,66 @@
     <form method="post">
         <div class="container-form">
             {% csrf_token %}
+            <input type="hidden" id="usar_password_defecto" name="usar_password_defecto" value="false">
             {{ jugador_form.as_p }}
             {{ user_form.as_p }}
+            
+            <div id="password_default_container" style="margin-top: 10px; margin-bottom: 15px;">
+                <button type="button" id="btn_password_default" class="btn btn-secondary" 
+                        style="background-color: #6c757d; border: none; padding: 8px 16px;">
+                    {% trans "Usar contraseña por defecto" %}
+                </button>
+                <small id="password_default_info" class="d-none" style="color: #28a745; margin-left: 10px;">
+                    ✓ {% trans "Se usará la contraseña por defecto: Default1234" %}
+                </small>
+            </div>
         </div>
         <div class="form-btn">
             <button type="submit" class="btn float-end">{% trans "Crear Jugador" %}</button>
         </div>
     </form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Elementos para contraseña por defecto
+    const btnPasswordDefault = document.getElementById('btn_password_default');
+    const passwordDefaultInfo = document.getElementById('password_default_info');
+    const password1Input = document.getElementById('id_password1');
+    const password2Input = document.getElementById('id_password2');
+    const hiddenInput = document.getElementById('usar_password_defecto');
+    
+    let usingDefaultPassword = false;
+
+    // Manejar botón de contraseña por defecto
+    btnPasswordDefault.addEventListener('click', function() {
+        if (!usingDefaultPassword) {
+            // Activar contraseña por defecto
+            password1Input.value = 'Default1234';
+            password2Input.value = 'Default1234';
+            password1Input.readOnly = true;
+            password2Input.readOnly = true;
+            password1Input.style.backgroundColor = '#e9ecef';
+            password2Input.style.backgroundColor = '#e9ecef';
+            passwordDefaultInfo.classList.remove('d-none');
+            btnPasswordDefault.textContent = '{% trans "Quitar contraseña por defecto" %}';
+            btnPasswordDefault.style.backgroundColor = '#dc3545';
+            usingDefaultPassword = true;
+            hiddenInput.value = 'true';
+        } else {
+            // Desactivar contraseña por defecto
+            password1Input.value = '';
+            password2Input.value = '';
+            password1Input.readOnly = false;
+            password2Input.readOnly = false;
+            password1Input.style.backgroundColor = '';
+            password2Input.style.backgroundColor = '';
+            passwordDefaultInfo.classList.add('d-none');
+            btnPasswordDefault.textContent = '{% trans "Usar contraseña por defecto" %}';
+            btnPasswordDefault.style.backgroundColor = '#6c757d';
+            usingDefaultPassword = false;
+            hiddenInput.value = 'false';
+        }
+    });
+</script>
 {% endblock %}

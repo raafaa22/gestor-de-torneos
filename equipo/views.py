@@ -179,6 +179,13 @@ def crear_jugador(request, equipo_id):
     if request.method == 'POST':
         user_form = UserRegisterForm(request.POST)
         jugador_form = JugadorForm(request.POST, equipo=equipo)
+        
+        # Verificar si se debe usar contraseña por defecto
+        usar_password_defecto = request.POST.get('usar_password_defecto') == 'true'
+        
+        # Debug: imprimir el valor recibido
+        print(f"DEBUG: usar_password_defecto field = {request.POST.get('usar_password_defecto')}")
+        print(f"DEBUG: usar_password_defecto bool = {usar_password_defecto}")
 
         if user_form.is_valid() and jugador_form.is_valid():
             user = user_form.save()
@@ -193,6 +200,8 @@ def crear_jugador(request, equipo_id):
             jugador = jugador_form.save(commit=False)
             jugador.user = user
             jugador.equipo = equipo
+            jugador.tiene_password_por_defecto = usar_password_defecto
+            print(f"DEBUG: Setting jugador.tiene_password_por_defecto = {usar_password_defecto}")
             jugador.save()
 
             for te in TorneoEquipo.objects.filter(equipo=equipo):

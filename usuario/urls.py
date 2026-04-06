@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import registro, login, admin_dashboard, home, logout, perfil, usuarios, borrar_usuario,\
-    editar_usuario, crear_usuario
+    editar_usuario, crear_usuario, cambiar_password_obligatorio
 
 app_name = 'usuario'
 
@@ -11,6 +11,7 @@ urlpatterns = [
     path('logout/', logout, name='logout'),
     path('', home, name='home'),
     path('perfil/', perfil, name='perfil'),
+    path('cambiar-password-obligatorio/', cambiar_password_obligatorio, name='cambiar_password_obligatorio'),
     path('administrador/', admin_dashboard, name='administrador'),
     path('administrador/usuarios/', usuarios, name='listado_usuarios'),
     path('administrador/usuarios/borrar/<int:usuario_id>/', borrar_usuario, name='borrar_usuario'),
