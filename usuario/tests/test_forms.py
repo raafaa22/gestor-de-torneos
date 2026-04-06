@@ -31,3 +31,25 @@ def test_formulario_jugador_esconde_es_portero_para_no_futbol():
 
     assert "es_portero" not in form_baloncesto.fields
     assert "es_portero" not in form_padel.fields
+
+
+@pytest.mark.django_db
+def test_formulario_jugador_baloncesto_valida_sin_es_portero():
+    baloncesto = create_equipo(
+        email="basket@test.com",
+        nombre="Equipo Basket",
+        deporte=Deporte.BALONCESTO,
+    )
+
+    form = JugadorForm(
+        data={
+            "dni": "12345678Z",
+            "nombre": "Jugador",
+            "apellidos": "Baloncesto",
+        },
+        equipo=baloncesto,
+    )
+
+    assert form.is_valid()
+    jugador = form.save(commit=False)
+    assert jugador.es_portero is False
