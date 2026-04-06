@@ -89,7 +89,6 @@
             return;
 
           const torneoId = this.getAttribute('data-id');
-          // Validar que el ID existe y no es null/undefined/vacío
           if (torneoId && torneoId !== 'null' && torneoId !== 'undefined') {
             window.location.href = "{% url 'torneo:principal_torneo' 0 %}".replace('0', torneoId);
           }

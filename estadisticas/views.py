@@ -5,8 +5,9 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 
 from .models import EstadisticasBaloncesto, EstadisticasFutbol
-from torneo.models import Torneo
+from torneo.models import Torneo, TorneoEquipo
 from torneo.views import tiene_permiso
+from usuario.models import Jugador
 
 
 
@@ -35,5 +36,31 @@ def estadisticas_torneo(request, torneo_id: int):
                 'asistencias': asistencias
             }
         return render(request, 'torneo/estadisticas_torneo.html', {'torneo': torneo, 'estadisticas': estadisticas})
+    else:
+        return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
+
+
+@login_required
+def jugador_estadisticas_detalle(request, torneo_id: int, jugador_dni: str):
+    torneo = get_object_or_404(Torneo, id=torneo_id)
+    jugador = get_object_or_404(Jugador, dni=jugador_dni)
+    usuario = request.user
+
+    if tiene_permiso(usuario, torneo):
+        # Obtener el equipo del jugador en este torneo
+        torneo_equipo = TorneoEquipo.objects.filter(torneo=torneo, equipo=jugador.equipo).first()
+
+        # Obtener las estadísticas según el deporte
+        if torneo.deporte == 'FUT':
+            estadisticas = EstadisticasFutbol.objects.filter(torneo=torneo, jugador=jugador).first()
+        else:
+            estadisticas = EstadisticasBaloncesto.objects.filter(torneo=torneo, jugador=jugador).first()
+
+        return render(request, 'estadisticas/jugador_estadisticas.html', {
+            'torneo': torneo,
+            'jugador': jugador,
+            'torneo_equipo': torneo_equipo,
+            'estadisticas': estadisticas
+        })
     else:
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
