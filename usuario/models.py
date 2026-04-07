@@ -30,6 +30,7 @@ class Jugador(models.Model):
     nombre = models.CharField(max_length=100, null=False)
     apellidos = models.CharField(max_length=150, null=False)
     es_portero = models.BooleanField(default=False, null=False)
+    tiene_password_por_defecto = models.BooleanField(default=False, null=False)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='jugador_perfil')
     equipo = models.ForeignKey(Equipo, on_delete=models.SET_NULL, null=True, blank=True, related_name='jugadores')
 

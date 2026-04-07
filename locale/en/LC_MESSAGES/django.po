@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Rafael Serano Algar <rafaelserranoalgar@gmail.com>, 2026.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-17 12:53+0100\n"
+"POT-Creation-Date: 2026-04-07 17:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,11 +21,11 @@ msgstr ""
 msgid "Estadística"
 msgstr "Statistic"
 
-#: enfrentamiento/forms.py:44
+#: enfrentamiento/forms.py:48
 msgid "La cantidad debe ser al menos 1."
 msgstr "The amount must be at least 1."
 
-#: enfrentamiento/forms.py:68
+#: enfrentamiento/forms.py:72
 msgid ""
 "Ya existe una estadística de este tipo para el jugador en este "
 "enfrentamiento."
@@ -33,11 +33,11 @@ msgstr ""
 "There is already an existent statistic of this type for this player in this "
 "match."
 
-#: enfrentamiento/forms.py:77
+#: enfrentamiento/forms.py:81
 msgid "No se pueden asignar asistencias si el equipo no ha anotado ningún gol."
 msgstr "Assists cannot be added if there is no goal scored by the team."
 
-#: enfrentamiento/forms.py:86
+#: enfrentamiento/forms.py:90
 msgid ""
 "El número total de asistencias no puede superar el número de goles anotados "
 "por el equipo."
@@ -45,13 +45,13 @@ msgstr ""
 "Total number of assists cannot be bigger than the number of scored goals by "
 "the team."
 
-#: enfrentamiento/forms.py:95
+#: enfrentamiento/forms.py:99
 msgid ""
 "No se pueden asignar asistencias si el equipo no ha anotado ningún tiro de "
 "campo."
 msgstr "Assists cannot be added if the team has not scored any field goal."
 
-#: enfrentamiento/forms.py:104
+#: enfrentamiento/forms.py:108
 msgid ""
 "El número total de asistencias no puede superar el número de tiros de campo "
 "anotados por el equipo."
@@ -86,13 +86,13 @@ msgstr "Groups phase - Match day %(n)s"
 #: enfrentamiento/views.py:284 enfrentamiento/views.py:347
 #: enfrentamiento/views.py:378 enfrentamiento/views.py:583
 #: enfrentamiento/views.py:597 enfrentamiento/views.py:650 equipo/views.py:26
-#: equipo/views.py:96 equipo/views.py:113 equipo/views.py:139
-#: equipo/views.py:160 equipo/views.py:214 equipo/views.py:263
-#: equipo/views.py:286 estadisticas/views.py:39 torneo/views.py:34
-#: torneo/views.py:68 torneo/views.py:109 torneo/views.py:152
-#: torneo/views.py:193 torneo/views.py:217 torneo/views.py:230
-#: usuario/views.py:169 usuario/views.py:179 usuario/views.py:201
-#: usuario/views.py:223 usuario/views.py:267
+#: equipo/views.py:107 equipo/views.py:124 equipo/views.py:150
+#: equipo/views.py:171 equipo/views.py:234 equipo/views.py:283
+#: equipo/views.py:308 estadisticas/views.py:40 estadisticas/views.py:66
+#: torneo/views.py:34 torneo/views.py:68 torneo/views.py:109
+#: torneo/views.py:152 torneo/views.py:193 torneo/views.py:217
+#: torneo/views.py:230 usuario/views.py:178 usuario/views.py:188
+#: usuario/views.py:210 usuario/views.py:232 usuario/views.py:276
 msgid "No tienes permiso para acceder a esta página."
 msgstr "You don't have permission to access to this page."
 
@@ -100,7 +100,7 @@ msgstr "You don't have permission to access to this page."
 msgid ""
 "No se pueden editar las estadísticas de un enfrentamiento sin ambos equipos "
 "asignados."
-msgstr ""
+msgstr "Statistics from a match cannot be edited without both teams assigned."
 
 #: enfrentamiento/views.py:300
 msgid "El equipo no participa en este enfrentamiento."
@@ -134,20 +134,20 @@ msgstr "You must introduce both results or leave both empty."
 msgid "En baloncesto no puede haber empates."
 msgstr "In basketball, draws cannot happen."
 
-#: equipo/views.py:100
+#: equipo/views.py:111
 msgid "No estás inscrito en este torneo."
 msgstr "You are not registered for this tournament."
 
-#: equipo/views.py:116
+#: equipo/views.py:127
 msgid "Esta página no es de tu equipo"
 msgstr "This page doesn't belong to your team"
 
-#: equipo/views.py:142
+#: equipo/views.py:153
 msgid "Estos no son tus jugadores."
 msgstr "These are not your players."
 
-#: equipo/views.py:145 equipo/views.py:166 equipo/views.py:220
-#: equipo/views.py:269
+#: equipo/views.py:156 equipo/views.py:177 equipo/views.py:240
+#: equipo/views.py:289
 msgid ""
 "En pádel los propios jugadores son el equipo, por lo que tu equipo no tiene "
 "jugadores."
@@ -155,19 +155,19 @@ msgstr ""
 "Players are themselves the team in paddle tennis, so your team does not have "
 "players."
 
-#: equipo/views.py:163
+#: equipo/views.py:174
 msgid "No puedes crear jugadores en otros equipos."
 msgstr "You cannot create players in other teams."
 
-#: equipo/views.py:217
+#: equipo/views.py:237
 msgid "No puedes modificar jugadores de otros equipos."
 msgstr "You cannot modify players from other teams."
 
-#: equipo/views.py:266
+#: equipo/views.py:286
 msgid "No puedes borrar jugadores de otros equipos."
 msgstr "You cannot delete players from other teams."
 
-#: equipo/views.py:290
+#: equipo/views.py:312
 msgid "No puedes inscribir otros equipos en torneos."
 msgstr "You cannot register teams in other tournaments."
 
@@ -184,7 +184,7 @@ msgid "Pádel"
 msgstr "Paddle tennis"
 
 #: gestor/choices.py:10 templates/enfrentamientos/detalle.html:26
-#: templates/enfrentamientos/detalle.html:73
+#: templates/enfrentamientos/detalle.html:79
 msgid "Liga"
 msgstr "League"
 
@@ -224,7 +224,7 @@ msgstr "Organiser"
 #: gestor/choices.py:22 gestor/choices.py:27
 #: templates/torneo/clasificacion.html:21
 #: templates/torneo/clasificacion.html:51
-#: templates/usuario/crear_usuario.html:51
+#: templates/usuario/crear_usuario.html:50
 msgid "Equipo"
 msgstr "Team"
 
@@ -258,6 +258,7 @@ msgid "Puntos"
 msgstr "Points"
 
 #: gestor/choices.py:36 templates/torneo/estadisticas_torneo.html:74
+#: templates/torneo/jugador_dashboard.html:31
 msgid "Rebotes"
 msgstr "Rebounds"
 
@@ -294,22 +295,23 @@ msgid "Jornada"
 msgstr "Match day"
 
 #: templates/enfrentamientos/detalle.html:24
-#: templates/enfrentamientos/detalle.html:71
+#: templates/enfrentamientos/detalle.html:77
 msgid "Posición en"
 msgstr "Position in"
 
 #: templates/enfrentamientos/detalle.html:32
-#: templates/enfrentamientos/detalle.html:79
+#: templates/enfrentamientos/detalle.html:85
+#: templates/estadisticas/jugador_estadisticas.html:33
 msgid "Puntos:"
 msgstr "Points:"
 
 #: templates/enfrentamientos/detalle.html:33
-#: templates/enfrentamientos/detalle.html:80
+#: templates/enfrentamientos/detalle.html:86
 msgid "Victorias/Derrotas:"
 msgstr "Victories/Loses"
 
-#: templates/enfrentamientos/detalle.html:37
-#: templates/enfrentamientos/detalle.html:84
+#: templates/enfrentamientos/detalle.html:38
+#: templates/enfrentamientos/detalle.html:91
 #: templates/equipo/editar_jugador.html:6
 #: templates/equipo/listado_jugadores.html:6
 #: templates/equipo/nuevo_jugador.html:6
@@ -325,11 +327,11 @@ msgid "Editar enfrentamiento:"
 msgstr "Edit match:"
 
 #: templates/enfrentamientos/editar.html:24
-#: templates/enfrentamientos/editar.html:76
+#: templates/enfrentamientos/editar.html:80
 msgid "Añadir"
 msgstr "Add"
 
-#: templates/enfrentamientos/editar.html:84
+#: templates/enfrentamientos/editar.html:88
 #: templates/torneo/info_torneo.html:22
 msgid "Guardar"
 msgstr "Save"
@@ -455,7 +457,7 @@ msgid "Editar el jugador:"
 msgstr "Edit the player:"
 
 #: templates/equipo/editar_jugador.html:30
-#: templates/usuario/editar_usuario.html:46 templates/usuario/perfil.html:33
+#: templates/usuario/editar_usuario.html:45 templates/usuario/perfil.html:33
 msgid "Guardar cambios"
 msgstr "Save changes"
 
@@ -480,17 +482,17 @@ msgid "Apellidos"
 msgstr "Surnames"
 
 #: templates/equipo/listado_jugadores.html:40
-#: templates/usuario/crear_usuario.html:64 usuario/forms.py:121
+#: templates/usuario/crear_usuario.html:63 usuario/forms.py:121
 msgid "Es portero"
 msgstr "Is goalkeeper"
 
 #: templates/equipo/listado_jugadores.html:51
-#: templates/torneo/info_torneo.html:35 templates/torneo/info_torneo.html:39
+#: templates/torneo/info_torneo.html:37 templates/torneo/info_torneo.html:41
 msgid "Sí"
 msgstr "Yes"
 
 #: templates/equipo/listado_jugadores.html:51
-#: templates/torneo/info_torneo.html:35 templates/torneo/info_torneo.html:39
+#: templates/torneo/info_torneo.html:37 templates/torneo/info_torneo.html:41
 msgid "No"
 msgstr "No"
 
@@ -506,9 +508,69 @@ msgstr "List of available tournaments for registration"
 msgid "Nuevo jugador del equipo"
 msgstr "New player of the team"
 
-#: templates/equipo/nuevo_jugador.html:29
+#: templates/equipo/nuevo_jugador.html:32
+#: templates/equipo/nuevo_jugador.html:80
+msgid "Usar contraseña por defecto"
+msgstr "Use default password"
+
+#: templates/equipo/nuevo_jugador.html:35
+msgid "Se usará la contraseña por defecto: Default1234"
+msgstr "It will be used the default password: Default1234"
+
+#: templates/equipo/nuevo_jugador.html:40
 msgid "Crear Jugador"
 msgstr "Create Player"
+
+#: templates/equipo/nuevo_jugador.html:67
+msgid "Quitar contraseña por defecto"
+msgstr "Remove default password"
+
+#: templates/estadisticas/jugador_estadisticas.html:6
+#: templates/estadisticas/jugador_estadisticas.html:9
+msgid "Estadísticas del jugador"
+msgstr "Statistics from player"
+
+#: templates/estadisticas/jugador_estadisticas.html:15
+msgid "DNI:"
+msgstr "ID:"
+
+#: templates/estadisticas/jugador_estadisticas.html:16
+#: templates/torneo/jugador_dashboard.html:15
+msgid "Equipo:"
+msgstr "Team:"
+
+#: templates/estadisticas/jugador_estadisticas.html:18
+msgid "Posición:"
+msgstr "Position:"
+
+#: templates/estadisticas/jugador_estadisticas.html:18
+msgid "Portero"
+msgstr "Goalkeeper"
+
+#: templates/estadisticas/jugador_estadisticas.html:24
+msgid "Estadísticas en"
+msgstr "Statistics in"
+
+#: templates/estadisticas/jugador_estadisticas.html:27
+msgid "Goles:"
+msgstr "Goals:"
+
+#: templates/estadisticas/jugador_estadisticas.html:28
+#: templates/estadisticas/jugador_estadisticas.html:35
+msgid "Asistencias:"
+msgstr "Assists:"
+
+#: templates/estadisticas/jugador_estadisticas.html:30
+msgid "Goles en contra:"
+msgstr "Goals received:"
+
+#: templates/estadisticas/jugador_estadisticas.html:34
+msgid "Rebotes:"
+msgstr "Rebounds:"
+
+#: templates/estadisticas/jugador_estadisticas.html:38
+msgid "Sin estadísticas en este torneo"
+msgstr "Without statistics in this tournament"
 
 #: templates/torneo/base_torneo.html:15
 msgid "Editar Información"
@@ -596,7 +658,7 @@ msgid "Buscar equipo..."
 msgstr "Search team..."
 
 #: templates/torneo/estadisticas_torneo.html:72
-#: templates/torneo/jugador_dashboard.html:31
+#: templates/torneo/jugador_dashboard.html:34
 msgid "Goles en contra"
 msgstr "Goals received"
 
@@ -620,37 +682,37 @@ msgstr "Description:"
 msgid "Organizador:"
 msgstr "Organiser:"
 
-#: templates/torneo/info_torneo.html:31
-msgid "Ganador:"
-msgstr "Winner"
+#: templates/torneo/info_torneo.html:30
+msgid "Correo electrónico de contacto:"
+msgstr "Contact email:"
 
 #: templates/torneo/info_torneo.html:33
+msgid "Ganador:"
+msgstr "Winner:"
+
+#: templates/torneo/info_torneo.html:35
 msgid "Deporte:"
 msgstr "Sport:"
 
-#: templates/torneo/info_torneo.html:34
+#: templates/torneo/info_torneo.html:36
 msgid "Tipo de torneo:"
 msgstr "Tournament type:"
 
-#: templates/torneo/info_torneo.html:35
+#: templates/torneo/info_torneo.html:37
 msgid "Play-offs:"
 msgstr "Play-offs:"
 
-#: templates/torneo/info_torneo.html:37
+#: templates/torneo/info_torneo.html:39
 msgid "Número de equipos en play-offs:"
 msgstr "Number of play-offs teams:"
 
-#: templates/torneo/info_torneo.html:39
+#: templates/torneo/info_torneo.html:41
 msgid "Descenso:"
 msgstr "Relegation:"
 
-#: templates/torneo/info_torneo.html:41
+#: templates/torneo/info_torneo.html:43
 msgid "Número de equipos en descenso:"
 msgstr "Number of teams relegated:"
-
-#: templates/torneo/jugador_dashboard.html:15
-msgid "Equipo:"
-msgstr "Team:"
 
 #: templates/torneo/nuevo_torneo.html:7
 msgid "Nuevo torneo"
@@ -679,20 +741,41 @@ msgstr "Sport"
 msgid "Ver usuarios"
 msgstr "See users"
 
+#: templates/usuario/cambiar_password_obligatorio.html:5
+#: templates/usuario/cambiar_password_obligatorio.html:19
+#: templates/usuario/cambiar_password_obligatorio.html:62
+#: templates/usuario/perfil.html:41 templates/usuario/perfil.html:50
+msgid "Cambiar contraseña"
+msgstr "Change password"
+
+#: templates/usuario/cambiar_password_obligatorio.html:12
+msgid "¡Atención! Contraseña por defecto detectada"
+msgstr "Warning! Default password detected"
+
+#: templates/usuario/cambiar_password_obligatorio.html:13
+msgid ""
+"Has iniciado sesión con la contraseña por defecto. Por motivos de seguridad, "
+"debes cambiar tu contraseña antes de continuar."
+msgstr "You have logged in with default password. For security reasons, you must change your password before you continue."
+
+#: templates/usuario/cambiar_password_obligatorio.html:15
+msgid "Contraseña actual:"
+msgstr "Actual password:"
+
 #: templates/usuario/crear_usuario.html:10
-#: templates/usuario/crear_usuario.html:21
-#: templates/usuario/crear_usuario.html:73
+#: templates/usuario/crear_usuario.html:20
+#: templates/usuario/crear_usuario.html:72
 #: templates/usuario/listado_usuarios.html:26
 msgid "Crear usuario"
 msgstr "Create user"
 
-#: templates/usuario/crear_usuario.html:31
+#: templates/usuario/crear_usuario.html:30
 #: templates/usuario/listado_usuarios.html:45
 msgid "Tipo de usuario"
 msgstr "User type:"
 
 #: templates/usuario/editar_usuario.html:10
-#: templates/usuario/editar_usuario.html:22
+#: templates/usuario/editar_usuario.html:21
 msgid "Editar usuario"
 msgstr "Edit user"
 
@@ -731,10 +814,6 @@ msgstr "User profile"
 #: templates/usuario/perfil.html:23
 msgid "Datos del perfil"
 msgstr "Profile information"
-
-#: templates/usuario/perfil.html:41 templates/usuario/perfil.html:50
-msgid "Cambiar contraseña"
-msgstr "Change password"
 
 #: templates/usuario/registro.html:10
 msgid "Registro"
@@ -893,12 +972,12 @@ msgstr ""
 "Total number of teams qualified cannot be bigger than 32 (maximum of 5 "
 "rounds)."
 
-#: usuario/forms.py:17 usuario/forms.py:29 usuario/forms.py:153
-#: usuario/forms.py:155
+#: usuario/forms.py:17 usuario/forms.py:29 usuario/forms.py:161
+#: usuario/forms.py:163
 msgid "Correo Electrónico"
 msgstr "Email"
 
-#: usuario/forms.py:30 usuario/forms.py:156
+#: usuario/forms.py:30 usuario/forms.py:164
 msgid "Contraseña"
 msgstr "Password"
 
@@ -922,14 +1001,19 @@ msgstr "The email is mandatory"
 msgid "El DNI debe tener 8 dígitos seguidos de una letra mayúscula."
 msgstr "Spanish ID must have 8 digits followed by a capital letter."
 
-#: usuario/views.py:206
+#: usuario/views.py:215
 msgid "No puedes eliminar tu propio usuario."
 msgstr "You cannot delete your own user."
 
-#: usuario/views.py:215
+#: usuario/views.py:224
 msgid "No se puede eliminar este organizador porque tiene torneos asociados."
-msgstr "You cannot delete this organiser because it has associated tournaments."
+msgstr ""
+"You cannot delete this organiser because it has associated tournaments."
 
-#: usuario/views.py:247
+#: usuario/views.py:256
 msgid "Usuario no encontrado o sin rol asignado."
 msgstr "Not found user or user without rol."
+
+#: usuario/views.py:380
+msgid "Contraseña cambiada exitosamente."
+msgstr "Password changed succesfully."

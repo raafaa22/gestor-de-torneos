@@ -79,6 +79,15 @@ def login(request):
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
+            
+            # Verificar si es un jugador con contraseña por defecto
+            try:
+                jugador = Jugador.objects.get(user=user)
+                if jugador.tiene_password_por_defecto:
+                    return redirect('usuario:cambiar_password_obligatorio')
+            except Jugador.DoesNotExist:
+                pass
+            
             return redirect(post_login(user))
     else:
         form = EmailAuthenticationForm()
@@ -340,4 +349,40 @@ def crear_usuario(request):
         'rol_choices': rol_choices,
         'equipos': equipos,
         'selected_equipo_id': selected_equipo_id,
+    })
+
+
+@login_required
+def cambiar_password_obligatorio(request):
+    """
+    Vista para forzar el cambio de contraseña cuando un jugador 
+    inicia sesión con la contraseña por defecto.
+    """
+    try:
+        jugador = Jugador.objects.get(user=request.user)
+    except Jugador.DoesNotExist:
+        # Si no es un jugador, redirigir al home
+        return redirect('usuario:home')
+    
+    # Si ya no tiene contraseña por defecto, redirigir al home
+    if not jugador.tiene_password_por_defecto:
+        return redirect('torneo:jugador')
+    
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Actualizar el flag de contraseña por defecto
+            jugador.tiene_password_por_defecto = False
+            jugador.save()
+            # Mantener la sesión activa después del cambio
+            update_session_auth_hash(request, user)
+            messages.success(request, _('Contraseña cambiada exitosamente.'))
+            return redirect('torneo:jugador')
+    else:
+        form = PasswordChangeForm(user=request.user)
+    
+    return render(request, 'usuario/cambiar_password_obligatorio.html', {
+        'form': form,
+        'jugador': jugador
     })
