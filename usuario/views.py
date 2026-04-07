@@ -20,6 +20,7 @@ from .forms import UserRegisterForm, OrganizadorForm, EquipoForm, EmailAuthentic
 from .models import Organizador, Administrador, Jugador
 from equipo.models import Equipo
 from torneo.views import tipo_usuario
+from enfrentamiento.models import Enfrentamiento
 
 
 ROL_CHOICES = [
@@ -218,7 +219,16 @@ def borrar_usuario(request, usuario_id: int):
     try:
         organizador = Organizador.objects.filter(user=usuario).first()
         if organizador:
-            Torneo.objects.filter(organizador=organizador).delete()
+            torneos = Torneo.objects.filter(organizador=organizador)
+            
+            for torneo in torneos:
+                Enfrentamiento.objects.filter(
+                    eliminatoria__torneo=torneo
+                ).delete()
+                Enfrentamiento.objects.filter(
+                    jornada__torneo=torneo
+                ).delete()
+            torneos.delete()
         usuario.delete()
     except ProtectedError:
         messages.error(request, _("No se puede eliminar este organizador porque tiene torneos asociados."))

@@ -13,6 +13,7 @@ from .models import Torneo, TorneoEquipo, Clasificacion, EliminatoriaGrupos
 from .forms import CrearTorneoForm
 from gestor.choices import TipoTorneo, TipoUsuario, Deporte
 from enfrentamiento.libs import baja_equipo_torneo
+from enfrentamiento.models import Enfrentamiento
 
 
 def tipo_usuario(usuario):
@@ -76,13 +77,21 @@ def borrar_torneo(request, torneo_id : int):
     tipo = tipo_usuario(usuario)
     torneo = get_object_or_404(Torneo, id=torneo_id)
     if (tipo == TipoUsuario.ORGANIZADOR and torneo.organizador.user == usuario) or tipo == TipoUsuario.ADMINISTRADOR:
+        
+        Enfrentamiento.objects.filter(
+            eliminatoria__torneo=torneo
+        ).delete()
+        Enfrentamiento.objects.filter(
+            jornada__torneo=torneo
+        ).delete()
+
         torneo.delete()
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({"ok": True})
-        
+
         return redirect('torneo:organizador')
-    
+
     else:
         return JsonResponse({"ok": False, "error": "No autorizado"}, status=403)
     
