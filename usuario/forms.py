@@ -3,9 +3,12 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+import random
 
 from usuario.models import Administrador, Organizador, Jugador
 from equipo.models import Equipo
+from torneo.models import TorneoEquipo
+from estadisticas.models import EstadisticasFutbol, EstadisticasBaloncesto
 from gestor.choices import Deporte
 
 
@@ -113,36 +116,110 @@ class AdministradorForm(forms.ModelForm):
 class JugadorForm(forms.ModelForm):
     class Meta:
         model = Jugador
-        fields = ["dni", "nombre", "apellidos", "es_portero"]
+        fields = ["dni", "nombre", "apellidos", "equipo", "es_portero"]
         labels = {
             "dni": _("DNI"),
             "nombre": _("Nombre"),
             "apellidos": _("Apellidos"),
+            "equipo": _("Equipo"),
             "es_portero": _("Es portero"),
         }
 
-    def __init__(self, *args, equipo=None, **kwargs):
+    def __init__(self, *args, equipo=None, is_admin=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.equipo = equipo
+        self.is_admin = is_admin
+        
+        self._equipo_original = self.instance.equipo if self.instance.pk else None
 
         if self.instance and self.instance.pk:
             self.fields["dni"].disabled = True
+            
+            if not equipo and self.instance.equipo:
+                self.equipo = self.instance.equipo
 
-        if not self.equipo or self.equipo.deporte != Deporte.FUTBOL:
+        
+        if not is_admin:
+            self.fields["equipo"].disabled = True
+
+        
+        self._update_es_portero_field()
+
+    def _update_es_portero_field(self):
+        """Actualiza la visibilidad del campo es_portero según el equipo"""
+        equipo = None
+
+        if self.is_bound:
+           
+            equipo_id = self.data.get("equipo")
+            if equipo_id:
+                try:
+                    equipo = Equipo.objects.get(id=equipo_id)
+                except Equipo.DoesNotExist:
+                    equipo = None
+           
+                equipo = self.equipo or (self.instance.equipo if self.instance.pk else None)
+        else:
+            
+            equipo = self.equipo or (self.instance.equipo if self.instance.pk else None)
+
+        if not equipo or equipo.deporte != Deporte.FUTBOL:
             self.fields.pop("es_portero", None)
 
     def clean(self):
         cleaned = super().clean()
-
         return cleaned
 
     def save(self, commit=True):
         jugador = super().save(commit=False)
+        
+        equipo_anterior = self._equipo_original
+        era_portero = self.instance.es_portero if self.instance.pk else False
+        equipo_nuevo = jugador.equipo
 
-        if self.equipo and self.equipo.deporte != Deporte.FUTBOL:
+        if equipo_nuevo and equipo_nuevo.deporte != Deporte.FUTBOL:
             jugador.es_portero = False
 
         if commit:
+            
+            if self.instance.pk and equipo_anterior != equipo_nuevo:
+                
+                if era_portero and equipo_anterior and equipo_anterior.deporte == Deporte.FUTBOL:
+                
+                    otros_jugadores = Jugador.objects.filter(
+                        equipo=equipo_anterior
+                    ).exclude(dni=jugador.dni)
+
+                    if otros_jugadores.exists():
+                        nuevo_portero = random.choice(list(otros_jugadores))
+                        Jugador.objects.filter(dni=nuevo_portero.dni).update(es_portero=True)
+
+                if equipo_anterior:
+                    
+                    torneos_anteriores = TorneoEquipo.objects.filter(equipo=equipo_anterior)
+                    for te in torneos_anteriores:
+                        if te.torneo.deporte == Deporte.FUTBOL:
+                            EstadisticasFutbol.objects.filter(jugador=jugador, torneo=te.torneo).delete()
+                        else:
+                            EstadisticasBaloncesto.objects.filter(jugador=jugador, torneo=te.torneo).delete()
+
+                
+                if equipo_nuevo:
+                    torneos_nuevos = TorneoEquipo.objects.filter(equipo=equipo_nuevo)
+                    for te in torneos_nuevos:
+                        if te.torneo.deporte == Deporte.FUTBOL:
+                            EstadisticasFutbol.objects.get_or_create(
+                                jugador=jugador,
+                                torneo=te.torneo,
+                                defaults={'goles': 0, 'asistencias': 0, 'goles_contra': None if not jugador.es_portero else 0}
+                            )
+                        else:
+                            EstadisticasBaloncesto.objects.get_or_create(
+                                jugador=jugador,
+                                torneo=te.torneo,
+                                defaults={'puntos': 0, 'rebotes': 0, 'asistencias': 0}
+                            )
+
             jugador.save()
 
         return jugador

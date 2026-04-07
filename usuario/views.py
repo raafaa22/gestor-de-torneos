@@ -81,7 +81,7 @@ def login(request):
             user = form.get_user()
             auth_login(request, user)
             
-            # Verificar si es un jugador con contraseña por defecto
+           
             try:
                 jugador = Jugador.objects.get(user=user)
                 if jugador.tiene_password_por_defecto:
@@ -142,7 +142,10 @@ def perfil(request):
         RolForm = None
 
     user_form = UserUpdateForm(instance=usuario)
-    rol_form = RolForm(instance=rol_instance) if RolForm else None
+    if RolForm == JugadorForm:
+        rol_form = RolForm(instance=rol_instance, equipo=rol_instance.equipo, is_admin=False) if RolForm else None
+    else:
+        rol_form = RolForm(instance=rol_instance) if RolForm else None
     clave_form = PasswordChangeForm(user=usuario)
 
     if request.method == 'POST':
@@ -150,7 +153,10 @@ def perfil(request):
 
         if accion == 'datos':
             user_form = UserUpdateForm(request.POST, instance=usuario)
-            rol_form = RolForm(request.POST, instance=rol_instance) if RolForm else None
+            if RolForm == JugadorForm:
+                rol_form = RolForm(request.POST, instance=rol_instance, equipo=rol_instance.equipo, is_admin=False) if RolForm else None
+            else:
+                rol_form = RolForm(request.POST, instance=rol_instance) if RolForm else None
             forms_validos = user_form.is_valid() and (rol_form is None or rol_form.is_valid())
             if forms_validos:
                 user_form.save()
@@ -240,7 +246,7 @@ def editar_usuario(request, usuario_id : int):
     admin = request.user
     if not Administrador.objects.filter(user=admin).exists():
         return HttpResponseBadRequest(_("No tienes permiso para acceder a esta página."))
-    
+
     usuario = get_object_or_404(User, id=usuario_id)
     organizador = Organizador.objects.filter(user=usuario).first()
     if organizador:
@@ -260,15 +266,18 @@ def editar_usuario(request, usuario_id : int):
             if jugador:
                 RolForm = JugadorForm
                 rol_instance = jugador
-                rol_form = RolForm(instance=rol_instance)
+                rol_form = RolForm(instance=rol_instance, equipo=jugador.equipo, is_admin=True)
                 user_form = UserUpdateForm(instance=usuario)
             else:
                 return HttpResponseBadRequest(_("Usuario no encontrado o sin rol asignado."))
-            
+
 
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=usuario)
-        rol_form = RolForm(request.POST, instance=rol_instance) if RolForm else None
+        if isinstance(rol_instance, Jugador):
+            rol_form = RolForm(request.POST, instance=rol_instance, equipo=rol_instance.equipo, is_admin=True) if RolForm else None
+        else:
+            rol_form = RolForm(request.POST, instance=rol_instance) if RolForm else None
         forms_validos = user_form.is_valid() and (rol_form is None or rol_form.is_valid())
         if forms_validos:
             user_form.save()
@@ -292,7 +301,7 @@ def crear_usuario(request):
     user_form = UserRegisterForm()
     org_form = OrganizadorForm(prefix='org')
     eq_form = EquipoForm(prefix='eq')
-    jugador_form = JugadorForm(equipo=None)
+    jugador_form = JugadorForm(equipo=None, is_admin=True)
     selected_equipo_id = None
 
     if request.method == 'POST':
@@ -320,7 +329,7 @@ def crear_usuario(request):
         elif rol == TipoUsuario.JUGADOR:
             selected_equipo_id = request.POST.get('equipo_jugador')
             equipo = get_object_or_404(Equipo, id=selected_equipo_id)
-            jugador_form = JugadorForm(request.POST, equipo=equipo)
+            jugador_form = JugadorForm(request.POST, equipo=equipo, is_admin=True)
 
             if user_form.is_valid() and jugador_form.is_valid():
                 user = user_form.save()
@@ -371,10 +380,10 @@ def cambiar_password_obligatorio(request):
     try:
         jugador = Jugador.objects.get(user=request.user)
     except Jugador.DoesNotExist:
-        # Si no es un jugador, redirigir al home
+        
         return redirect('usuario:home')
     
-    # Si ya no tiene contraseña por defecto, redirigir al home
+    
     if not jugador.tiene_password_por_defecto:
         return redirect('torneo:jugador')
     
@@ -382,10 +391,10 @@ def cambiar_password_obligatorio(request):
         form = PasswordChangeForm(user=request.user, data=request.POST)
         if form.is_valid():
             user = form.save()
-            # Actualizar el flag de contraseña por defecto
+            
             jugador.tiene_password_por_defecto = False
             jugador.save()
-            # Mantener la sesión activa después del cambio
+            
             update_session_auth_hash(request, user)
             messages.success(request, _('Contraseña cambiada exitosamente.'))
             return redirect('torneo:jugador')
