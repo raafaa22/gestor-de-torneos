@@ -1,0 +1,41 @@
+{% extends "torneo/base_torneo.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block head_torneo %}
+    <title>{{ torneo.nombre }} · {% trans 'Estadísticas del jugador' %}</title>
+{% endblock %}
+
+{% block titulo %}{% trans 'Estadísticas del jugador' %}{% endblock %}
+
+{% block torneo_content %}
+    <div class="container-form">
+        <h4>{{ jugador.nombre }} {{ jugador.apellidos }}</h4>
+
+        <p><strong>{% trans "DNI:" %}</strong> {{ jugador.dni }}</p>
+        <p><strong>{% trans "Equipo:" %}</strong> {% if torneo_equipo %}{{ torneo_equipo.equipo.nombre }}{% else %}-{% endif %}</p>
+        {% if jugador.es_portero %}
+            <p><strong>{% trans "Posición:" %}</strong> {% trans "Portero" %}</p>
+        {% endif %}
+
+        <hr>
+
+        {% if estadisticas %}
+            <h5>{% trans "Estadísticas en" %} {{ torneo.nombre }}</h5>
+
+            {% if torneo.deporte == 'FUT' %}
+                <p><strong>{% trans "Goles:" %}</strong> {{ estadisticas.goles }}</p>
+                <p><strong>{% trans "Asistencias:" %}</strong> {{ estadisticas.asistencias }}</p>
+                {% if jugador.es_portero %}
+                    <p><strong>{% trans "Goles en contra:" %}</strong> {{ estadisticas.goles_contra }}</p>
+                {% endif %}
+            {% else %}
+                <p><strong>{% trans "Puntos:" %}</strong> {{ estadisticas.puntos }}</p>
+                <p><strong>{% trans "Rebotes:" %}</strong> {{ estadisticas.rebotes }}</p>
+                <p><strong>{% trans "Asistencias:" %}</strong> {{ estadisticas.asistencias }}</p>
+            {% endif %}
+        {% else %}
+            <p><em>{% trans "Sin estadísticas en este torneo" %}</em></p>
+        {% endif %}
+    </div>
+{% endblock %}

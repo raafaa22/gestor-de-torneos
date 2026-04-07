@@ -96,7 +96,10 @@
                     return;
 
                 const jugadorId = this.getAttribute('data-id');
-                window.location.href = "{% url 'equipo:editar_jugador' equipo.id 0 %}".replace('0', jugadorId);
+                // Validar que el ID existe y no es null/undefined/vacío
+                if (jugadorId && jugadorId !== 'null' && jugadorId !== 'undefined') {
+                    window.location.href = "{% url 'equipo:editar_jugador' equipo.id 0 %}".replace('0', jugadorId);
+                }
             });
 
 

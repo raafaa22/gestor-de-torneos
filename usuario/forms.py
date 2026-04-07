@@ -134,10 +134,18 @@ class JugadorForm(forms.ModelForm):
     def clean(self):
         cleaned = super().clean()
 
-        if self.equipo and self.equipo.deporte != Deporte.FUTBOL:
-            cleaned["es_portero"] = False
-
         return cleaned
+
+    def save(self, commit=True):
+        jugador = super().save(commit=False)
+
+        if self.equipo and self.equipo.deporte != Deporte.FUTBOL:
+            jugador.es_portero = False
+
+        if commit:
+            jugador.save()
+
+        return jugador
 
     def clean_dni(self):
         if self.instance and self.instance.pk:

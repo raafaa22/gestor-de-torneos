@@ -27,6 +27,8 @@
             <p><strong>{% trans "Nombre del torneo:" %}</strong> {{ torneo.nombre }}</p>
             <p><strong>{% trans "Descripción:" %}</strong> {{ torneo.descripcion }}</p>
             <p><strong>{% trans "Organizador:" %}</strong> {{ torneo.organizador }}</p>
+            <p><strong>{% trans "Correo electrónico de contacto:" %}</strong> {{ torneo.organizador.user.email }}</p>
+
             {% if torneo.ganador %}
                 <p><strong>{% trans "Ganador:" %}</strong> {{ torneo.ganador }}</p>
             {% endif %}

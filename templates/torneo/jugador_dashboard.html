@@ -27,6 +27,9 @@
                     <th>{% trans 'Tipo' %}</th>
                     <th>{% if equipo.deporte == 'FUT' %}{% trans 'Goles' %}{% elif equipo.deporte == 'BAL' %}{% trans 'Puntos' %}{% endif %}</th>
                     <th>{% trans 'Asistencias' %}</th>
+                    {% if equipo.deporte == 'BAL' %}
+                    <th>{% trans 'Rebotes' %}</th>
+                    {% endif %}
                     {% if equipo.deporte == 'FUT' and jugador.es_portero %}
                     <th>{% trans 'Goles en contra' %}</th>
                     {% endif %}
@@ -43,6 +46,9 @@
                     <td class="align-middle">{{ fila.estadisticas.puntos }}</td>
                     {% endif %}
                     <td class="align-middle">{{ fila.estadisticas.asistencias }}</td>
+                    {% if equipo.deporte == 'BAL' %}
+                    <td class="align-middle">{{ fila.estadisticas.rebotes }}</td>
+                    {% endif %}
                     {% if equipo.deporte == 'FUT' and jugador.es_portero %}
                     <td class="align-middle">{{ fila.estadisticas.goles_contra }}</td>
                     {% endif %}
@@ -77,7 +83,10 @@
 
         $('#torneosTable tbody').on('click', 'tr', function(e){
             const torneoId = this.getAttribute('data-id');
-            window.location.href = "{% url 'torneo:principal_torneo' 0 %}".replace('0', torneoId);
+            // Validar que el ID existe y no es null/undefined/vacío
+            if (torneoId && torneoId !== 'null' && torneoId !== 'undefined') {
+                window.location.href = "{% url 'torneo:principal_torneo' 0 %}".replace('0', torneoId);
+            }
         });
 
         $('#buscar-torneo').on('input', function() {

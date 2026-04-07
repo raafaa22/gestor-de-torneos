@@ -12,7 +12,7 @@
 {% block torneo_content %}
     <div class="container-estadisticas">
         <div class="tabla-estadisticas">
-            <table id="anotacionTabla" class="table">
+            <table id="anotacionTabla" class="table table-hover">
                 {% if torneo.deporte == 'FUT' %}
                     {% blocktranslate asvar header %}Goles{% endblocktranslate %}
                 {% else %}
@@ -28,14 +28,14 @@
                 <tbody>
                     {% if torneo.deporte == 'FUT' %}
                         {% for goles in estadisticas.goles %}
-                            <tr>
+                            <tr data-href="{% url 'estadisticas:jugador_estadisticas_detalle' torneo.id goles.jugador.dni %}">
                                 <td>{{ goles.jugador }}</td>
                                 <td>{{ goles.goles }}</td>
                             </tr>
                         {% endfor %}
                     {% else %}
                         {% for puntos in estadisticas.puntos %}
-                            <tr>
+                            <tr data-href="{% url 'estadisticas:jugador_estadisticas_detalle' torneo.id puntos.jugador.dni %}">
                                 <td>{{ puntos.jugador }}</td>
                                 <td>{{ puntos.puntos }}</td>
                             </tr>
@@ -47,7 +47,7 @@
 
         <div class="tabla-estadisticas">
             <h5>{% trans "Asistencias" %}</h5>
-            <table id="asistenciasTabla" class="table">
+            <table id="asistenciasTabla" class="table table-hover">
                 <thead>
                     <tr>
                         <th>{% trans "Jugador" %}</th>
@@ -56,7 +56,7 @@
                 </thead>
                 <tbody>
                     {% for asistencias in estadisticas.asistencias %}
-                        <tr>
+                        <tr data-href="{% url 'estadisticas:jugador_estadisticas_detalle' torneo.id asistencias.jugador.dni %}">
                             <td>{{ asistencias.jugador }}</td>
                             <td>{{ asistencias.asistencias }}</td>
                         </tr>
@@ -67,7 +67,7 @@
     </div>
 
     <div class="tabla-estadisticas-centro">
-        <table id="terceraTabla" class="table">
+        <table id="terceraTabla" class="table table-hover">
             {% if torneo.deporte == 'FUT' %}
                 {% blocktranslate asvar header %}Goles en contra{% endblocktranslate %}
             {% else %}
@@ -83,14 +83,14 @@
             <tbody>
                 {% if torneo.deporte == 'FUT' %}
                     {% for goles in estadisticas.goles_contra %}
-                        <tr>
+                        <tr data-href="{% url 'estadisticas:jugador_estadisticas_detalle' torneo.id goles.jugador.dni %}">
                             <td>{{ goles.jugador }}</td>
                             <td>{{ goles.goles_contra }}</td>
                         </tr>
                     {% endfor %}
                 {% else %}
                     {% for rebotes in estadisticas.rebotes %}
-                        <tr>
+                        <tr data-href="{% url 'estadisticas:jugador_estadisticas_detalle' torneo.id rebotes.jugador.dni %}">
                             <td>{{ rebotes.jugador }}</td>
                             <td>{{ rebotes.rebotes }}</td>
                         </tr>
@@ -146,11 +146,15 @@
                 language: {
                     url: langUrl,
                 },
-                order: [[1, 'asc']], 
+                order: [[1, 'asc']],
                 columnDefs: [
                     { orderable: true, searchable: false, targets: "_all"}
                 ]
             });
+
+            $('tbody tr[data-href]').on('click', function() {
+                window.location.href = $(this).data('href');
+            }).css('cursor', 'pointer');
        } );
     </script>
 {% endblock %}
