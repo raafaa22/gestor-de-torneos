@@ -244,7 +244,7 @@ def editar_jugador(request, equipo_id, jugador_id):
     if request.method == 'POST':
         era_portero = jugador.es_portero
         user_form = UserUpdateForm(request.POST, instance=jugador.user)
-        jugador_form = JugadorForm(request.POST, instance=jugador, equipo=equipo)
+        jugador_form = JugadorForm(request.POST, instance=jugador, equipo=equipo, is_admin=False)
 
         if user_form.is_valid() and jugador_form.is_valid():
             user_form.save()
@@ -266,7 +266,7 @@ def editar_jugador(request, equipo_id, jugador_id):
             return redirect('equipo:listado_jugadores', equipo_id=equipo.id)
     else:
         user_form = UserUpdateForm(instance=jugador.user)
-        jugador_form = JugadorForm(instance=jugador, equipo=equipo)
+        jugador_form = JugadorForm(instance=jugador, equipo=equipo, is_admin=False)
     
 
     return render(request, 'equipo/editar_jugador.html', {'user_form': user_form, 'jugador_form': jugador_form, 'equipo': equipo, 'jugador': jugador})
