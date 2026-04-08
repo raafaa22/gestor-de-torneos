@@ -138,9 +138,9 @@ class JugadorForm(forms.ModelForm):
             if not equipo and self.instance.equipo:
                 self.equipo = self.instance.equipo
 
-        
+
         if not is_admin:
-            self.fields["equipo"].disabled = True
+            self.fields.pop("equipo", None)
 
         
         self._update_es_portero_field()
@@ -150,17 +150,17 @@ class JugadorForm(forms.ModelForm):
         equipo = None
 
         if self.is_bound:
-           
+
             equipo_id = self.data.get("equipo")
             if equipo_id:
                 try:
                     equipo = Equipo.objects.get(id=equipo_id)
                 except Equipo.DoesNotExist:
                     equipo = None
-           
+            else:
                 equipo = self.equipo or (self.instance.equipo if self.instance.pk else None)
         else:
-            
+
             equipo = self.equipo or (self.instance.equipo if self.instance.pk else None)
 
         if not equipo or equipo.deporte != Deporte.FUTBOL:
@@ -172,7 +172,11 @@ class JugadorForm(forms.ModelForm):
 
     def save(self, commit=True):
         jugador = super().save(commit=False)
+
         
+        if not self.is_admin and self.equipo:
+            jugador.equipo = self.equipo
+
         equipo_anterior = self._equipo_original
         era_portero = self.instance.es_portero if self.instance.pk else False
         equipo_nuevo = jugador.equipo
