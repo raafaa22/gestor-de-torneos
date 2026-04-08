@@ -24,10 +24,17 @@
             {% csrf_token %}
             <input type="hidden" id="usar_password_defecto" name="usar_password_defecto" value="false">
             {{ jugador_form.as_p }}
-            {{ user_form.as_p }}
-            
-            <div id="password_default_container" style="margin-top: 10px; margin-bottom: 15px;">
-                <button type="button" id="btn_password_default" class="btn btn-secondary" 
+
+            <p>
+                <label for="id_email">{{ user_form.email.label }}</label>
+                {{ user_form.email }}
+                {% if user_form.email.errors %}
+                    <div class="errorlist">{{ user_form.email.errors }}</div>
+                {% endif %}
+            </p>
+
+            <div id="password_default_container" style="margin-top: 45px; margin-bottom: 15px;">
+                <button type="button" id="btn_password_default" class="btn btn-secondary"
                         style="background-color: #6c757d; border: none; padding: 8px 16px;">
                     {% trans "Usar contraseña por defecto" %}
                 </button>
@@ -35,6 +42,26 @@
                     ✓ {% trans "Se usará la contraseña por defecto: Default1234" %}
                 </small>
             </div>
+
+            <p>
+                <label for="id_password1">{{ user_form.password1.label }}</label>
+                {{ user_form.password1 }}
+                {% if user_form.password1.errors %}
+                    <div class="errorlist">{{ user_form.password1.errors }}</div>
+                {% endif %}
+                {% if user_form.password1.help_text %}
+                    <span class="helptext">{{ user_form.password1.help_text|safe }}</span>
+                {% endif %}
+            </p>
+
+            <p>
+                <label for="id_password2">{{ user_form.password2.label }}</label>
+                {{ user_form.password2 }}
+                {% if user_form.password2.errors %}
+                    <div class="errorlist">{{ user_form.password2.errors }}</div>
+                {% endif %}
+                {% if user_form.password2.help_text %}<span class="helptext">{{ user_form.password2.help_text|safe }}</span>{% endif %}
+            </p>
         </div>
         <div class="form-btn">
             <button type="submit" class="btn float-end">{% trans "Crear Jugador" %}</button>
