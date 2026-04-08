@@ -98,11 +98,15 @@ class EquipoForm(forms.ModelForm):
     class Meta:
         model = Equipo
         fields = ['nombre', 'deporte']
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['nombre'].label = _("Nombre")
         self.fields['deporte'].label = _("Deporte")
+
+        # Deshabilitar el deporte al editar un equipo existente
+        if self.instance and self.instance.pk:
+            self.fields['deporte'].disabled = True
 
 
 class AdministradorForm(forms.ModelForm):
