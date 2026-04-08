@@ -56,33 +56,37 @@ def dashboard(request):
 
         elif tipo == TipoTorneo.ELIMINATORIA:
             eliminatoria = Eliminatoria.objects.filter(torneo=te.torneo).first()
-            rondas_torneo = RONDAS[-eliminatoria.rondas:]
-            ronda_actual = rondas_torneo[0].label
-            anotacion_favor = 0
-            anotacion_contra = 0
-            for ronda in rondas_torneo:
-                enfrentamiento_local = Enfrentamiento.objects.filter(eliminatoria__torneo=te.torneo, ronda=ronda, equipo_local=equipo).first()
-                if enfrentamiento_local is not None:
-                    ronda_actual = ronda.label
-                    if te.torneo.deporte == Deporte.PADEL:
-                        anotacion_favor += (enfrentamiento_local.juegos_local_1 or 0) + (enfrentamiento_local.juegos_local_2 or 0) + (enfrentamiento_local.juegos_local_3 or 0)
-                        anotacion_contra += (enfrentamiento_local.juegos_visitante_1 or 0) + (enfrentamiento_local.juegos_visitante_2 or 0) + (enfrentamiento_local.juegos_visitante_3 or 0)
-                    else:
-                        anotacion_favor += enfrentamiento_local.anotacion_local or 0
-                        anotacion_contra += enfrentamiento_local.anotacion_visitante or 0
-                else:
-                    enfrentamiento_visitante = Enfrentamiento.objects.filter(eliminatoria__torneo=te.torneo, ronda=ronda, equipo_visitante=equipo).first()
-                    if enfrentamiento_visitante is not None:
+            ronda_actual = "N/D"
+            anotacion_favor = "N/D"
+            anotacion_contra = "N/D"
+            if eliminatoria is not None:
+                rondas_torneo = RONDAS[-eliminatoria.rondas:]
+                ronda_actual = rondas_torneo[0].label
+                anotacion_favor = 0
+                anotacion_contra = 0
+                for ronda in rondas_torneo:
+                    enfrentamiento_local = Enfrentamiento.objects.filter(eliminatoria__torneo=te.torneo, ronda=ronda, equipo_local=equipo).first()
+                    if enfrentamiento_local is not None:
                         ronda_actual = ronda.label
                         if te.torneo.deporte == Deporte.PADEL:
-                            anotacion_favor += (enfrentamiento_visitante.juegos_visitante_1 or 0) + (enfrentamiento_visitante.juegos_visitante_2 or 0) + (enfrentamiento_visitante.juegos_visitante_3 or 0)
-                            anotacion_contra += (enfrentamiento_visitante.juegos_local_1 or 0) + (enfrentamiento_visitante.juegos_local_2 or 0) + (enfrentamiento_visitante.juegos_local_3 or 0)
+                            anotacion_favor += (enfrentamiento_local.juegos_local_1 or 0) + (enfrentamiento_local.juegos_local_2 or 0) + (enfrentamiento_local.juegos_local_3 or 0)
+                            anotacion_contra += (enfrentamiento_local.juegos_visitante_1 or 0) + (enfrentamiento_local.juegos_visitante_2 or 0) + (enfrentamiento_local.juegos_visitante_3 or 0)
                         else:
-                            anotacion_favor += enfrentamiento_visitante.anotacion_visitante or 0
-                            anotacion_contra += enfrentamiento_visitante.anotacion_local or 0
+                            anotacion_favor += enfrentamiento_local.anotacion_local or 0
+                            anotacion_contra += enfrentamiento_local.anotacion_visitante or 0
                     else:
-                        break
-            
+                        enfrentamiento_visitante = Enfrentamiento.objects.filter(eliminatoria__torneo=te.torneo, ronda=ronda, equipo_visitante=equipo).first()
+                        if enfrentamiento_visitante is not None:
+                            ronda_actual = ronda.label
+                            if te.torneo.deporte == Deporte.PADEL:
+                                anotacion_favor += (enfrentamiento_visitante.juegos_visitante_1 or 0) + (enfrentamiento_visitante.juegos_visitante_2 or 0) + (enfrentamiento_visitante.juegos_visitante_3 or 0)
+                                anotacion_contra += (enfrentamiento_visitante.juegos_local_1 or 0) + (enfrentamiento_visitante.juegos_local_2 or 0) + (enfrentamiento_visitante.juegos_local_3 or 0)
+                            else:
+                                anotacion_favor += enfrentamiento_visitante.anotacion_visitante or 0
+                                anotacion_contra += enfrentamiento_visitante.anotacion_local or 0
+                        else:
+                            break
+
             datos.append({
                 'id': id,
                 'nombre': nombre,
