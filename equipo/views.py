@@ -209,8 +209,9 @@ def crear_jugador(request, equipo_id):
             jugador.save()
 
             for te in TorneoEquipo.objects.filter(equipo=equipo):
+                goles_contra = 0 if jugador.es_portero else None
                 if te.torneo.deporte == Deporte.FUTBOL:
-                    EstadisticasFutbol.objects.create(jugador=jugador, torneo=te.torneo, goles=0, asistencias=0)
+                    EstadisticasFutbol.objects.create(jugador=jugador, torneo=te.torneo, goles=0, asistencias=0, goles_contra=goles_contra)
                 elif te.torneo.deporte == Deporte.BALONCESTO:
                     EstadisticasBaloncesto.objects.create(jugador=jugador, torneo=te.torneo, puntos=0, rebotes=0, asistencias=0)
 
@@ -260,6 +261,8 @@ def editar_jugador(request, equipo_id, jugador_id):
                         for est in EstadisticasFutbol.objects.filter(jugador=antiguo_portero):
                             EstadisticasFutbol.objects.filter(jugador=jugador, torneo=est.torneo).update(goles_contra=est.goles_contra)
                         EstadisticasFutbol.objects.filter(jugador=antiguo_portero).update(goles_contra=None)
+                    else:
+                        EstadisticasFutbol.objects.filter(jugador=jugador).update(goles_contra=0)
                 Jugador.objects.filter(equipo=equipo, es_portero=True).exclude(dni=jugador.dni).update(es_portero=False)
 
             elif equipo.deporte == Deporte.FUTBOL and era_portero and not jugador_form.cleaned_data.get("es_portero"):
