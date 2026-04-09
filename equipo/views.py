@@ -343,9 +343,8 @@ def inscribir_equipo_torneo(request, torneo_id, equipo_id):
         
         for jugador in jugadores:
             if torneo.deporte == Deporte.FUTBOL:
-                estadisticas = EstadisticasFutbol.objects.create(jugador=jugador, torneo=torneo, goles=0, asistencias=0)
-                if jugador.es_portero:
-                    estadisticas.goles_contra = 0
+                goles_contra = 0 if jugador.es_portero else None
+                EstadisticasFutbol.objects.create(jugador=jugador, torneo=torneo, goles=0, asistencias=0, goles_contra=goles_contra)
             elif torneo.deporte == Deporte.BALONCESTO:
                 EstadisticasBaloncesto.objects.create(jugador=jugador, torneo=torneo, puntos=0, rebotes=0, asistencias=0)
 
