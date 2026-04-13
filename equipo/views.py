@@ -85,7 +85,7 @@ def dashboard(request):
                                 anotacion_favor += enfrentamiento_visitante.anotacion_visitante or 0
                                 anotacion_contra += enfrentamiento_visitante.anotacion_local or 0
                         else:
-                            break
+                            continue
 
             datos.append({
                 'id': id,
