@@ -392,13 +392,32 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
         torneo = get_object_or_404(Torneo, id=torneo_id)
         enfrentamiento = get_object_or_404(Enfrentamiento, id=enfrentamiento_id)
         
+        MAX_SCORE = 9999
+
         if torneo.deporte == Deporte.PADEL:
-            enfrentamiento.juegos_local_1 = int(request.POST.get('juegos_local_1') or 0)
-            enfrentamiento.juegos_visitante_1 = int(request.POST.get('juegos_visitante_1') or 0)
-            enfrentamiento.juegos_local_2 = int(request.POST.get('juegos_local_2') or 0)
-            enfrentamiento.juegos_visitante_2 = int(request.POST.get('juegos_visitante_2') or 0)
-            enfrentamiento.juegos_local_3 = int(request.POST.get('juegos_local_3') or 0)
-            enfrentamiento.juegos_visitante_3 = int(request.POST.get('juegos_visitante_3') or 0)
+            try:
+                juegos_local_1    = int(request.POST.get('juegos_local_1') or 0)
+                juegos_visitante_1 = int(request.POST.get('juegos_visitante_1') or 0)
+                juegos_local_2    = int(request.POST.get('juegos_local_2') or 0)
+                juegos_visitante_2 = int(request.POST.get('juegos_visitante_2') or 0)
+                juegos_local_3    = int(request.POST.get('juegos_local_3') or 0)
+                juegos_visitante_3 = int(request.POST.get('juegos_visitante_3') or 0)
+            except (ValueError, TypeError):
+                return HttpResponse(_("Los valores de juegos introducidos no son válidos."), status=400)
+
+            if any(v > 7 for v in [
+                juegos_local_1, juegos_visitante_1,
+                juegos_local_2, juegos_visitante_2,
+                juegos_local_3, juegos_visitante_3,
+            ]):
+                return HttpResponse(_("Los juegos de un set no pueden superar 7."), status=400)
+
+            enfrentamiento.juegos_local_1    = juegos_local_1
+            enfrentamiento.juegos_visitante_1 = juegos_visitante_1
+            enfrentamiento.juegos_local_2    = juegos_local_2
+            enfrentamiento.juegos_visitante_2 = juegos_visitante_2
+            enfrentamiento.juegos_local_3    = juegos_local_3
+            enfrentamiento.juegos_visitante_3 = juegos_visitante_3
             
 
             sets_local = 0
@@ -453,8 +472,17 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
             elif anotacion_local_raw == '' or anotacion_visitante_raw == '':
                 return HttpResponse( _("Debes introducir los dos resultados o dejarlos ambos en blanco."), status=400 )
             else:
-                enfrentamiento.anotacion_local = int(anotacion_local_raw)
-                enfrentamiento.anotacion_visitante = int(anotacion_visitante_raw)
+                try:
+                    anotacion_local    = int(anotacion_local_raw)
+                    anotacion_visitante = int(anotacion_visitante_raw)
+                except (ValueError, TypeError):
+                    return HttpResponse(_("Los valores de anotación introducidos no son válidos."), status=400)
+
+                if anotacion_local > MAX_SCORE or anotacion_visitante > MAX_SCORE:
+                    return HttpResponse(_("La anotación no puede superar 9999."), status=400)
+
+                enfrentamiento.anotacion_local    = anotacion_local
+                enfrentamiento.anotacion_visitante = anotacion_visitante
 
                 if enfrentamiento.anotacion_local > enfrentamiento.anotacion_visitante:
                     enfrentamiento.ganador = enfrentamiento.equipo_local
