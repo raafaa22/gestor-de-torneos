@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Rafael Serano Algar <rafaelserranoalgar@gmail.com>, 2026.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-15 11:56+0200\n"
+"POT-Creation-Date: 2026-04-15 12:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,8 +84,8 @@ msgstr "Groups phase - Match day %(n)s"
 
 #: enfrentamiento/views.py:224 enfrentamiento/views.py:259
 #: enfrentamiento/views.py:284 enfrentamiento/views.py:347
-#: enfrentamiento/views.py:378 enfrentamiento/views.py:611
-#: enfrentamiento/views.py:625 enfrentamiento/views.py:678 equipo/views.py:26
+#: enfrentamiento/views.py:378 enfrentamiento/views.py:621
+#: enfrentamiento/views.py:635 enfrentamiento/views.py:688 equipo/views.py:26
 #: equipo/views.py:111 equipo/views.py:128 equipo/views.py:154
 #: equipo/views.py:175 equipo/views.py:239 equipo/views.py:290
 #: equipo/views.py:315 estadisticas/views.py:40 estadisticas/views.py:66
@@ -111,42 +111,50 @@ msgid "Los valores de juegos introducidos no son válidos."
 msgstr "Games values introduced are not valid."
 
 #: enfrentamiento/views.py:413
+msgid "Los juegos no pueden ser negativos."
+msgstr "Number of games cannot be negative."
+
+#: enfrentamiento/views.py:420
 msgid "Los juegos de un set no pueden superar 7."
 msgstr "Number of games in paddle tennis cannot exceed 7."
 
-#: enfrentamiento/views.py:452
+#: enfrentamiento/views.py:459
 msgid "El tercer set no puede terminar en empate."
 msgstr "Third set cannot finish in draw."
 
-#: enfrentamiento/views.py:454
+#: enfrentamiento/views.py:461
 msgid "Debe introducir el resultado del tercer set."
 msgstr "You must introduce a result in third set."
 
-#: enfrentamiento/views.py:456 enfrentamiento/views.py:460
+#: enfrentamiento/views.py:463 enfrentamiento/views.py:467
 msgid "En pádel no puede haber empates."
 msgstr "In paddle, draws cannot happen."
 
-#: enfrentamiento/views.py:458
+#: enfrentamiento/views.py:465
 msgid "Debe introducir el resultado del segundo set."
 msgstr "You must introduce a result in second set."
 
-#: enfrentamiento/views.py:462
+#: enfrentamiento/views.py:469
 msgid "Debe introducir el resultado del primer set."
 msgstr "You must introduce a result in first set."
 
-#: enfrentamiento/views.py:473
+#: enfrentamiento/views.py:480
 msgid "Debes introducir los dos resultados o dejarlos ambos en blanco."
 msgstr "You must introduce both results or leave both empty."
 
-#: enfrentamiento/views.py:479
+#: enfrentamiento/views.py:486
 msgid "Los valores de anotación introducidos no son válidos."
 msgstr "Scoring values introduced are not valid."
 
-#: enfrentamiento/views.py:482
+#: enfrentamiento/views.py:489
+msgid "La anotación no puede ser negativa."
+msgstr "Scoring number cannot be negative."
+
+#: enfrentamiento/views.py:492
 msgid "La anotación no puede superar 9999."
 msgstr "Scoring number cannot exceed 9999."
 
-#: enfrentamiento/views.py:493
+#: enfrentamiento/views.py:503
 msgid "En baloncesto no puede haber empates."
 msgstr "In basketball, draws cannot happen."
 
