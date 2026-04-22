@@ -20,7 +20,7 @@
                             <th>Pos</th>
                             <th>{% trans "Equipo" %}</th>
                             <th>{% trans "Victorias" %}</th>
-                            <th>{% trans "Empates" %}</th>
+                            {% if torneo.deporte == 'FUT' %}<th>{% trans "Empates" %}</th>{% endif %}
                             <th>{% trans "Derrotas" %}</th>
                             <th>{% trans "Anotación a favor" %}</th>
                             <th>{% trans "Anotación en contra" %}</th>
@@ -33,7 +33,7 @@
                             <td><strong>{{ fila.posicion }}</strong></td>
                             <td><strong>{{ fila.torneo_equipo.equipo }}</strong></td>
                             <td>{{ fila.victorias }}</td>
-                            <td>{{ fila.empates }}</td>
+                            {% if torneo.deporte == 'FUT' %}<td>{{ fila.empates }}</td>{% endif %}
                             <td>{{ fila.derrotas }}</td>
                             <td>{{ fila.anotacion_favor }}</td>
                             <td>{{ fila.anotacion_contra }}</td>
@@ -50,7 +50,7 @@
                         <th>Pos</th>
                         <th>{% trans "Equipo" %}</th>
                         <th>{% trans "Victorias" %}</th>
-                        <th>{% trans "Empates" %}</th>
+                        {% if torneo.deporte == 'FUT' %}<th>{% trans "Empates" %}</th>{% endif %}
                         <th>{% trans "Derrotas" %}</th>
                         <th>{% trans "Anotación a favor" %}</th>
                         <th>{% trans "Anotación en contra" %}</th>
@@ -67,7 +67,7 @@
                         <td><strong>{{ fila.posicion }}</strong></td>
                         <td><strong>{{ fila.torneo_equipo.equipo }}</strong></td>
                         <td>{{ fila.victorias }}</td>
-                        <td>{{ fila.empates }}</td>
+                        {% if torneo.deporte == 'FUT' %}<td>{{ fila.empates }}</td>{% endif %}
                         <td>{{ fila.derrotas }}</td>
                         <td>{{ fila.anotacion_favor }}</td>
                         <td>{{ fila.anotacion_contra }}</td>

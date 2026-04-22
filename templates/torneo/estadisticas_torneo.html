@@ -154,7 +154,7 @@
                 language: {
                     url: langUrl,
                 },
-                order: [[2, 'asc']],
+                order: [[2, '{{ torneo.deporte }}' === 'FUT' ? 'asc' : 'desc']],
                 columnDefs: [
                     { orderable: true, searchable: false, targets: "_all"}
                 ]

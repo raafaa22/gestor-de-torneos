@@ -77,7 +77,7 @@ class EstadisticasEnfrentamientoForm(forms.ModelForm):
             else:
                 anotacion = self.enfrentamiento.anotacion_visitante
 
-            if anotacion <= 0 or anotacion is None:
+            if anotacion is None or anotacion <= 0:
                 raise forms.ValidationError(_('No se pueden asignar asistencias si el equipo no ha anotado ningún gol.'))
             else:
                 asistencias_totales = EstadisticasEnfrentamiento.objects.filter(
@@ -95,17 +95,17 @@ class EstadisticasEnfrentamientoForm(forms.ModelForm):
             else:
                 anotacion = self.enfrentamiento.anotacion_visitante
 
-                if anotacion <= 1 or anotacion is None:
-                    raise forms.ValidationError(_('No se pueden asignar asistencias si el equipo no ha anotado ningún tiro de campo.'))
-                else:
-                    asistencias_totales = EstadisticasEnfrentamiento.objects.filter(
-                        enfrentamiento=self.enfrentamiento,
-                        estadistica_baloncesto="ASI",
-                        jugador__equipo=self.equipo,
-                    ).aggregate(total=Sum("cantidad"))["total"] or 0
+            if anotacion is None or anotacion <= 1:
+                raise forms.ValidationError(_('No se pueden asignar asistencias si el equipo no ha anotado ningún tiro de campo.'))
+            else:
+                asistencias_totales = EstadisticasEnfrentamiento.objects.filter(
+                    enfrentamiento=self.enfrentamiento,
+                    estadistica_baloncesto="ASI",
+                    jugador__equipo=self.equipo,
+                ).aggregate(total=Sum("cantidad"))["total"] or 0
 
-                    if (asistencias_totales + cantidad) * 2 > anotacion:
-                        raise forms.ValidationError(_('El número total de asistencias no puede superar el número de tiros de campo anotados por el equipo.'))
+                if (asistencias_totales + cantidad) * 2 > anotacion:
+                    raise forms.ValidationError(_('El número total de asistencias no puede superar el número de tiros de campo anotados por el equipo.'))
                     
         return cleaned
     

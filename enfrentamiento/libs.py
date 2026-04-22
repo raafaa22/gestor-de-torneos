@@ -644,7 +644,7 @@ def reordenar_jornadas(jornadas, niveles_equipos):
         puntuacion = 0
         for local, visitante in jornada:
             puntuacion += peso_partido(nivel_local=niveles_equipos.get(local.id), nivel_visitante=niveles_equipos.get(visitante.id))
-            puntuaciones.append((idx, puntuacion))
+        puntuaciones.append((idx, puntuacion))
 
 
     puntuaciones.sort(key=lambda x: x[1])
