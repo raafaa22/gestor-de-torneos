@@ -35,41 +35,68 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
         sig_jornada = True
         
         if torneo.tipo == TipoTorneo.LIGA:
-            jornada = Jornada.objects.filter(torneo=torneo, n_jornada=n_ronda).first()
-            selector=[]
+            eliminatoria = Eliminatoria.objects.filter(torneo=torneo).first()
             num_jornadas = (
                 Jornada.objects.filter(torneo=torneo)
                 .aggregate(mx=Max("n_jornada"))
                 .get("mx") or 0
             )
 
-            if num_jornadas > 0 and n_ronda > num_jornadas:
-                return redirect('enfrentamientos:enfrentamientos_torneo', torneo_id=torneo.id, n_ronda=num_jornadas)
-            
-            if jornada:
-                label = _("Jornada %(n)s") % {"n": n_ronda}
+            if eliminatoria and eliminatoria.rondas > 0:
+                secuencia = RONDAS[-eliminatoria.rondas:]
+                total_fases = num_jornadas + eliminatoria.rondas
+            else:
+                secuencia = []
+                total_fases = num_jornadas
 
-                for i in range(1, num_jornadas + 1):
-                    selector.append({
-                        'num': i,
-                        'label': _("Jornada %(n)s") % {"n": i}
-                    })
+            selector = []
+            for i in range(1, total_fases + 1):
+                if i <= num_jornadas:
+                    label = _("Jornada %(n)s") % {"n": i}
+                else:
+                    j = i - num_jornadas
+                    label = secuencia[j-1].label
+                selector.append({'num': i, 'label': label})
 
-                if n_ronda-1 < 1:
-                    prev_jornada = False
+            if total_fases > 0 and n_ronda > total_fases:
+                return redirect('enfrentamientos:enfrentamientos_torneo', torneo_id=torneo.id, n_ronda=total_fases)
+            elif total_fases > 0:
+                prev_jornada = n_ronda > 1
+                sig_jornada = n_ronda < total_fases
 
-                siguiente = Jornada.objects.filter(torneo=torneo, n_jornada=n_ronda+1).first()
-                if not siguiente:
-                    sig_jornada = False
+                # ---- FASE DE LIGA ----
+                if n_ronda <= num_jornadas:
+                    jornada = Jornada.objects.filter(torneo=torneo, n_jornada=n_ronda).first()
+                    if jornada:
+                        items = Enfrentamiento.objects.filter(jornada=jornada)
+                        label = _("Jornada %(n)s") % {"n": n_ronda}
+                        enfrentamientos = {
+                            'items': items,
+                            'prev_jornada': prev_jornada,
+                            'sig_jornada': sig_jornada,
+                            'label': label,
+                            'selector': selector
+                        }
+                    else:
+                        enfrentamientos = None
+                # ---- PLAYOFFS (ELIMINATORIA) ----
+                else:
+                    ronda_idx = n_ronda - num_jornadas
+                    tipo_ronda = secuencia[ronda_idx - 1]
 
-                items = Enfrentamiento.objects.filter(jornada=jornada)
-                enfrentamientos = {
-                    'items': items,
-                    'prev_jornada': prev_jornada,
-                    'sig_jornada': sig_jornada,
-                    'label': label,
-                    'selector': selector
-                }
+                    items = Enfrentamiento.objects.filter(
+                        eliminatoria=eliminatoria,
+                        ronda=tipo_ronda
+                    )
+                    label = tipo_ronda.label
+
+                    enfrentamientos = {
+                        'items': items,
+                        'prev_jornada': prev_jornada,
+                        'sig_jornada': sig_jornada,
+                        'label': label,
+                        'selector': selector
+                    }
             else:
                 enfrentamientos = None
 
@@ -554,7 +581,9 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
                 if enfrentamiento.ronda == TipoRonda.FINAL:
                     torneo.ganador = enfrentamiento.ganador
                     torneo.save()
-                        
+                else:
+                    actualizar_eliminatoria(enfrentamiento)
+
 
         elif torneo.tipo == TipoTorneo.ELIMINATORIA:
             if enfrentamiento.ronda == TipoRonda.FINAL:
