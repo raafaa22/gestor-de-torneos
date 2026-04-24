@@ -51,9 +51,25 @@ def baja_equipo_torneo(torneo: Torneo, equipo: Equipo):
 
         enfrentamientos_jornada.delete()
 
-    if torneo.tipo in (TipoTorneo.ELIMINATORIA, TipoTorneo.ELIMINATORIA_GRUPOS):
+    if torneo.tipo in (TipoTorneo.ELIMINATORIA, TipoTorneo.ELIMINATORIA_GRUPOS, TipoTorneo.LIGA):
         eliminatoria = Eliminatoria.objects.filter(torneo=torneo).first()
         if eliminatoria:
+            # Antes de propagar al siguiente, limpiar cualquier ganador/anotacion
+            # que apunte al equipo que se va: al cambiar equipo_local/equipo_visitante
+            # de los enfrentamientos siguientes se violaría
+            # enfrentamiento_ganador_local_o_visitante si quedase un ganador huérfano.
+            Enfrentamiento.objects.filter(eliminatoria=eliminatoria, ganador=equipo).update(
+                ganador=None,
+                anotacion_local=None,
+                anotacion_visitante=None,
+                juegos_local_1=None,
+                juegos_visitante_1=None,
+                juegos_local_2=None,
+                juegos_visitante_2=None,
+                juegos_local_3=None,
+                juegos_visitante_3=None,
+            )
+
             enfrentamientos_elim = list(Enfrentamiento.objects.filter(
                 eliminatoria=eliminatoria
             ).filter(Q(equipo_local=equipo) | Q(equipo_visitante=equipo)))

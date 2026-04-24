@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from math import log2
 
-from .models import Torneo, EliminatoriaGrupos
+from .models import Torneo, EliminatoriaGrupos, TorneoEquipo
 from gestor.choices import TipoTorneo
 from usuario.models import Organizador, Administrador
 
@@ -85,6 +85,16 @@ class CrearTorneoForm(forms.ModelForm):
             cleaned['tipo'] = self.instance.tipo
 
         max_eq = cleaned.get('max_equipos')
+
+        if max_eq is not None and max_eq < 2:
+            self.add_error('max_equipos', _('El número máximo de equipos no puede ser menor que 2.'))
+
+        if max_eq is not None and self.instance and self.instance.pk:
+            inscritos = TorneoEquipo.objects.filter(torneo=self.instance).count()
+            if max_eq < inscritos:
+                self.add_error('max_equipos', _(
+                    'El número máximo de equipos no puede ser menor que el número de equipos ya inscritos (%(n)s).'
+                ) % {'n': inscritos})
 
         if cleaned.get('playoffs'):
             n_eq_playoffs = cleaned.get('n_equipos_playoffs')
