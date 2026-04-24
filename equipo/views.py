@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseForbidden
 from django.db import transaction
+from django.db.models import Q
 
 from .models import Equipo
 from usuario.models import Jugador
@@ -14,6 +15,25 @@ from gestor.choices import TipoTorneo, TipoUsuario, Deporte
 from torneo.views import tipo_usuario
 from enfrentamiento.libs import RONDAS, baja_equipo_torneo
 from estadisticas.models import EstadisticasFutbol, EstadisticasBaloncesto
+
+
+def torneo_empezado(torneo):
+    """Devuelve True si el torneo tiene al menos un enfrentamiento ya jugado."""
+    if torneo.deporte == Deporte.PADEL:
+        jugado_q = Q(ganador__isnull=False)
+    else:
+        jugado_q = Q(anotacion_local__isnull=False, anotacion_visitante__isnull=False)
+
+    if torneo.tipo == TipoTorneo.LIGA or torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
+        return Enfrentamiento.objects.filter(jornada__torneo=torneo).filter(jugado_q).exists()
+    elif torneo.tipo == TipoTorneo.ELIMINATORIA:
+        return Enfrentamiento.objects.filter(eliminatoria__torneo=torneo).filter(jugado_q).exists()
+    return False
+
+
+def torneo_lleno(torneo):
+    """Devuelve True si el torneo ha alcanzado su cupo máximo de equipos."""
+    return TorneoEquipo.objects.filter(torneo=torneo).count() >= torneo.max_equipos
 
 
 @login_required
@@ -133,15 +153,12 @@ def listado_torneos_inscribir(request, equipo_id):
     torneos_disp = Torneo.objects.filter(deporte=equipo.deporte).exclude(torneo_equipos__equipo=equipo)
     torneos = []
     for torneo in torneos_disp:
-        empezado = False
-        if torneo.tipo == TipoTorneo.LIGA or torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
-            empezado = Clasificacion.objects.filter(torneo_equipo__torneo=torneo, puntos__gt=0).exists()
-        elif torneo.tipo == TipoTorneo.ELIMINATORIA:
-            empezado = Enfrentamiento.objects.filter(eliminatoria__torneo=torneo, anotacion_local__isnull=False, anotacion_visitante__isnull=False).exists()
-        
-        if not empezado:
-            torneos.append(torneo)
-    
+        if torneo_empezado(torneo):
+            continue
+        if torneo_lleno(torneo):
+            continue
+        torneos.append(torneo)
+
     return render(request, 'equipo/listado_torneos.html', {'torneos': torneos, 'equipo': equipo})
 
 @login_required
@@ -319,13 +336,22 @@ def inscribir_equipo_torneo(request, torneo_id, equipo_id):
         return HttpResponseForbidden(_("No puedes inscribir otros equipos en torneos."))
 
     torneo = get_object_or_404(Torneo, id=torneo_id)
+
+    if torneo_empezado(torneo):
+        return HttpResponseForbidden(_("No puedes inscribirte en un torneo que ya ha empezado."))
+
+    if torneo_lleno(torneo):
+        return HttpResponseForbidden(_("El torneo ya ha alcanzado el número máximo de equipos."))
+
     torneo_equipo, created = TorneoEquipo.objects.get_or_create(torneo=torneo, equipo=equipo)
 
     if not created:
         return redirect('equipo:dashboard')
 
     if torneo.tipo == TipoTorneo.LIGA:
-        posicion_max = Clasificacion.objects.order_by('-posicion').values_list('posicion', flat=True).first()
+        posicion_max = Clasificacion.objects.filter(
+            torneo_equipo__torneo=torneo
+        ).order_by('-posicion').values_list('posicion', flat=True).first()
         if posicion_max is None:
             posicion_max = 0
         

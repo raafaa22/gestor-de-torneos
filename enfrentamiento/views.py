@@ -422,79 +422,97 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
         MAX_SCORE = 9999
 
         if torneo.deporte == Deporte.PADEL:
-            try:
-                juegos_local_1    = int(request.POST.get('juegos_local_1') or 0)
-                juegos_visitante_1 = int(request.POST.get('juegos_visitante_1') or 0)
-                juegos_local_2    = int(request.POST.get('juegos_local_2') or 0)
-                juegos_visitante_2 = int(request.POST.get('juegos_visitante_2') or 0)
-                juegos_local_3    = int(request.POST.get('juegos_local_3') or 0)
-                juegos_visitante_3 = int(request.POST.get('juegos_visitante_3') or 0)
-            except (ValueError, TypeError):
-                return HttpResponse(_("Los valores de juegos introducidos no son válidos."), status=400)
+            juegos_keys = [
+                'juegos_local_1', 'juegos_visitante_1',
+                'juegos_local_2', 'juegos_visitante_2',
+                'juegos_local_3', 'juegos_visitante_3',
+            ]
+            juegos_raw = {k: request.POST.get(k, '').strip() for k in juegos_keys}
 
-            if any(v < 0 for v in [
-                juegos_local_1, juegos_visitante_1,
-                juegos_local_2, juegos_visitante_2,
-                juegos_local_3, juegos_visitante_3,
-            ]):
-                return HttpResponse(_("Los juegos no pueden ser negativos."), status=400)
-
-            if any(v > 7 for v in [
-                juegos_local_1, juegos_visitante_1,
-                juegos_local_2, juegos_visitante_2,
-                juegos_local_3, juegos_visitante_3,
-            ]):
-                return HttpResponse(_("Los juegos de un set no pueden superar 7."), status=400)
-
-            enfrentamiento.juegos_local_1    = juegos_local_1
-            enfrentamiento.juegos_visitante_1 = juegos_visitante_1
-            enfrentamiento.juegos_local_2    = juegos_local_2
-            enfrentamiento.juegos_visitante_2 = juegos_visitante_2
-            enfrentamiento.juegos_local_3    = juegos_local_3
-            enfrentamiento.juegos_visitante_3 = juegos_visitante_3
-            
-
-            sets_local = 0
-            sets_visitante = 0
-
-            if enfrentamiento.juegos_local_1 is not None and enfrentamiento.juegos_visitante_1 is not None:
-                if enfrentamiento.juegos_local_1 != enfrentamiento.juegos_visitante_1:
-                    if enfrentamiento.juegos_local_1 > enfrentamiento.juegos_visitante_1:
-                        sets_local += 1
-                    else:
-                        sets_visitante += 1
-                    
-                    if enfrentamiento.juegos_local_2 is not None and enfrentamiento.juegos_visitante_2 is not None:
-                        if enfrentamiento.juegos_local_2 != enfrentamiento.juegos_visitante_2:
-                            if enfrentamiento.juegos_local_2 > enfrentamiento.juegos_visitante_2:
-                                sets_local += 1
-                                if sets_local == 2:
-                                    enfrentamiento.ganador = enfrentamiento.equipo_local
-                            else:
-                                sets_visitante += 1
-                                if sets_visitante == 2:
-                                    enfrentamiento.ganador = enfrentamiento.equipo_visitante
-                            
-                            if sets_local == sets_visitante:
-                                if enfrentamiento.juegos_local_3 is not None and enfrentamiento.juegos_visitante_3 is not None:
-                                    if enfrentamiento.juegos_local_3 != enfrentamiento.juegos_visitante_3:
-                                        if enfrentamiento.juegos_local_3 > enfrentamiento.juegos_visitante_3:
-                                            enfrentamiento.ganador = enfrentamiento.equipo_local
-                                        else:
-                                            enfrentamiento.ganador = enfrentamiento.equipo_visitante
-                                    else:
-                                        return HttpResponse( _("El tercer set no puede terminar en empate."), status=400 )
-                                else:
-                                    return HttpResponse( _("Debe introducir el resultado del tercer set."), status=400 )
-                        else:
-                            return HttpResponse( _("En pádel no puede haber empates."), status=400 )
-                    else:
-                        return HttpResponse( _("Debe introducir el resultado del segundo set."), status=400 )
-                else:
-                    return HttpResponse( _("En pádel no puede haber empates."), status=400 )
+            # Si todos los campos están vacíos, reseteamos el enfrentamiento
+            # (dejamos que la lógica post-save recalcule clasificación).
+            if all(v == '' for v in juegos_raw.values()):
+                enfrentamiento.juegos_local_1 = None
+                enfrentamiento.juegos_visitante_1 = None
+                enfrentamiento.juegos_local_2 = None
+                enfrentamiento.juegos_visitante_2 = None
+                enfrentamiento.juegos_local_3 = None
+                enfrentamiento.juegos_visitante_3 = None
+                enfrentamiento.ganador = None
             else:
-                return HttpResponse( _("Debe introducir el resultado del primer set."), status=400 )
-            
+                try:
+                    juegos_local_1    = int(juegos_raw['juegos_local_1'] or 0)
+                    juegos_visitante_1 = int(juegos_raw['juegos_visitante_1'] or 0)
+                    juegos_local_2    = int(juegos_raw['juegos_local_2'] or 0)
+                    juegos_visitante_2 = int(juegos_raw['juegos_visitante_2'] or 0)
+                    juegos_local_3    = int(juegos_raw['juegos_local_3'] or 0)
+                    juegos_visitante_3 = int(juegos_raw['juegos_visitante_3'] or 0)
+                except (ValueError, TypeError):
+                    return HttpResponse(_("Los valores de juegos introducidos no son válidos."), status=400)
+
+                if any(v < 0 for v in [
+                    juegos_local_1, juegos_visitante_1,
+                    juegos_local_2, juegos_visitante_2,
+                    juegos_local_3, juegos_visitante_3,
+                ]):
+                    return HttpResponse(_("Los juegos no pueden ser negativos."), status=400)
+
+                if any(v > 7 for v in [
+                    juegos_local_1, juegos_visitante_1,
+                    juegos_local_2, juegos_visitante_2,
+                    juegos_local_3, juegos_visitante_3,
+                ]):
+                    return HttpResponse(_("Los juegos de un set no pueden superar 7."), status=400)
+
+                enfrentamiento.juegos_local_1    = juegos_local_1
+                enfrentamiento.juegos_visitante_1 = juegos_visitante_1
+                enfrentamiento.juegos_local_2    = juegos_local_2
+                enfrentamiento.juegos_visitante_2 = juegos_visitante_2
+                enfrentamiento.juegos_local_3    = juegos_local_3
+                enfrentamiento.juegos_visitante_3 = juegos_visitante_3
+
+
+                sets_local = 0
+                sets_visitante = 0
+
+                if enfrentamiento.juegos_local_1 is not None and enfrentamiento.juegos_visitante_1 is not None:
+                    if enfrentamiento.juegos_local_1 != enfrentamiento.juegos_visitante_1:
+                        if enfrentamiento.juegos_local_1 > enfrentamiento.juegos_visitante_1:
+                            sets_local += 1
+                        else:
+                            sets_visitante += 1
+
+                        if enfrentamiento.juegos_local_2 is not None and enfrentamiento.juegos_visitante_2 is not None:
+                            if enfrentamiento.juegos_local_2 != enfrentamiento.juegos_visitante_2:
+                                if enfrentamiento.juegos_local_2 > enfrentamiento.juegos_visitante_2:
+                                    sets_local += 1
+                                    if sets_local == 2:
+                                        enfrentamiento.ganador = enfrentamiento.equipo_local
+                                else:
+                                    sets_visitante += 1
+                                    if sets_visitante == 2:
+                                        enfrentamiento.ganador = enfrentamiento.equipo_visitante
+
+                                if sets_local == sets_visitante:
+                                    if enfrentamiento.juegos_local_3 is not None and enfrentamiento.juegos_visitante_3 is not None:
+                                        if enfrentamiento.juegos_local_3 != enfrentamiento.juegos_visitante_3:
+                                            if enfrentamiento.juegos_local_3 > enfrentamiento.juegos_visitante_3:
+                                                enfrentamiento.ganador = enfrentamiento.equipo_local
+                                            else:
+                                                enfrentamiento.ganador = enfrentamiento.equipo_visitante
+                                        else:
+                                            return HttpResponse( _("El tercer set no puede terminar en empate."), status=400 )
+                                    else:
+                                        return HttpResponse( _("Debe introducir el resultado del tercer set."), status=400 )
+                            else:
+                                return HttpResponse( _("En pádel no puede haber empates."), status=400 )
+                        else:
+                            return HttpResponse( _("Debe introducir el resultado del segundo set."), status=400 )
+                    else:
+                        return HttpResponse( _("En pádel no puede haber empates."), status=400 )
+                else:
+                    return HttpResponse( _("Debe introducir el resultado del primer set."), status=400 )
+
         else:
             anotacion_local_raw = request.POST.get('anotacion_local', '').strip()
             anotacion_visitante_raw = request.POST.get('anotacion_visitante', '').strip()
