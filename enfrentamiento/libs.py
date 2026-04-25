@@ -24,6 +24,55 @@ RONDAS = [
 
 
 @transaction.atomic
+def alta_equipo_torneo(torneo: Torneo, equipo: Equipo) -> bool:
+    """Inscribe un equipo en un torneo y crea la clasificación + estadísticas necesarias.
+
+    Devuelve True si se inscribió, False si ya estaba inscrito.
+    El caller es responsable de validar permisos y los checks
+    de torneo_empezado / torneo_lleno antes de invocar esta función.
+    """
+    torneo_equipo, created = TorneoEquipo.objects.get_or_create(torneo=torneo, equipo=equipo)
+    if not created:
+        return False
+
+    if torneo.tipo == TipoTorneo.LIGA:
+        posicion_max = Clasificacion.objects.filter(
+            torneo_equipo__torneo=torneo
+        ).order_by('-posicion').values_list('posicion', flat=True).first()
+        if posicion_max is None:
+            posicion_max = 0
+
+        Clasificacion.objects.create(
+            torneo_equipo=torneo_equipo,
+            grupo="GENERAL",
+            posicion=posicion_max + 1,
+            puntos=0,
+            victorias=0,
+            empates=0,
+            derrotas=0,
+            anotacion_favor=0,
+            anotacion_contra=0,
+        )
+
+    if torneo.deporte != Deporte.PADEL:
+        jugadores = Jugador.objects.filter(equipo=equipo)
+        for jugador in jugadores:
+            if torneo.deporte == Deporte.FUTBOL:
+                goles_contra = 0 if jugador.es_portero else None
+                EstadisticasFutbol.objects.create(
+                    jugador=jugador, torneo=torneo,
+                    goles=0, asistencias=0, goles_contra=goles_contra,
+                )
+            elif torneo.deporte == Deporte.BALONCESTO:
+                EstadisticasBaloncesto.objects.create(
+                    jugador=jugador, torneo=torneo,
+                    puntos=0, rebotes=0, asistencias=0,
+                )
+
+    return True
+
+
+@transaction.atomic
 def baja_equipo_torneo(torneo: Torneo, equipo: Equipo):
     torneo_equipo = TorneoEquipo.objects.filter(torneo=torneo, equipo=equipo).first()
     if not torneo_equipo:

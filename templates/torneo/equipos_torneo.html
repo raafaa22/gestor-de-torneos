@@ -5,6 +5,19 @@
 {% block head_torneo %}
 <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
 <title>{{ torneo.nombre }} · {% trans 'Equipos' %}</title>
+<style>
+    .btn-anadir-disabled-wrap {
+        cursor: not-allowed;
+        display: inline-block;
+    }
+    .btn-anadir-disabled {
+        background-color: #d6d8db;
+        border-color: #c6c8cb;
+        color: #6c757d;
+        opacity: 0.7;
+        pointer-events: none;
+    }
+</style>
 {% endblock %}
 
 
@@ -12,6 +25,30 @@
 
 {% block torneo_content %}
     <div class="container-tables-torneo">
+        {% if is_admin or is_organizador %}
+            <div class="d-flex justify-content-end mb-2">
+                {% if puede_inscribir and equipos_disponibles %}
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAnadirEquipo">
+                        {% trans 'Añadir equipo' %}
+                    </button>
+                {% else %}
+                    {% if not puede_inscribir %}
+                        {% blocktranslate asvar tooltip_msg %}No se pueden añadir equipos: el torneo ya ha empezado o está lleno.{% endblocktranslate %}
+                    {% else %}
+                        {% blocktranslate asvar tooltip_msg %}No hay equipos disponibles del mismo deporte para inscribir.{% endblocktranslate %}
+                    {% endif %}
+                    <span class="d-inline-block btn-anadir-disabled-wrap" title="{{ tooltip_msg }}">
+                        <button type="button"
+                                class="btn btn-anadir-disabled"
+                                disabled
+                                aria-disabled="true">
+                            {% trans 'Añadir equipo' %}
+                        </button>
+                    </span>
+                {% endif %}
+            </div>
+        {% endif %}
+
         <div class="buscador">
             <input id="buscar-equipo" type="text" class="form-control" placeholder="{% trans 'Buscar equipo...' %}"/>
         </div>
@@ -30,7 +67,8 @@
                         <td class="align-middle">{{ equipo.nombre }}</td>
                         {% if is_admin or is_organizador %}
                         <td class="align-middle">
-                            <form method="post" action="{% url 'torneo:borrar_equipo' torneo.id equipo.id %}">
+                            <form method="post" action="{% url 'torneo:borrar_equipo' torneo.id equipo.id %}"
+                                  data-confirm="{% blocktranslate with nombre=equipo.nombre %}¿Eliminar al equipo «{{ nombre }}» del torneo? Se perderán sus enfrentamientos y estadísticas.{% endblocktranslate %}">
                                 {% csrf_token %}
                                 <button id="borrar" type="submit" class="borrar">
                                     <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="20" height="20"/>
@@ -43,6 +81,37 @@
             </tbody>
         </table>
     </div>
+
+    {% if is_admin or is_organizador %}
+        <div class="modal fade" id="modalAnadirEquipo" tabindex="-1" aria-labelledby="modalAnadirEquipoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <form id="formAnadirEquipo" method="post" action="">
+                    {% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAnadirEquipoLabel">{% trans 'Añadir equipo al torneo' %}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="selectEquipoAnadir" class="form-label">{% trans 'Selecciona un equipo' %}</label>
+                            <select id="selectEquipoAnadir" name="equipo_id" class="form-select" required>
+                                {% for eq in equipos_disponibles %}
+                                    <option value="{{ eq.id }}"
+                                            data-url="{% url 'torneo:inscribir_equipo' torneo.id eq.id %}">
+                                        {{ eq.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancelar' %}</button>
+                            <button type="submit" class="btn btn-success">{% trans 'Inscribir' %}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
 {% block scripts %}
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -74,6 +143,19 @@
             $('#buscar-equipo').on('input', function() {
                 table.search(this.value).draw();
             });
+
+            // Modal añadir equipo: actualizar action del form al equipo seleccionado
+            const selectEquipo = document.getElementById('selectEquipoAnadir');
+            const formAnadir = document.getElementById('formAnadirEquipo');
+            function actualizarActionAnadir() {
+                if (!selectEquipo || !formAnadir) return;
+                const opt = selectEquipo.options[selectEquipo.selectedIndex];
+                if (opt) formAnadir.action = opt.dataset.url;
+            }
+            if (selectEquipo) {
+                selectEquipo.addEventListener('change', actualizarActionAnadir);
+                actualizarActionAnadir(); // inicial
+            }
        } );
     </script>
 {% endblock %}

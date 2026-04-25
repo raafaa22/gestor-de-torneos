@@ -56,7 +56,8 @@
           <td class="align-middle">{{ torneo.get_deporte_display }}</td>
           <td class="align-middle">{{ torneo.get_tipo_display }}</td>
           <td class="align-middle">
-            <form action="{% url 'torneo:borrar_torneo' torneo.id %}" method="post">
+            <form action="{% url 'torneo:borrar_torneo' torneo.id %}" method="post"
+                  data-confirm="{% blocktranslate with nombre=torneo.nombre %}¿Borrar el torneo «{{ nombre }}»? Se perderán todos los enfrentamientos y datos del torneo.{% endblocktranslate %}">
               {% csrf_token %}
               <button id="borrar" type="submit" class="borrar">
                 <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="20" height="20"/>

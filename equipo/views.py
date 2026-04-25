@@ -13,7 +13,7 @@ from enfrentamiento.models import Enfrentamiento
 from torneo.models import Torneo, TorneoEquipo, Clasificacion, Eliminatoria
 from gestor.choices import TipoTorneo, TipoUsuario, Deporte
 from torneo.views import tipo_usuario
-from enfrentamiento.libs import RONDAS, baja_equipo_torneo
+from enfrentamiento.libs import RONDAS, baja_equipo_torneo, alta_equipo_torneo
 from estadisticas.models import EstadisticasFutbol, EstadisticasBaloncesto
 
 
@@ -343,38 +343,6 @@ def inscribir_equipo_torneo(request, torneo_id, equipo_id):
     if torneo_lleno(torneo):
         return HttpResponseForbidden(_("El torneo ya ha alcanzado el número máximo de equipos."))
 
-    torneo_equipo, created = TorneoEquipo.objects.get_or_create(torneo=torneo, equipo=equipo)
-
-    if not created:
-        return redirect('equipo:dashboard')
-
-    if torneo.tipo == TipoTorneo.LIGA:
-        posicion_max = Clasificacion.objects.filter(
-            torneo_equipo__torneo=torneo
-        ).order_by('-posicion').values_list('posicion', flat=True).first()
-        if posicion_max is None:
-            posicion_max = 0
-        
-        Clasificacion.objects.create(
-            torneo_equipo=torneo_equipo, 
-            grupo="GENERAL", 
-            posicion=posicion_max + 1,
-            puntos=0,
-            victorias=0,
-            empates=0,
-            derrotas=0,
-            anotacion_favor=0,
-            anotacion_contra=0
-        )
-    
-    if torneo.deporte != Deporte.PADEL:
-        jugadores = Jugador.objects.filter(equipo=equipo)
-        
-        for jugador in jugadores:
-            if torneo.deporte == Deporte.FUTBOL:
-                goles_contra = 0 if jugador.es_portero else None
-                EstadisticasFutbol.objects.create(jugador=jugador, torneo=torneo, goles=0, asistencias=0, goles_contra=goles_contra)
-            elif torneo.deporte == Deporte.BALONCESTO:
-                EstadisticasBaloncesto.objects.create(jugador=jugador, torneo=torneo, puntos=0, rebotes=0, asistencias=0)
+    alta_equipo_torneo(torneo, equipo)
 
     return redirect('equipo:dashboard')

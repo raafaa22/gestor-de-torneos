@@ -51,7 +51,8 @@
                         <td>{% if jugador.es_portero %}{% trans 'Sí' %}{% else %}{% trans 'No' %}{% endif %}</td>
                         {% endif %}
                         <td>
-                            <form method="post" action="{% url 'equipo:borrar_jugador' equipo.id jugador.dni %}">
+                            <form method="post" action="{% url 'equipo:borrar_jugador' equipo.id jugador.dni %}"
+                                  data-confirm="{% blocktranslate with nombre=jugador.nombre apellidos=jugador.apellidos %}¿Borrar al jugador {{ nombre }} {{ apellidos }}? Esta acción no se puede deshacer.{% endblocktranslate %}">
                                 {% csrf_token %}
                                 <button id="borrar" type="submit" class="borrar">
                                     <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="20" height="20"/>
