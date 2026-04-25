@@ -12,7 +12,7 @@ from estadisticas.models import EstadisticasBaloncesto, EstadisticasFutbol
 from .models import Torneo, TorneoEquipo, Clasificacion, EliminatoriaGrupos
 from .forms import CrearTorneoForm
 from gestor.choices import TipoTorneo, TipoUsuario, Deporte
-from enfrentamiento.libs import baja_equipo_torneo
+from enfrentamiento.libs import baja_equipo_torneo, alta_equipo_torneo
 from enfrentamiento.models import Enfrentamiento
 
 
@@ -228,13 +228,37 @@ def informacion_torneo(request, torneo_id: int):
 
 @login_required
 def equipos_torneo(request, torneo_id: int):
+    from equipo.views import torneo_empezado, torneo_lleno
+
     torneo = get_object_or_404(Torneo, id=torneo_id)
     usuario = request.user
 
     if tiene_permiso(usuario, torneo):
+        tipo = tipo_usuario(usuario)
+        es_gestor = tipo == TipoUsuario.ORGANIZADOR or tipo == TipoUsuario.ADMINISTRADOR
+
         equipos_torneo = TorneoEquipo.objects.filter(torneo=torneo)
         equipos = [te.equipo for te in equipos_torneo]
-        return render(request, 'torneo/equipos_torneo.html', {'torneo': torneo, 'equipos': equipos})
+
+        equipos_disponibles = []
+        puede_inscribir = False
+        if es_gestor:
+            empezado = torneo_empezado(torneo)
+            lleno = torneo_lleno(torneo)
+            puede_inscribir = not empezado and not lleno
+            if puede_inscribir:
+                equipos_disponibles = list(
+                    Equipo.objects.filter(deporte=torneo.deporte)
+                    .exclude(equipo_torneos__torneo=torneo)
+                    .order_by('nombre')
+                )
+
+        return render(request, 'torneo/equipos_torneo.html', {
+            'torneo': torneo,
+            'equipos': equipos,
+            'puede_inscribir': puede_inscribir,
+            'equipos_disponibles': equipos_disponibles,
+        })
     else:
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
     
@@ -255,10 +279,43 @@ def borrar_equipo_torneo(request, torneo_id: int, equipo_id: int):
 
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({"ok": True})
-            
+
             return redirect('torneo:equipos_torneo', torneo_id=torneo.id)
         else:
             return JsonResponse({"ok": False, "error": "El equipo no está en el torneo"}, status=404)
     else:
         return JsonResponse({"ok": False, "error": "No autorizado"}, status=403)
+
+
+@login_required
+@require_POST
+def inscribir_equipo(request, torneo_id: int, equipo_id: int):
+    """Permite a un organizador/admin inscribir directamente un equipo en su torneo,
+    sin esperar a que el equipo se inscriba por su cuenta."""
+    from equipo.views import torneo_empezado, torneo_lleno
+
+    torneo = get_object_or_404(Torneo, id=torneo_id)
+    usuario = request.user
+    tipo = tipo_usuario(usuario)
+
+    if tipo != TipoUsuario.ORGANIZADOR and tipo != TipoUsuario.ADMINISTRADOR:
+        return HttpResponseForbidden(_("No tienes permiso para acceder a esta página."))
+
+    if not tiene_permiso(usuario, torneo):
+        return HttpResponseForbidden(_("No tienes permiso para acceder a este torneo."))
+
+    equipo = get_object_or_404(Equipo, id=equipo_id)
+
+    if equipo.deporte != torneo.deporte:
+        return HttpResponseForbidden(_("El equipo no es del mismo deporte que el torneo."))
+
+    if torneo_empezado(torneo):
+        return HttpResponseForbidden(_("No puedes inscribir equipos en un torneo que ya ha empezado."))
+
+    if torneo_lleno(torneo):
+        return HttpResponseForbidden(_("El torneo ya ha alcanzado el número máximo de equipos."))
+
+    alta_equipo_torneo(torneo, equipo)
+
+    return redirect('torneo:equipos_torneo', torneo_id=torneo.id)
 

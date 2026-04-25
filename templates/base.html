@@ -61,6 +61,76 @@
         </div>
     </nav>
     {% block content %}{% endblock %}
+
+    <!-- Modal de confirmación reutilizable -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmModalLabel">{% trans "Confirmar acción" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="confirmModalBody">
+            {% trans "¿Estás seguro de continuar? Esta acción no se puede deshacer." %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancelar" %}</button>
+            <button type="button" class="btn btn-danger" id="confirmModalAccept">{% trans "Confirmar" %}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            crossorigin="anonymous"></script>
+    <script>
+      // Delegación: cualquier <form data-confirm="..."> abre el modal antes de enviarse.
+      // Fallback a window.confirm() si Bootstrap no estuviera disponible.
+      (function () {
+        const modalEl = document.getElementById('confirmModal');
+        const hasBootstrap = typeof bootstrap !== 'undefined' && modalEl;
+        const modal = hasBootstrap ? new bootstrap.Modal(modalEl) : null;
+        const body = document.getElementById('confirmModalBody');
+        const acceptBtn = document.getElementById('confirmModalAccept');
+        let pendingForm = null;
+
+        document.addEventListener('submit', function (e) {
+          const form = e.target;
+          if (!form.matches('form[data-confirm]')) return;
+          if (form.dataset.confirmed === 'true') return; // ya confirmado, dejar pasar
+          e.preventDefault();
+
+          if (!hasBootstrap) {
+            // Fallback nativo
+            if (window.confirm(form.dataset.confirm)) {
+              form.dataset.confirmed = 'true';
+              form.submit();
+            }
+            return;
+          }
+
+          body.textContent = form.dataset.confirm;
+          pendingForm = form;
+          modal.show();
+        });
+
+        if (hasBootstrap) {
+          acceptBtn.addEventListener('click', function () {
+            if (!pendingForm) return;
+            pendingForm.dataset.confirmed = 'true';
+            modal.hide();
+            pendingForm.submit();
+            pendingForm = null;
+          });
+
+          modalEl.addEventListener('hidden.bs.modal', function () {
+            if (pendingForm && pendingForm.dataset.confirmed !== 'true') {
+              pendingForm = null;
+            }
+          });
+        }
+      })();
+    </script>
   </body>
   {% block scripts %}{% endblock %}
 </html>

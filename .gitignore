@@ -5,5 +5,5 @@ db.sqlite3
 .env
 .vscode/
 ca.pem
-backup_aiven.sql
+backup_*
 

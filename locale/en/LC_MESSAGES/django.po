@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-24 12:11+0200\n"
+"POT-Creation-Date: 2026-04-25 13:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,11 +59,11 @@ msgstr ""
 "Total number of assists cannot be bigger than the number of field goals "
 "scored by the team."
 
-#: enfrentamiento/libs.py:432
+#: enfrentamiento/libs.py:481
 msgid "No se encontró el siguiente enfrentamiento para actualizar."
 msgstr "Next match to update was not found."
 
-#: enfrentamiento/libs.py:434
+#: enfrentamiento/libs.py:483
 msgid "No se puede actualizar la eliminatoria sin un ganador definido."
 msgstr "Knockout cannot be updated if there is no winner for the match."
 
@@ -91,8 +91,9 @@ msgstr "Groups phase - Match day %(n)s"
 #: equipo/views.py:332 estadisticas/views.py:40 estadisticas/views.py:66
 #: torneo/views.py:35 torneo/views.py:69 torneo/views.py:118
 #: torneo/views.py:161 torneo/views.py:202 torneo/views.py:226
-#: torneo/views.py:239 usuario/views.py:185 usuario/views.py:195
-#: usuario/views.py:217 usuario/views.py:248 usuario/views.py:295
+#: torneo/views.py:263 torneo/views.py:302 usuario/views.py:185
+#: usuario/views.py:195 usuario/views.py:217 usuario/views.py:248
+#: usuario/views.py:295
 msgid "No tienes permiso para acceder a esta página."
 msgstr "You don't have permission to access to this page."
 
@@ -199,7 +200,7 @@ msgstr "You cannot register teams in other tournaments."
 msgid "No puedes inscribirte en un torneo que ya ha empezado."
 msgstr "You cannot register in a started tournament."
 
-#: equipo/views.py:344
+#: equipo/views.py:344 torneo/views.py:316
 msgid "El torneo ya ha alcanzado el número máximo de equipos."
 msgstr "Maximum number of teams for this tournament reached."
 
@@ -316,6 +317,22 @@ msgstr "Level 4"
 #: templates/base.html:52
 msgid "Cerrar Sesión"
 msgstr "Log Out"
+
+#: templates/base.html:70
+msgid "Confirmar acción"
+msgstr "Confirm action"
+
+#: templates/base.html:74
+msgid "¿Estás seguro de continuar? Esta acción no se puede deshacer."
+msgstr "Do you want to continue? This action cannot be undone."
+
+#: templates/base.html:77 templates/torneo/equipos_torneo.html:107
+msgid "Cancelar"
+msgstr "Cancel"
+
+#: templates/base.html:78
+msgid "Confirmar"
+msgstr "Confirm"
 
 #: templates/enfrentamientos/detalle.html:6
 msgid "Detalle"
@@ -457,7 +474,7 @@ msgstr "Search tournament..."
 #: templates/equipo/dashboard.html:39
 #: templates/equipo/listado_jugadores.html:37
 #: templates/equipo/listado_torneos.html:32
-#: templates/torneo/equipos_torneo.html:21
+#: templates/torneo/equipos_torneo.html:58
 #: templates/torneo/jugador_dashboard.html:26
 #: templates/torneo/organizador_dashboard.html:34
 #: templates/usuario/admin_dashboard.html:44
@@ -486,6 +503,12 @@ msgstr "Scoring made"
 #: templates/torneo/clasificacion.html:56
 msgid "Anotación en contra"
 msgstr "Scoring received"
+
+#: templates/equipo/dashboard.html:57
+msgid ""
+"¿Quieres darte de baja del torneo «%(nombre)s»? Esta acción no se puede "
+"deshacer."
+msgstr "Do you want to withdraw from the tournament «%(nombre)s»? This action cannot be undone."
 
 #: templates/equipo/editar_jugador.html:18
 msgid "Editar el jugador:"
@@ -530,6 +553,13 @@ msgstr "Yes"
 #: templates/torneo/info_torneo.html:37 templates/torneo/info_torneo.html:41
 msgid "No"
 msgstr "No"
+
+#: templates/equipo/listado_jugadores.html:55
+#, python-format
+msgid ""
+"¿Borrar al jugador %(nombre)s %(apellidos)s? Esta acción no se puede "
+"deshacer."
+msgstr "Do yo want to delete the player %(nombre)s %(apellidos)s? This action cannot be undone"
 
 #: templates/equipo/listado_torneos.html:6
 msgid "Inscribirse"
@@ -630,7 +660,7 @@ msgid "Gestionar Equipos"
 msgstr "Manage Teams"
 
 #: templates/torneo/base_torneo.html:38 templates/torneo/equipos_torneo.html:7
-#: templates/torneo/equipos_torneo.html:11
+#: templates/torneo/equipos_torneo.html:24
 msgid "Equipos"
 msgstr "Teams"
 
@@ -688,9 +718,40 @@ msgstr "Generate customized matches"
 msgid "Generar enfrentamientos aleatorios"
 msgstr "Generate random matches"
 
-#: templates/torneo/equipos_torneo.html:16
+#: templates/torneo/equipos_torneo.html:32
+#: templates/torneo/equipos_torneo.html:45
+msgid "Añadir equipo"
+msgstr "Add team"
+
+#: templates/torneo/equipos_torneo.html:36
+msgid "No se pueden añadir equipos: el torneo ya ha empezado o está lleno."
+msgstr "Teams cannot be added: tournament has started or is full."
+
+#: templates/torneo/equipos_torneo.html:38
+msgid "No hay equipos disponibles del mismo deporte para inscribir."
+msgstr "There are no available teams from the same sport to register."
+
+#: templates/torneo/equipos_torneo.html:53
 msgid "Buscar equipo..."
 msgstr "Search team..."
+
+#: templates/torneo/equipos_torneo.html:71
+msgid ""
+"¿Eliminar al equipo «%(nombre)s» del torneo? Se perderán sus enfrentamientos "
+"y estadísticas."
+msgstr "Do you want to delete the team «%(nombre)s» form the tournament? All their matches and statistics will be lost."
+
+#: templates/torneo/equipos_torneo.html:92
+msgid "Añadir equipo al torneo"
+msgstr "Add team to the tournament"
+
+#: templates/torneo/equipos_torneo.html:96
+msgid "Selecciona un equipo"
+msgstr "Select a team:"
+
+#: templates/torneo/equipos_torneo.html:108
+msgid "Inscribir"
+msgstr "Register"
 
 #: templates/torneo/estadisticas_torneo.html:77
 #: templates/torneo/jugador_dashboard.html:34
@@ -772,6 +833,13 @@ msgstr "Create tournament"
 msgid "Deporte"
 msgstr "Sport"
 
+#: templates/torneo/organizador_dashboard.html:48
+#: templates/usuario/admin_dashboard.html:60
+msgid ""
+"¿Borrar el torneo «%(nombre)s»? Se perderán todos los enfrentamientos y "
+"datos del torneo."
+msgstr "Do you want to delete the tournament «%(nombre)s»? All the matches and tournament information will be lost."
+
 #: templates/usuario/admin_dashboard.html:26
 msgid "Ver usuarios"
 msgstr "See users"
@@ -832,13 +900,18 @@ msgstr "Search user..."
 msgid "Email"
 msgstr "Email"
 
+#: templates/usuario/listado_usuarios.html:57
+#, python-format
+msgid "¿Borrar al usuario %(nombre)s? Se eliminarán todos sus datos asociados."
+msgstr "Do you want to delete the user «%(nombre)s»? All the associated data will be deleted."
+
 #: templates/usuario/login.html:10 templates/usuario/login.html:42
 msgid "Inicio de sesión"
 msgstr "Log in"
 
 #: templates/usuario/login.html:48
 msgid "Regístrate"
-msgstr "Sing up"
+msgstr "Sign up"
 
 #: templates/usuario/login.html:50
 msgid "Iniciar sesión"
@@ -937,8 +1010,8 @@ msgid ""
 "El número máximo de equipos no puede ser menor que el número de equipos ya "
 "inscritos (%(n)s)."
 msgstr ""
-"Number of teams cannot be smaller than the actual number of teams "
-"registered (%(n)s)."
+"Maximum number of teams cannot be smaller than the actual number of teams registered "
+"(%(n)s)."
 
 #: torneo/forms.py:102
 msgid ""
@@ -1020,6 +1093,18 @@ msgid "El total de clasificados no puede superar 32 (máximo 5 rondas)."
 msgstr ""
 "Total number of teams qualified cannot be bigger than 32 (maximum of 5 "
 "rounds)."
+
+#: torneo/views.py:305
+msgid "No tienes permiso para acceder a este torneo."
+msgstr "You don't have permission to access to this tournament."
+
+#: torneo/views.py:310
+msgid "El equipo no es del mismo deporte que el torneo."
+msgstr "The team is not from the same sport as the tournament."
+
+#: torneo/views.py:313
+msgid "No puedes inscribir equipos en un torneo que ya ha empezado."
+msgstr "You cannot register teams in a started tournament."
 
 #: usuario/forms.py:20 usuario/forms.py:32 usuario/forms.py:246
 #: usuario/forms.py:248

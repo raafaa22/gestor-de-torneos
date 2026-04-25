@@ -53,7 +53,8 @@
                     <td class="align-middle">{{ torneo.anotacion_favor }}</td>
                     <td class="align-middle">{{ torneo.anotacion_contra }}</td>
                     <td class="align-middle">
-                        <form action="{% url 'equipo:dar_baja_torneo' torneo.id %}" method="post">
+                        <form action="{% url 'equipo:dar_baja_torneo' torneo.id %}" method="post"
+                              data-confirm="{% blocktranslate with nombre=torneo.nombre %}¿Quieres darte de baja del torneo «{{ nombre }}»? Esta acción no se puede deshacer.{% endblocktranslate %}">
                             {% csrf_token %}
                             <button id="dar-baja" type="submit" class="borrar">
                                 <img src="{% static 'equipo/img/salida.png' %}" alt="dar-de-baja" width="20" height="20"/>
