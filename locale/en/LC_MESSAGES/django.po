@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-25 13:47+0200\n"
+"POT-Creation-Date: 2026-04-30 13:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,13 +59,13 @@ msgstr ""
 "Total number of assists cannot be bigger than the number of field goals "
 "scored by the team."
 
-#: enfrentamiento/libs.py:481
-msgid "No se encontró el siguiente enfrentamiento para actualizar."
-msgstr "Next match to update was not found."
-
-#: enfrentamiento/libs.py:483
+#: enfrentamiento/libs.py:471
 msgid "No se puede actualizar la eliminatoria sin un ganador definido."
 msgstr "Knockout cannot be updated if there is no winner for the match."
+
+#: enfrentamiento/libs.py:484
+msgid "No se encontró el siguiente enfrentamiento para actualizar."
+msgstr "Next match to update was not found."
 
 #: enfrentamiento/views.py:55 enfrentamiento/views.py:72
 #, python-format
@@ -82,10 +82,10 @@ msgstr "Groups - Matchday %(n)s"
 msgid "Fase de grupos - Jornada %(n)s"
 msgstr "Groups phase - Match day %(n)s"
 
-#: enfrentamiento/views.py:251 enfrentamiento/views.py:286
-#: enfrentamiento/views.py:311 enfrentamiento/views.py:374
-#: enfrentamiento/views.py:405 enfrentamiento/views.py:668
-#: enfrentamiento/views.py:682 enfrentamiento/views.py:735 equipo/views.py:46
+#: enfrentamiento/views.py:253 enfrentamiento/views.py:288
+#: enfrentamiento/views.py:313 enfrentamiento/views.py:376
+#: enfrentamiento/views.py:407 enfrentamiento/views.py:670
+#: enfrentamiento/views.py:684 enfrentamiento/views.py:737 equipo/views.py:46
 #: equipo/views.py:131 equipo/views.py:148 equipo/views.py:171
 #: equipo/views.py:192 equipo/views.py:256 equipo/views.py:307
 #: equipo/views.py:332 estadisticas/views.py:40 estadisticas/views.py:66
@@ -97,65 +97,65 @@ msgstr "Groups phase - Match day %(n)s"
 msgid "No tienes permiso para acceder a esta página."
 msgstr "You don't have permission to access to this page."
 
-#: enfrentamiento/views.py:296
+#: enfrentamiento/views.py:298
 msgid ""
 "No se pueden editar las estadísticas de un enfrentamiento sin ambos equipos "
 "asignados."
 msgstr "Statistics from a match cannot be edited without both teams assigned."
 
-#: enfrentamiento/views.py:327
+#: enfrentamiento/views.py:329
 msgid "El equipo no participa en este enfrentamiento."
 msgstr "The team is not part of this match."
 
-#: enfrentamiento/views.py:451
+#: enfrentamiento/views.py:453
 msgid "Los valores de juegos introducidos no son válidos."
 msgstr "Games values introduced are not valid."
 
-#: enfrentamiento/views.py:458
+#: enfrentamiento/views.py:460
 msgid "Los juegos no pueden ser negativos."
 msgstr "Number of games cannot be negative."
 
-#: enfrentamiento/views.py:465
+#: enfrentamiento/views.py:467
 msgid "Los juegos de un set no pueden superar 7."
 msgstr "Number of games in paddle tennis cannot exceed 7."
 
-#: enfrentamiento/views.py:504
+#: enfrentamiento/views.py:506
 msgid "El tercer set no puede terminar en empate."
 msgstr "Third set cannot finish in draw."
 
-#: enfrentamiento/views.py:506
+#: enfrentamiento/views.py:508
 msgid "Debe introducir el resultado del tercer set."
 msgstr "You must introduce a result in third set."
 
-#: enfrentamiento/views.py:508 enfrentamiento/views.py:512
+#: enfrentamiento/views.py:510 enfrentamiento/views.py:514
 msgid "En pádel no puede haber empates."
 msgstr "In paddle, draws cannot happen."
 
-#: enfrentamiento/views.py:510
+#: enfrentamiento/views.py:512
 msgid "Debe introducir el resultado del segundo set."
 msgstr "You must introduce a result in second set."
 
-#: enfrentamiento/views.py:514
+#: enfrentamiento/views.py:516
 msgid "Debe introducir el resultado del primer set."
 msgstr "You must introduce a result in first set."
 
-#: enfrentamiento/views.py:525
+#: enfrentamiento/views.py:527
 msgid "Debes introducir los dos resultados o dejarlos ambos en blanco."
 msgstr "You must introduce both results or leave both empty."
 
-#: enfrentamiento/views.py:531
+#: enfrentamiento/views.py:533
 msgid "Los valores de anotación introducidos no son válidos."
 msgstr "Scoring values introduced are not valid."
 
-#: enfrentamiento/views.py:534
+#: enfrentamiento/views.py:536
 msgid "La anotación no puede ser negativa."
 msgstr "Scoring number cannot be negative."
 
-#: enfrentamiento/views.py:537
+#: enfrentamiento/views.py:539
 msgid "La anotación no puede superar 9999."
 msgstr "Scoring number cannot exceed 9999."
 
-#: enfrentamiento/views.py:548
+#: enfrentamiento/views.py:550
 msgid "En baloncesto no puede haber empates."
 msgstr "In basketball, draws cannot happen."
 
@@ -505,10 +505,13 @@ msgid "Anotación en contra"
 msgstr "Scoring received"
 
 #: templates/equipo/dashboard.html:57
+#, python-format
 msgid ""
 "¿Quieres darte de baja del torneo «%(nombre)s»? Esta acción no se puede "
 "deshacer."
-msgstr "Do you want to withdraw from the tournament «%(nombre)s»? This action cannot be undone."
+msgstr ""
+"Do you want to withdraw from the tournament «%(nombre)s»? This action cannot "
+"be undone."
 
 #: templates/equipo/editar_jugador.html:18
 msgid "Editar el jugador:"
@@ -559,7 +562,9 @@ msgstr "No"
 msgid ""
 "¿Borrar al jugador %(nombre)s %(apellidos)s? Esta acción no se puede "
 "deshacer."
-msgstr "Do yo want to delete the player %(nombre)s %(apellidos)s? This action cannot be undone"
+msgstr ""
+"Do yo want to delete the player %(nombre)s %(apellidos)s? This action cannot "
+"be undone"
 
 #: templates/equipo/listado_torneos.html:6
 msgid "Inscribirse"
@@ -718,6 +723,20 @@ msgstr "Generate customized matches"
 msgid "Generar enfrentamientos aleatorios"
 msgstr "Generate random matches"
 
+#: templates/torneo/enfrentamientos.html:136
+msgid "Aviso"
+msgstr "Warning"
+
+#: templates/torneo/enfrentamientos.html:140
+#: templates/torneo/enfrentamientos.html:168
+msgid ""
+"No se pueden generar enfrentamientos porque no hay equipos en el torneo."
+msgstr "Matches cannot be created because there are no teams in the tournament."
+
+#: templates/torneo/enfrentamientos.html:143
+msgid "Aceptar"
+msgstr "Accept"
+
 #: templates/torneo/equipos_torneo.html:32
 #: templates/torneo/equipos_torneo.html:45
 msgid "Añadir equipo"
@@ -736,10 +755,13 @@ msgid "Buscar equipo..."
 msgstr "Search team..."
 
 #: templates/torneo/equipos_torneo.html:71
+#, python-format
 msgid ""
 "¿Eliminar al equipo «%(nombre)s» del torneo? Se perderán sus enfrentamientos "
 "y estadísticas."
-msgstr "Do you want to delete the team «%(nombre)s» form the tournament? All their matches and statistics will be lost."
+msgstr ""
+"Do you want to delete the team «%(nombre)s» form the tournament? All their "
+"matches and statistics will be lost."
 
 #: templates/torneo/equipos_torneo.html:92
 msgid "Añadir equipo al torneo"
@@ -838,7 +860,9 @@ msgstr "Sport"
 msgid ""
 "¿Borrar el torneo «%(nombre)s»? Se perderán todos los enfrentamientos y "
 "datos del torneo."
-msgstr "Do you want to delete the tournament «%(nombre)s»? All the matches and tournament information will be lost."
+msgstr ""
+"Do you want to delete the tournament «%(nombre)s»? All the matches and "
+"tournament information will be lost."
 
 #: templates/usuario/admin_dashboard.html:26
 msgid "Ver usuarios"
@@ -903,7 +927,9 @@ msgstr "Email"
 #: templates/usuario/listado_usuarios.html:57
 #, python-format
 msgid "¿Borrar al usuario %(nombre)s? Se eliminarán todos sus datos asociados."
-msgstr "Do you want to delete the user «%(nombre)s»? All the associated data will be deleted."
+msgstr ""
+"Do you want to delete the user «%(nombre)s»? All the associated data will be "
+"deleted."
 
 #: templates/usuario/login.html:10 templates/usuario/login.html:42
 msgid "Inicio de sesión"
@@ -1006,12 +1032,13 @@ msgid "El número máximo de equipos no puede ser menor que 2."
 msgstr "Number of temas cannot be smaller than 2."
 
 #: torneo/forms.py:96
+#, python-format
 msgid ""
 "El número máximo de equipos no puede ser menor que el número de equipos ya "
 "inscritos (%(n)s)."
 msgstr ""
-"Maximum number of teams cannot be smaller than the actual number of teams registered "
-"(%(n)s)."
+"Maximum number of teams cannot be smaller than the actual number of teams "
+"registered (%(n)s)."
 
 #: torneo/forms.py:102
 msgid ""
