@@ -467,20 +467,73 @@ def recalcular_clasificacion_equipo(torneo: Torneo, equipo: Equipo):
     
 @transaction.atomic
 def actualizar_eliminatoria(enfrentamiento: Enfrentamiento):
-    if enfrentamiento.ganador is not None:
-        siguiente = Enfrentamiento.objects.filter(eliminatoria=enfrentamiento.eliminatoria, prev_local=enfrentamiento).first()
-        if siguiente is not None:
-            siguiente.equipo_local = enfrentamiento.ganador
-            siguiente.save()
-        else:
-            siguiente = Enfrentamiento.objects.filter(eliminatoria=enfrentamiento.eliminatoria, prev_visitante=enfrentamiento).first()
-            if siguiente is not None:
-                siguiente.equipo_visitante = enfrentamiento.ganador
-                siguiente.save()
-            else:
-                return HttpResponse( _("No se encontró el siguiente enfrentamiento para actualizar."), status=400 )
-    else:
+    if enfrentamiento.ganador is None:
         return HttpResponse( _("No se puede actualizar la eliminatoria sin un ganador definido."), status=400 )
+
+    siguiente = Enfrentamiento.objects.filter(
+        eliminatoria=enfrentamiento.eliminatoria, prev_local=enfrentamiento
+    ).first()
+    es_local = True
+    if siguiente is None:
+        siguiente = Enfrentamiento.objects.filter(
+            eliminatoria=enfrentamiento.eliminatoria, prev_visitante=enfrentamiento
+        ).first()
+        es_local = False
+
+    if siguiente is None:
+        return HttpResponse( _("No se encontró el siguiente enfrentamiento para actualizar."), status=400 )
+
+    equipo_anterior = siguiente.equipo_local if es_local else siguiente.equipo_visitante
+
+    # Si el equipo del siguiente cambia, limpiamos los resultados del siguiente
+    # y propagamos la limpieza hacia adelante para no violar el check constraint
+    # enfrentamiento_ganador_local_o_visitante.
+    if equipo_anterior != enfrentamiento.ganador:
+        _limpiar_resultados_y_descendientes(siguiente)
+
+    if es_local:
+        siguiente.equipo_local = enfrentamiento.ganador
+    else:
+        siguiente.equipo_visitante = enfrentamiento.ganador
+    siguiente.save()
+
+
+def _limpiar_resultados_y_descendientes(enfrentamiento: Enfrentamiento):
+    tenia_ganador = enfrentamiento.ganador is not None
+
+    enfrentamiento.ganador = None
+    enfrentamiento.anotacion_local = None
+    enfrentamiento.anotacion_visitante = None
+    enfrentamiento.juegos_local_1 = None
+    enfrentamiento.juegos_visitante_1 = None
+    enfrentamiento.juegos_local_2 = None
+    enfrentamiento.juegos_visitante_2 = None
+    enfrentamiento.juegos_local_3 = None
+    enfrentamiento.juegos_visitante_3 = None
+    enfrentamiento.save()
+
+    if not tenia_ganador:
+        return
+
+    descendiente = Enfrentamiento.objects.filter(
+        eliminatoria=enfrentamiento.eliminatoria, prev_local=enfrentamiento
+    ).first()
+    desc_es_local = True
+    if descendiente is None:
+        descendiente = Enfrentamiento.objects.filter(
+            eliminatoria=enfrentamiento.eliminatoria, prev_visitante=enfrentamiento
+        ).first()
+        desc_es_local = False
+
+    if descendiente is None:
+        return
+
+    _limpiar_resultados_y_descendientes(descendiente)
+    if desc_es_local:
+        descendiente.equipo_local = None
+    else:
+        descendiente.equipo_visitante = None
+    descendiente.save()
 
 @transaction.atomic
 def actualizar_estadisticas_generales(torneo: Torneo, enfrentamiento: Enfrentamiento):
