@@ -88,3 +88,51 @@
         <button class="btn float-end" type="submit">{% trans 'Guardar' %}</button>
     </form>
 {% endblock %}
+
+{% block scripts %}
+{% if torneo.deporte == 'PAD' %}
+<script>
+(function () {
+    function getVal(name) {
+        const el = document.querySelector('[name="' + name + '"]');
+        return el ? parseInt(el.value, 10) : NaN;
+    }
+
+    function checkTercerSet() {
+        const l1 = getVal('juegos_local_1');
+        const v1 = getVal('juegos_visitante_1');
+        const l2 = getVal('juegos_local_2');
+        const v2 = getVal('juegos_visitante_2');
+
+        const set3Local = document.querySelector('[name="juegos_local_3"]');
+        const set3Visit = document.querySelector('[name="juegos_visitante_3"]');
+        if (!set3Local || !set3Visit) return;
+
+        const set1Decidido = !isNaN(l1) && !isNaN(v1) && l1 !== v1;
+        const set2Decidido = !isNaN(l2) && !isNaN(v2) && l2 !== v2;
+        const ganadorEn2 = set1Decidido && set2Decidido &&
+                           ((l1 > v1 && l2 > v2) || (v1 > l1 && v2 > l2));
+
+        [set3Local, set3Visit].forEach(function (inp) {
+            if (ganadorEn2) {
+                inp.disabled = true;
+                inp.value = '';
+                inp.title = 'El partido ya tiene ganador en 2 sets';
+            } else {
+                inp.disabled = false;
+                inp.title = '';
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        ['juegos_local_1', 'juegos_visitante_1', 'juegos_local_2', 'juegos_visitante_2'].forEach(function (name) {
+            const el = document.querySelector('[name="' + name + '"]');
+            if (el) el.addEventListener('input', checkTercerSet);
+        });
+        checkTercerSet();
+    });
+})();
+</script>
+{% endif %}
+{% endblock %}
