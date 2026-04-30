@@ -246,7 +246,9 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
             enfrentamientos = None
 
         
-        return render(request, 'torneo/enfrentamientos.html', {'torneo': torneo, 'n_ronda': n_ronda, 'enfrentamientos': enfrentamientos, 'editor': editor})
+        hay_equipos = TorneoEquipo.objects.filter(torneo=torneo).exists()
+
+        return render(request, 'torneo/enfrentamientos.html', {'torneo': torneo, 'n_ronda': n_ronda, 'enfrentamientos': enfrentamientos, 'editor': editor, 'hay_equipos': hay_equipos})
     else:
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
     

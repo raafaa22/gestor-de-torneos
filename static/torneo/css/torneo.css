@@ -790,6 +790,15 @@
   box-shadow: 0 0 0 3px rgba(71, 132, 224, 0.2);
 }
 
+.input-anotacion:disabled {
+  background-color: #e9ecef;
+  border-color: #ced4da;
+  color: #adb5bd;
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
 /* Ocultar las flechas de los inputs numéricos */
 .input-anotacion::-webkit-outer-spin-button,
 .input-anotacion::-webkit-inner-spin-button {

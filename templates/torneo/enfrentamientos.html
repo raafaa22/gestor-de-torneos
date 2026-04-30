@@ -113,11 +113,11 @@
                 <h3>{% trans 'No existen enfrentamientos todavía' %}</h3>
                 {% if editor %}
                 <div>
-                    <button onclick="window.location.href='{% url 'enfrentamientos:generar_personalizados' torneo.id %}'" class="btn btn-enf">
+                    <button id="btn-generar-personalizados" data-url="{% url 'enfrentamientos:generar_personalizados' torneo.id %}" class="btn btn-enf">
                         {% trans 'Generar enfrentamientos personalizados' %}
                     </button>
 
-                    <form method="post" action="{% url 'enfrentamientos:generar_aleatorios' torneo.id %}">
+                    <form id="form-generar-aleatorios" method="post" action="{% url 'enfrentamientos:generar_aleatorios' torneo.id %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-enf-2">
                             {% trans 'Generar enfrentamientos aleatorios' %}
@@ -127,4 +127,68 @@
                 {% endif %}
             </div>
         {% endif %}
+
+        {% if editor %}
+        <div class="modal fade" id="noEquiposModal" tabindex="-1" aria-labelledby="noEquiposModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="noEquiposModalLabel">{% trans "Aviso" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% trans "No se pueden generar enfrentamientos porque no hay equipos en el torneo." %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans "Aceptar" %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if editor %}
+<script>
+(function () {
+    const hayEquipos = {{ hay_equipos|yesno:"true,false" }};
+    const btnPers = document.getElementById('btn-generar-personalizados');
+    const formAlea = document.getElementById('form-generar-aleatorios');
+    const modalEl = document.getElementById('noEquiposModal');
+    if (!modalEl) return;
+
+    const hasBootstrap = typeof bootstrap !== 'undefined';
+    const modal = hasBootstrap ? new bootstrap.Modal(modalEl) : null;
+
+    function mostrarAviso() {
+        if (modal) {
+            modal.show();
+        } else {
+            window.alert('{% trans "No se pueden generar enfrentamientos porque no hay equipos en el torneo." %}');
+        }
+    }
+
+    if (btnPers) {
+        btnPers.addEventListener('click', function (e) {
+            if (!hayEquipos) {
+                e.preventDefault();
+                mostrarAviso();
+            } else {
+                window.location.href = btnPers.dataset.url;
+            }
+        });
+    }
+
+    if (formAlea) {
+        formAlea.addEventListener('submit', function (e) {
+            if (!hayEquipos) {
+                e.preventDefault();
+                mostrarAviso();
+            }
+        });
+    }
+})();
+</script>
+{% endif %}
 {% endblock %}
