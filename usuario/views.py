@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.db import connection
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -417,3 +420,27 @@ def cambiar_password_obligatorio(request):
         'form': form,
         'jugador': jugador
     })
+
+
+@require_POST
+def validar_password(request):
+    password = request.POST.get('password', '')
+    if not password:
+        return JsonResponse({'failed': []})
+
+    if request.user.is_authenticated:
+        user = request.user
+    else:
+        user = User(
+            username=request.POST.get('username', ''),
+            email=request.POST.get('email', ''),
+            first_name=request.POST.get('first_name', ''),
+            last_name=request.POST.get('last_name', ''),
+        )
+
+    try:
+        validate_password(password, user=user)
+        return JsonResponse({'failed': []})
+    except ValidationError as e:
+        codes = [err.code for err in e.error_list if getattr(err, 'code', None)]
+        return JsonResponse({'failed': codes})

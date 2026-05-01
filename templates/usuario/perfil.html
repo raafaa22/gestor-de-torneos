@@ -4,6 +4,12 @@
 
 {% block extra_head %}
     <title>{% trans 'Perfil de usuario' %}</title>
+    <style>
+        ul.password-rules { list-style: none; padding-left: 0; margin-top: 6px; }
+        ul.password-rules li { color: #888; font-size: 0.85em; transition: color 0.2s; }
+        ul.password-rules li::before { content: "●"; margin-right: 6px; }
+        ul.password-rules li.condition-met { color: #28a745; }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -61,6 +67,68 @@
         if (deporte) deporte.disabled = true;
         const esPortero = document.getElementById('id_es_portero');
         if (esPortero) esPortero.disabled = true;
+
+        const confirmPass = document.getElementById('id_new_password2');
+        if (confirmPass) {
+            confirmPass.addEventListener('paste', e => e.preventDefault());
+            confirmPass.addEventListener('drop', e => e.preventDefault());
+        }
+
+        function findValidationList(input) {
+            const p = input.closest('p') || input.parentElement;
+            if (!p) return null;
+            const inner = p.querySelector('ul');
+            if (inner) return inner;
+            let sib = p.nextElementSibling;
+            while (sib) {
+                if (sib.tagName === 'UL') return sib;
+                if (sib.tagName === 'P') return null;
+                sib = sib.nextElementSibling;
+            }
+            return null;
+        }
+
+        const CODE_TO_INDEX = {
+            'password_too_similar': 0,
+            'password_too_short': 1,
+            'password_too_common': 2,
+            'password_entirely_numeric': 3,
+        };
+
+        const passInput = document.getElementById('id_new_password1');
+        if (passInput) {
+            const helpUl = findValidationList(passInput);
+            if (helpUl) {
+                helpUl.classList.add('password-rules');
+                const items = helpUl.querySelectorAll('li');
+                const csrfToken = passInput.closest('form').querySelector('[name=csrfmiddlewaretoken]').value;
+
+                let timer;
+                passInput.addEventListener('input', function() {
+                    const val = this.value;
+                    clearTimeout(timer);
+                    if (!val) {
+                        items.forEach(li => li.classList.remove('condition-met'));
+                        return;
+                    }
+                    timer = setTimeout(() => {
+                        const body = new FormData();
+                        body.append('password', val);
+                        fetch('{% url "usuario:validar_password" %}', {
+                            method: 'POST',
+                            headers: { 'X-CSRFToken': csrfToken },
+                            body: body,
+                        })
+                            .then(r => r.json())
+                            .then(data => {
+                                const failed = new Set((data.failed || []).map(c => CODE_TO_INDEX[c]).filter(i => i !== undefined));
+                                items.forEach((li, idx) => li.classList.toggle('condition-met', !failed.has(idx)));
+                            })
+                            .catch(() => {});
+                    }, 350);
+                });
+            }
+        }
     });
 </script>
 {% endblock %}
