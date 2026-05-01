@@ -22,6 +22,9 @@
 
                 <div class="d-flex align-items-center gap-2">
                     <a href="{% url 'usuario:home' %}" class="navbar-brand">
+                        <img src="{% static 'img/home.png' %}" alt="{% trans 'Inicio' %}" width="24" height="24" class="d-inline-block align-text-top">
+                    </a>
+                    <a href="{% url 'usuario:home' %}" class="navbar-brand">
                         <img src="{% static 'usuario/img/logo.png' %}" alt="logo" width="24" height="24" class="d-inline-block align-text-top">
                         <strong class="titulo">TorneoPro</strong>
                     </a>
@@ -29,7 +32,7 @@
 
                 <div style="position:relative; flex-grow:1;">
                     <span class="titulo navbar-text fw-semibold usuario-centro">
-                        {{ nombre_usuario }}
+                        {% if tipo_usuario_nav %}{{ tipo_usuario_nav }}: {% endif %}{{ nombre_usuario }}
                     </span>
                 </div>
 

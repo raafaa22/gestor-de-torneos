@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block extra_head %}
-    <title>{% trans 'Principal' %}</title>
+    <title>{% trans 'Equipo' %}: {% trans 'Principal' %}</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="{% static 'torneo/css/torneo.css' %}" />
     <link rel="stylesheet" href="{% static 'equipo/css/equipo.css' %}" />
@@ -13,7 +13,7 @@
 
     <div class="torneo-header">
         <h3 class="float-start">
-            <strong>{% trans 'Listado de torneos' %}</strong>
+            <strong>{% trans 'Listado de torneos' %} - {{ equipo.get_deporte_display }}</strong>
         </h3>
         <div class="float-end">
             <a href="{% url 'equipo:listado_torneos_inscribir' equipo.id %}" class="btn btn-torneos">
