@@ -129,16 +129,16 @@ class JugadorForm(forms.ModelForm):
             "es_portero": _("Es portero"),
         }
 
-    def __init__(self, *args, equipo=None, is_admin=False, **kwargs):
+    def __init__(self, *args, equipo=None, is_admin=False, bloquear_es_portero=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.equipo = equipo
         self.is_admin = is_admin
-        
+
         self._equipo_original = self.instance.equipo if self.instance.pk else None
 
         if self.instance and self.instance.pk:
             self.fields["dni"].disabled = True
-            
+
             if not equipo and self.instance.equipo:
                 self.equipo = self.instance.equipo
 
@@ -146,8 +146,11 @@ class JugadorForm(forms.ModelForm):
         if not is_admin:
             self.fields.pop("equipo", None)
 
-        
+
         self._update_es_portero_field()
+
+        if bloquear_es_portero and "es_portero" in self.fields:
+            self.fields["es_portero"].disabled = True
 
     def _update_es_portero_field(self):
         """Actualiza la visibilidad del campo es_portero según el equipo"""

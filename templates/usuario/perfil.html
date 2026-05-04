@@ -63,11 +63,6 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const deporte = document.getElementById('id_deporte');
-        if (deporte) deporte.disabled = true;
-        const esPortero = document.getElementById('id_es_portero');
-        if (esPortero) esPortero.disabled = true;
-
         const confirmPass = document.getElementById('id_new_password2');
         if (confirmPass) {
             confirmPass.addEventListener('paste', e => e.preventDefault());

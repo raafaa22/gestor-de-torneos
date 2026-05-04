@@ -51,6 +51,10 @@
     const playoffsCheckbox = document.getElementById('id_playoffs');
     const descensoCheckbox = document.getElementById('id_descenso');
 
+    if (!playoffsCheckbox || !descensoCheckbox) {
+        // Vista solo lectura (sin formulario): no hay nada que enganchar.
+    } else {
+
     function cambioPlayOffs() {
         const numPlayOffsField = document.getElementById("id_n_equipos_playoffs");
         const numPlayOffsLabel = document.querySelector('label[for="id_n_equipos_playoffs"]');
@@ -81,14 +85,17 @@
         const selectorTipo = document.getElementById('id_tipo');
         const tipoSeleccionado = selectorTipo.value;
 
-        if (tipoSeleccionado === 'LIG'){
-            playoffsCheckbox.disabled = false;
-            descensoCheckbox.disabled = false;
+        const playoffsContainer = playoffsCheckbox.closest('p');
+        const descensoContainer = descensoCheckbox.closest('p');
+
+        if (tipoSeleccionado === 'LIG') {
+            playoffsContainer.classList.remove('d-none');
+            descensoContainer.classList.remove('d-none');
         } else {
-            playoffsCheckbox.disabled = true;
+            playoffsContainer.classList.add('d-none');
             playoffsCheckbox.checked = false;
             cambioPlayOffs();
-            descensoCheckbox.disabled = true;
+            descensoContainer.classList.add('d-none');
             descensoCheckbox.checked = false;
             cambioDescenso();
         }
@@ -124,7 +131,13 @@
         elementosGrupos();
         document.getElementById('id_playoffs').addEventListener('change', cambioPlayOffs);
         document.getElementById('id_descenso').addEventListener('change', cambioDescenso);
+        const tipoSelect = document.getElementById('id_tipo');
+        if (tipoSelect && !tipoSelect.disabled) {
+            tipoSelect.addEventListener('change', elementosLiga);
+            tipoSelect.addEventListener('change', elementosGrupos);
+        }
         document.documentElement.classList.remove('js-loading');
     });
+    }
 </script>
 {% endblock %}

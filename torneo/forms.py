@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from math import log2
 
-from .models import Torneo, EliminatoriaGrupos, TorneoEquipo
+from .models import Torneo, EliminatoriaGrupos, TorneoEquipo, Jornada, Eliminatoria, Clasificacion
 from gestor.choices import TipoTorneo
 from usuario.models import Organizador, Administrador
 
@@ -60,17 +60,20 @@ class CrearTorneoForm(forms.ModelForm):
         self.fields["n_equipos_descenso"].required = False
 
        
+        self._tipo_original = self.instance.tipo if self.instance and self.instance.pk else None
+
         if self.instance and self.instance.pk:
             eg = EliminatoriaGrupos.objects.filter(torneo=self.instance).first()
             if eg:
                 self.fields['n_grupos'].initial = eg.n_grupos
                 self.fields['n_clasificados_grupo'].initial = eg.n_clasificados_grupo
-            
-            
-            self.fields['deporte'].required = False
-            self.fields['tipo'].required = False
-            self.fields['deporte'].widget.attrs['disabled'] = 'disabled'
-            self.fields['tipo'].widget.attrs['disabled'] = 'disabled'
+
+
+            self.fields['deporte'].disabled = True
+
+            from equipo.views import torneo_empezado
+            if torneo_empezado(self.instance):
+                self.fields['tipo'].disabled = True
 
         if Organizador.objects.filter(user=user).exists():
             self.fields.pop('organizador')
@@ -78,11 +81,6 @@ class CrearTorneoForm(forms.ModelForm):
     
     def clean(self):
         cleaned = super().clean()
-
-        
-        if self.instance and self.instance.pk:
-            cleaned['deporte'] = self.instance.deporte
-            cleaned['tipo'] = self.instance.tipo
 
         max_eq = cleaned.get('max_equipos')
 
@@ -159,6 +157,11 @@ class CrearTorneoForm(forms.ModelForm):
     
 
     def save(self, commit=True):
+        tipo_cambiado = (
+            self._tipo_original is not None
+            and self.cleaned_data.get('tipo') != self._tipo_original
+        )
+
         torneo = super().save(commit=False)
 
         if Organizador.objects.filter(user=self.user).exists():
@@ -166,7 +169,46 @@ class CrearTorneoForm(forms.ModelForm):
 
         if commit:
             torneo.save()
-        
+
+        if tipo_cambiado and commit:
+            # Limpieza de la estructura anterior: el torneo no había empezado, así que
+            # podemos resetear jornadas/eliminatorias/clasificaciones para que la nueva
+            # estructura se pueda generar limpia. Los TorneoEquipo (inscripciones) se conservan.
+            #
+            # Borramos primero los Enfrentamiento explícitamente: el modelo tiene un
+            # CHECK (eliminatoria_id IS NOT NULL OR jornada_id IS NOT NULL), y el
+            # cascade delete de Django puede hacer un UPDATE intermedio que viola
+            # ese constraint en MySQL.
+            from django.db.models import Q
+            from enfrentamiento.models import Enfrentamiento
+            Enfrentamiento.objects.filter(
+                Q(jornada__torneo=torneo) | Q(eliminatoria__torneo=torneo)
+            ).delete()
+            Clasificacion.objects.filter(torneo_equipo__torneo=torneo).delete()
+            EliminatoriaGrupos.objects.filter(torneo=torneo).delete()
+            Jornada.objects.filter(torneo=torneo).delete()
+            Eliminatoria.objects.filter(torneo=torneo).delete()
+
+            # Si el nuevo tipo es LIGA, recreamos la clasificación para los equipos ya
+            # inscritos (el alta_equipo_torneo solo la crea al inscribir, no al cambiar
+            # de tipo).
+            if torneo.tipo == TipoTorneo.LIGA:
+                for idx, te in enumerate(
+                    TorneoEquipo.objects.filter(torneo=torneo).order_by('id'),
+                    start=1,
+                ):
+                    Clasificacion.objects.create(
+                        torneo_equipo=te,
+                        grupo="GENERAL",
+                        posicion=idx,
+                        puntos=0,
+                        victorias=0,
+                        empates=0,
+                        derrotas=0,
+                        anotacion_favor=0,
+                        anotacion_contra=0,
+                    )
+
         if torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
             n_grupos = self.cleaned_data['n_grupos']
             clasificados = self.cleaned_data['n_clasificados_grupo']

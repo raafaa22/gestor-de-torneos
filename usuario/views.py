@@ -145,7 +145,7 @@ def perfil(request):
 
     user_form = UserUpdateForm(instance=usuario)
     if RolForm == JugadorForm:
-        rol_form = RolForm(instance=rol_instance, equipo=rol_instance.equipo, is_admin=False) if RolForm else None
+        rol_form = RolForm(instance=rol_instance, equipo=rol_instance.equipo, is_admin=False, bloquear_es_portero=True) if RolForm else None
     else:
         rol_form = RolForm(instance=rol_instance) if RolForm else None
     clave_form = PasswordChangeForm(user=usuario)
@@ -156,7 +156,7 @@ def perfil(request):
         if accion == 'datos':
             user_form = UserUpdateForm(request.POST, instance=usuario)
             if RolForm == JugadorForm:
-                rol_form = RolForm(request.POST, instance=rol_instance, equipo=rol_instance.equipo, is_admin=False) if RolForm else None
+                rol_form = RolForm(request.POST, instance=rol_instance, equipo=rol_instance.equipo, is_admin=False, bloquear_es_portero=True) if RolForm else None
             else:
                 rol_form = RolForm(request.POST, instance=rol_instance) if RolForm else None
             forms_validos = user_form.is_valid() and (rol_form is None or rol_form.is_valid())
@@ -268,7 +268,7 @@ def editar_usuario(request, usuario_id : int):
             if jugador:
                 RolForm = JugadorForm
                 rol_instance = jugador
-                rol_form = RolForm(instance=rol_instance, equipo=jugador.equipo, is_admin=True)
+                rol_form = RolForm(instance=rol_instance, equipo=jugador.equipo, is_admin=True, bloquear_es_portero=True)
                 user_form = UserUpdateForm(instance=usuario)
             else:
                 return HttpResponseBadRequest(_("Usuario no encontrado o sin rol asignado."))
@@ -277,7 +277,7 @@ def editar_usuario(request, usuario_id : int):
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=usuario)
         if isinstance(rol_instance, Jugador):
-            rol_form = RolForm(request.POST, instance=rol_instance, equipo=rol_instance.equipo, is_admin=True) if RolForm else None
+            rol_form = RolForm(request.POST, instance=rol_instance, equipo=rol_instance.equipo, is_admin=True, bloquear_es_portero=True) if RolForm else None
         else:
             rol_form = RolForm(request.POST, instance=rol_instance) if RolForm else None
         forms_validos = user_form.is_valid() and (rol_form is None or rol_form.is_valid())

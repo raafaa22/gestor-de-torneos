@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.db.models import Max
+from django.db.models import Max, Sum, Q
 from django.utils.translation import gettext as _
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -16,6 +16,35 @@ from usuario.models import Jugador
 from torneo.views import tipo_usuario, tiene_permiso
 
 from .libs import *
+
+
+def _suficientes_equipos_para_generar(torneo):
+    """Comprueba si hay suficientes equipos inscritos para generar enfrentamientos.
+    - LIGA y ELIMINATORIA: mínimo 2 equipos.
+    - ELIMINATORIA_GRUPOS: n_grupos * 2 (cada grupo necesita ≥ 2 equipos).
+    Devuelve (ok, n_requeridos)."""
+    if torneo.tipo == TipoTorneo.ELIMINATORIA_GRUPOS:
+        eg = EliminatoriaGrupos.objects.filter(torneo=torneo).first()
+        n_requeridos = eg.n_grupos * 2 if eg else 2
+    else:
+        n_requeridos = 2
+    n_inscritos = TorneoEquipo.objects.filter(torneo=torneo).count()
+    return (n_inscritos >= n_requeridos, n_requeridos)
+
+
+def _aplicar_anotaciones_post(enfrentamiento, post):
+    """Lee anotacion_local/anotacion_visitante de un POST y las aplica al enfrentamiento si son enteros >= 0. Si están vacías o son inválidas se mantiene el valor actual."""
+    for campo in ('anotacion_local', 'anotacion_visitante'):
+        raw = post.get(campo, '').strip()
+        if raw == '':
+            continue
+        try:
+            val = int(raw)
+        except (ValueError, TypeError):
+            continue
+        if val < 0:
+            continue
+        setattr(enfrentamiento, campo, val)
 
 
 @login_required
@@ -247,8 +276,17 @@ def enfrentamientos_torneo(request, torneo_id: int, n_ronda: int):
 
         
         hay_equipos = TorneoEquipo.objects.filter(torneo=torneo).exists()
+        suficientes, min_eq = _suficientes_equipos_para_generar(torneo)
 
-        return render(request, 'torneo/enfrentamientos.html', {'torneo': torneo, 'n_ronda': n_ronda, 'enfrentamientos': enfrentamientos, 'editor': editor, 'hay_equipos': hay_equipos})
+        return render(request, 'torneo/enfrentamientos.html', {
+            'torneo': torneo,
+            'n_ronda': n_ronda,
+            'enfrentamientos': enfrentamientos,
+            'editor': editor,
+            'hay_equipos': hay_equipos,
+            'equipos_suficientes': suficientes,
+            'min_equipos': min_eq,
+        })
     else:
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
     
@@ -335,14 +373,17 @@ def guardar_estadistica(request, torneo_id: int, n_ronda: int, enfrentamiento_id
             tipo = form.cleaned_data['tipo']
             cantidad = form.cleaned_data['cantidad']
 
+            # Sincroniza la anotación tecleada en el form principal antes de sumar la stat
+            _aplicar_anotaciones_post(enfrentamiento, request.POST)
+
             if tipo == EstadisticaFutbol.GOLES or tipo == EstadisticaBaloncesto.PUNTOS:
                 if equipo == enfrentamiento.equipo_local:
                     enfrentamiento.anotacion_local = (enfrentamiento.anotacion_local or 0) + cantidad
                 else:
                     enfrentamiento.anotacion_visitante = (enfrentamiento.anotacion_visitante or 0) + cantidad
-                
-                enfrentamiento.save()
-            
+
+            enfrentamiento.save()
+
             form.save()
 
             return redirect('enfrentamientos:editar_enfrentamiento', torneo_id=torneo_id, n_ronda=n_ronda, enfrentamiento_id=enfrentamiento_id)
@@ -393,13 +434,16 @@ def borrar_estadistica(request, torneo_id: int, n_ronda: int, enfrentamiento_id:
         cantidad = estadistica.cantidad
         equipo = estadistica.jugador.equipo
 
+        # Sincroniza la anotación tecleada en el form principal antes de restar la stat
+        _aplicar_anotaciones_post(enfrentamiento, request.POST)
+
         if tipo == EstadisticaFutbol.GOLES or tipo == EstadisticaBaloncesto.PUNTOS:
             if equipo == enfrentamiento.equipo_local:
-                enfrentamiento.anotacion_local = enfrentamiento.anotacion_local - cantidad
+                enfrentamiento.anotacion_local = (enfrentamiento.anotacion_local or 0) - cantidad
             else:
-                enfrentamiento.anotacion_visitante = enfrentamiento.anotacion_visitante - cantidad
-            enfrentamiento.save()
+                enfrentamiento.anotacion_visitante = (enfrentamiento.anotacion_visitante or 0) - cantidad
 
+        enfrentamiento.save()
         estadistica.delete()
 
         return redirect('enfrentamientos:editar_enfrentamiento', torneo_id=torneo_id, n_ronda=n_ronda, enfrentamiento_id=enfrentamiento_id)
@@ -537,6 +581,29 @@ def guardar_enfrentamiento(request, torneo_id: int, n_ronda: int, enfrentamiento
 
                 if anotacion_local > MAX_SCORE or anotacion_visitante > MAX_SCORE:
                     return HttpResponse(_("La anotación no puede superar 9999."), status=400)
+
+                goal_filter = Q(estadistica_futbol=EstadisticaFutbol.GOLES) | Q(estadistica_baloncesto=EstadisticaBaloncesto.PUNTOS)
+
+                goles_local_total = EstadisticasEnfrentamiento.objects.filter(
+                    enfrentamiento=enfrentamiento,
+                    jugador__equipo=enfrentamiento.equipo_local,
+                ).filter(goal_filter).aggregate(total=Sum('cantidad'))['total'] or 0
+
+                goles_visitante_total = EstadisticasEnfrentamiento.objects.filter(
+                    enfrentamiento=enfrentamiento,
+                    jugador__equipo=enfrentamiento.equipo_visitante,
+                ).filter(goal_filter).aggregate(total=Sum('cantidad'))['total'] or 0
+
+                if anotacion_local < goles_local_total:
+                    return HttpResponse(
+                        _("La anotación local (%(a)s) no puede ser menor que la suma de goles/puntos registrados como estadísticas (%(t)s).") % {'a': anotacion_local, 't': goles_local_total},
+                        status=400
+                    )
+                if anotacion_visitante < goles_visitante_total:
+                    return HttpResponse(
+                        _("La anotación visitante (%(a)s) no puede ser menor que la suma de goles/puntos registrados como estadísticas (%(t)s).") % {'a': anotacion_visitante, 't': goles_visitante_total},
+                        status=400
+                    )
 
                 enfrentamiento.anotacion_local    = anotacion_local
                 enfrentamiento.anotacion_visitante = anotacion_visitante
@@ -682,7 +749,14 @@ def generar_enfrentamientos_personalizados(request, torneo_id: int):
 
     if not tiene_permiso(usuario, torneo):
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
-    
+
+    suficientes, n_requeridos = _suficientes_equipos_para_generar(torneo)
+    if not suficientes:
+        return HttpResponse(
+            _("No se pueden generar enfrentamientos: se necesitan al menos %(n)s equipos inscritos.") % {'n': n_requeridos},
+            status=400
+        )
+
     if request.method == 'POST':
         niveles = {}
         iguales = True
@@ -735,6 +809,13 @@ def generar_enfrentamientos_aleatorios(request, torneo_id: int):
 
     if not tiene_permiso(usuario, torneo):
         return HttpResponseForbidden( _("No tienes permiso para acceder a esta página.") )
+
+    suficientes, n_requeridos = _suficientes_equipos_para_generar(torneo)
+    if not suficientes:
+        return HttpResponse(
+            _("No se pueden generar enfrentamientos: se necesitan al menos %(n)s equipos inscritos.") % {'n': n_requeridos},
+            status=400
+        )
 
     limpiar_datos_torneo(torneo)
 

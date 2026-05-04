@@ -22,11 +22,11 @@
                 </select>
                 {% if editor %}
                 <div class="float-end">
-                    <button onclick="window.location.href='{% url 'enfrentamientos:generar_personalizados' torneo.id %}'" class="btn btn-enf">
+                    <button id="btn-generar-personalizados" data-url="{% url 'enfrentamientos:generar_personalizados' torneo.id %}" class="btn btn-enf">
                         {% trans 'Enfrentamientos personalizados' %}
                     </button>
 
-                    <form method="post" action="{% url 'enfrentamientos:generar_aleatorios' torneo.id %}">
+                    <form id="form-generar-aleatorios" method="post" action="{% url 'enfrentamientos:generar_aleatorios' torneo.id %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-enf-2">
                             {% trans 'Enfrentamientos aleatorios' %}
@@ -145,6 +145,23 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="pocosEquiposModal" tabindex="-1" aria-labelledby="pocosEquiposModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="pocosEquiposModalLabel">{% trans "Aviso" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% blocktrans with n=min_equipos %}No se pueden generar enfrentamientos: se necesitan al menos {{ n }} equipos inscritos.{% endblocktrans %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans "Aceptar" %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endif %}
 {% endblock %}
 
@@ -153,28 +170,51 @@
 <script>
 (function () {
     const hayEquipos = {{ hay_equipos|yesno:"true,false" }};
+    const equiposSuficientes = {{ equipos_suficientes|yesno:"true,false" }};
+    const minEquipos = {{ min_equipos|default:0 }};
     const btnPers = document.getElementById('btn-generar-personalizados');
     const formAlea = document.getElementById('form-generar-aleatorios');
-    const modalEl = document.getElementById('noEquiposModal');
-    if (!modalEl) return;
+    const modalNoEqEl = document.getElementById('noEquiposModal');
+    const modalPocosEl = document.getElementById('pocosEquiposModal');
+    if (!modalNoEqEl) return;
 
     const hasBootstrap = typeof bootstrap !== 'undefined';
-    const modal = hasBootstrap ? new bootstrap.Modal(modalEl) : null;
+    const modalNoEq = hasBootstrap ? new bootstrap.Modal(modalNoEqEl) : null;
+    const modalPocos = (hasBootstrap && modalPocosEl) ? new bootstrap.Modal(modalPocosEl) : null;
 
-    function mostrarAviso() {
-        if (modal) {
-            modal.show();
+    function avisoNoEquipos() {
+        if (modalNoEq) {
+            modalNoEq.show();
         } else {
             window.alert('{% trans "No se pueden generar enfrentamientos porque no hay equipos en el torneo." %}');
         }
     }
 
+    function avisoPocosEquipos() {
+        if (modalPocos) {
+            modalPocos.show();
+        } else {
+            window.alert('No se pueden generar enfrentamientos: se necesitan al menos ' + minEquipos + ' equipos inscritos.');
+        }
+    }
+
+    function bloquearSiCorresponde(e) {
+        if (!hayEquipos) {
+            e.preventDefault();
+            avisoNoEquipos();
+            return true;
+        }
+        if (!equiposSuficientes) {
+            e.preventDefault();
+            avisoPocosEquipos();
+            return true;
+        }
+        return false;
+    }
+
     if (btnPers) {
         btnPers.addEventListener('click', function (e) {
-            if (!hayEquipos) {
-                e.preventDefault();
-                mostrarAviso();
-            } else {
+            if (!bloquearSiCorresponde(e)) {
                 window.location.href = btnPers.dataset.url;
             }
         });
@@ -182,10 +222,7 @@
 
     if (formAlea) {
         formAlea.addEventListener('submit', function (e) {
-            if (!hayEquipos) {
-                e.preventDefault();
-                mostrarAviso();
-            }
+            bloquearSiCorresponde(e);
         });
     }
 })();
