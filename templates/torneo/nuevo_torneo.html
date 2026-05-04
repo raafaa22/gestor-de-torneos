@@ -68,15 +68,18 @@
     function elementosLiga() {
         const selectorTipo = document.getElementById('id_tipo');
         const tipoSeleccionado = selectorTipo.value;
-        
-        if (tipoSeleccionado === 'LIG'){
-            playoffsCheckbox.disabled = false;
-            descensoCheckbox.disabled = false;
+
+        const playoffsContainer = playoffsCheckbox.closest('p');
+        const descensoContainer = descensoCheckbox.closest('p');
+
+        if (tipoSeleccionado === 'LIG') {
+            playoffsContainer.classList.remove('d-none');
+            descensoContainer.classList.remove('d-none');
         } else {
-            playoffsCheckbox.disabled = true;
+            playoffsContainer.classList.add('d-none');
             playoffsCheckbox.checked = false;
             cambioPlayOffs();
-            descensoCheckbox.disabled = true;
+            descensoContainer.classList.add('d-none');
             descensoCheckbox.checked = false;
             cambioDescenso();
         }

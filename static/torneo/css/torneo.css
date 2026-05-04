@@ -535,7 +535,13 @@
 
 .form-btn {
   margin-right: 35px;
-  margin-bottom: 40px; 
+  margin-bottom: 40px;
+}
+
+/* Helptext de filas con checkbox: a la derecha (col 3) en lugar de debajo */
+.container-form p:has(input[type="checkbox"]:not(.form-check-input)) > .helptext {
+  grid-column: 3;
+  margin-top: 0;
 }
 
 

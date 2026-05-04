@@ -4,6 +4,10 @@
 
 {% block head_torneo %}
     <title>{{ torneo.nombre }} · {% trans 'Editar' %}</title>
+    <style>
+        .form-borrar-est { display: inline; margin: 0; padding: 0; }
+        .form-borrar-est .btn-borrar-est { background: none; border: none; padding: 0; margin: 0; cursor: pointer; }
+    </style>
 {% endblock %}
 
 {% block titulo %}{% trans 'Editar enfrentamiento:' %} {{ enfrentamiento }}{% endblock %}
@@ -14,13 +18,16 @@
             <h4>{{ enfrentamiento.equipo_local}}</h4>
             {% if torneo.deporte != 'PAD' %}
                 <form
-                    method="post" 
+                    method="post"
+                    class="form-stat-sync"
                     action="{% url 'enfrentamientos:guardar_estadistica' torneo.id n_ronda enfrentamiento.id enfrentamiento.equipo_local.id %}">
                     {% csrf_token %}
+                    <input type="hidden" name="anotacion_local" value="">
+                    <input type="hidden" name="anotacion_visitante" value="">
                     <div class="estadisticas-form" >
                         {{ form_local.as_p }}
                     </div>
-                    
+
                     <button class="btn btn-guardar-est" type="submit">{% trans 'Añadir' %}</button>
                 </form>
             {% endif %}
@@ -47,9 +54,14 @@
                         {% for estadistica in estadisticas_local %}
                             <span class="est_local">
                                 {{ estadistica }}
-                                <a href="{% url 'enfrentamientos:borrar_estadistica' torneo.id n_ronda enfrentamiento.id estadistica.id %}">
-                                    <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="15" height="15"/>
-                                </a>
+                                <form method="post" class="form-stat-sync form-borrar-est" action="{% url 'enfrentamientos:borrar_estadistica' torneo.id n_ronda enfrentamiento.id estadistica.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="anotacion_local" value="">
+                                    <input type="hidden" name="anotacion_visitante" value="">
+                                    <button type="submit" class="btn-borrar-est">
+                                        <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="15" height="15"/>
+                                    </button>
+                                </form>
                             </span>
                         {% endfor %}
                     </div>
@@ -57,9 +69,14 @@
                         {% for estadistica in estadisticas_visitante %}
                             <span class="est_visitante">
                                 {{ estadistica }}
-                                <a href="{% url 'enfrentamientos:borrar_estadistica' torneo.id n_ronda enfrentamiento.id estadistica.id %}">
-                                    <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="15" height="15"/>
-                                </a>
+                                <form method="post" class="form-stat-sync form-borrar-est" action="{% url 'enfrentamientos:borrar_estadistica' torneo.id n_ronda enfrentamiento.id estadistica.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="anotacion_local" value="">
+                                    <input type="hidden" name="anotacion_visitante" value="">
+                                    <button type="submit" class="btn-borrar-est">
+                                        <img src="{% static 'torneo/img/eliminar.png' %}" alt="borrar" width="15" height="15"/>
+                                    </button>
+                                </form>
                             </span>
                         {% endfor %}
                     </div>
@@ -70,13 +87,16 @@
             <h4>{{ enfrentamiento.equipo_visitante }}</h4>
             {% if torneo.deporte != 'PAD' %}
                 <form
-                    method="post" 
+                    method="post"
+                    class="form-stat-sync"
                     action="{% url 'enfrentamientos:guardar_estadistica' torneo.id n_ronda enfrentamiento.id enfrentamiento.equipo_visitante.id %}">
                     {% csrf_token %}
+                    <input type="hidden" name="anotacion_local" value="">
+                    <input type="hidden" name="anotacion_visitante" value="">
                     <div class="estadisticas-form" >
                         {{ form_visitante.as_p }}
                     </div>
-                    
+
                     <button class="btn btn-guardar-est" type="submit">{% trans 'Añadir' %}</button>
                 </form>
             {% endif %}
@@ -90,6 +110,25 @@
 {% endblock %}
 
 {% block scripts %}
+{% if torneo.deporte != 'PAD' %}
+<script>
+(function () {
+    // Sincroniza anotacion_local/visitante visibles en los hidden de los forms de stats
+    document.addEventListener('submit', function (e) {
+        const form = e.target;
+        if (!form.classList || !form.classList.contains('form-stat-sync')) return;
+
+        const visibleLocal = document.querySelector('input[name="anotacion_local"]:not([type="hidden"])');
+        const visibleVisit = document.querySelector('input[name="anotacion_visitante"]:not([type="hidden"])');
+        const hiddenLocal = form.querySelector('input[type="hidden"][name="anotacion_local"]');
+        const hiddenVisit = form.querySelector('input[type="hidden"][name="anotacion_visitante"]');
+
+        if (visibleLocal && hiddenLocal) hiddenLocal.value = visibleLocal.value;
+        if (visibleVisit && hiddenVisit) hiddenVisit.value = visibleVisit.value;
+    });
+})();
+</script>
+{% endif %}
 {% if torneo.deporte == 'PAD' %}
 <script>
 (function () {
